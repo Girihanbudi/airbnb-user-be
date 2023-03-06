@@ -1,44 +1,32 @@
 package gql
 
 import (
+	"airbnb-user-be/internal/app/locale"
 	"airbnb-user-be/internal/app/locale/preset/request"
 	"airbnb-user-be/internal/pkg/pagination"
-	"airbnb-user-be/internal/pkg/stderror"
-
-	"github.com/graphql-go/graphql"
+	"context"
 )
 
-func (h Handler) GetLocale(params graphql.ResolveParams) (interface{}, error) {
-	code, exist := params.Args["code"]
-	if !exist {
-		return nil, stderror.DEF_AUTH_401.Error
-	}
-
+func (h Handler) GetLocale(ctx context.Context, code string) (*locale.Locale, error) {
 	cmd := request.GetLocale{
-		Code: code.(string),
+		Code: code,
 	}
 
-	res, err := h.Locale.GetLocale(params.Context, cmd)
+	res, err := h.Locale.GetLocale(ctx, cmd)
 
-	return res, err.Error
+	return res.Locale, err.Error
 }
 
-func (h Handler) GetLocales(params graphql.ResolveParams) (interface{}, error) {
-	limit, exist := params.Args["limit"]
+func (h Handler) GetLocales(ctx context.Context, limit, page int) (*[]locale.Locale, error) {
 	paging := pagination.DefaultSQLPaging
-	if exist {
-		paging.Limit = limit.(int)
-	}
-	page, exist := params.Args["page"]
-	if exist {
-		paging.Page = page.(int)
-	}
+	paging.Limit = limit
+	paging.Page = page
 
 	cmd := request.GetLocales{
 		Pagination: paging,
 	}
 
-	res, err := h.Locale.GetLocales(params.Context, cmd)
+	res, err := h.Locale.GetLocales(ctx, cmd)
 
-	return res, err.Error
+	return res.Locales, err.Error
 }
