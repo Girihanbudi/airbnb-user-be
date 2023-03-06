@@ -1,0 +1,11 @@
+httpserver:
+  host: "localhost"
+  port: "8080"
+db:
+  user: "postgres"
+  password: "localhost"
+  name: "airbnb-user"
+  host: "localhost"
+  port: "5432"
+  sslmode: "disable"
+  timezone: "Asia/Jakarta"

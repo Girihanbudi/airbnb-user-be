@@ -1,11 +1,11 @@
 package gorm
 
 type Config struct {
-	User     string `mapstructure:"DB_USER"`
-	Password string `mapstructure:"DB_PASSWORD"`
-	Name     string `mapstructure:"DB_NAME"`
-	Host     string `mapstructure:"DB_HOST"`
-	Port     string `mapstructure:"DB_PORT"`
-	SslMode  string `mapstructure:"DB_SSLMODE"`
-	Timezone string `mapstructure:"DB_TIMEZONE"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	SslMode  string `mapstructure:"sslmode"`
+	Timezone string `mapstructure:"timezone"`
 }

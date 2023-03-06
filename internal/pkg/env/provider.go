@@ -13,9 +13,9 @@ var Instance string = "Env"
 func ProvideEnv() Config {
 	log.Event(Instance, "reading config...")
 
-	viper.AddConfigPath(".")
-	// viper.SetConfigName("app")
-	viper.SetConfigType("env")
+	viper.AddConfigPath("./env")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
 
 	env := Config{}
 	if err := viper.ReadInConfig(); err != nil {

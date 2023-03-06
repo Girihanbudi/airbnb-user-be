@@ -6,6 +6,6 @@ import (
 )
 
 type Config struct {
-	DB         gorm.Config
-	HttpServer server.Config
+	HttpServer server.Config `mapstructure:"httpserver"`
+	DB         gorm.Config   `mapstructure:"db"`
 }
