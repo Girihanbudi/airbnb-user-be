@@ -5,7 +5,7 @@ import (
 )
 
 type Options struct {
-	Region locale.IRegion
+	Locale locale.ILocale
 }
 
 type Handler struct {

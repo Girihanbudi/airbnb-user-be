@@ -5,13 +5,13 @@ import (
 )
 
 type Options struct {
-	RegionRepo repo.IRegion
+	LocaleRepo repo.ILocale
 }
 
 type Usecase struct {
 	Options
 }
 
-func NewRegionUsecase(options Options) *Usecase {
+func NewLocaleUsecase(options Options) *Usecase {
 	return &Usecase{options}
 }

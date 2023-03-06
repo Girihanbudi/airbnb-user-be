@@ -8,20 +8,20 @@ import (
 
 func (h Handler) QuerySchema() map[string]*graphql.Field {
 
-	region := graphql.Field{
-		Type:        locale.RegionType,
-		Description: "Get a region",
+	Locale := graphql.Field{
+		Type:        locale.LocaleType,
+		Description: "Get a Locale",
 		Args: graphql.FieldConfigArgument{
 			"code": &graphql.ArgumentConfig{
 				Type: graphql.String,
 			},
 		},
-		Resolve: h.GetRegion,
+		Resolve: h.GetLocale,
 	}
 
-	regions := graphql.Field{
-		Type:        graphql.NewList(locale.RegionType),
-		Description: "List of regions",
+	Locales := graphql.Field{
+		Type:        graphql.NewList(locale.LocaleType),
+		Description: "List of Locales",
 		Args: graphql.FieldConfigArgument{
 			"limit": &graphql.ArgumentConfig{
 				Type: graphql.Int,
@@ -30,11 +30,11 @@ func (h Handler) QuerySchema() map[string]*graphql.Field {
 				Type: graphql.Int,
 			},
 		},
-		Resolve: h.GetRegions,
+		Resolve: h.GetLocales,
 	}
 
 	return map[string]*graphql.Field{
-		"region":  &region,
-		"regions": &regions,
+		"Locale":  &Locale,
+		"Locales": &Locales,
 	}
 }

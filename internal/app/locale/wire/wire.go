@@ -18,14 +18,14 @@ var ModuleSet = wire.NewSet(
 
 var repoSet = wire.NewSet(
 	wire.Struct(new(repoimpl.Options), "*"),
-	repoimpl.NewRegionRepo,
-	wire.Bind(new(repo.IRegion), new(*repoimpl.Repo)),
+	repoimpl.NewLocaleRepo,
+	wire.Bind(new(repo.ILocale), new(*repoimpl.Repo)),
 )
 
 var usecaseSet = wire.NewSet(
 	wire.Struct(new(usecaseimpl.Options), "*"),
-	usecaseimpl.NewRegionUsecase,
-	wire.Bind(new(usecase.IRegion), new(*usecaseimpl.Usecase)),
+	usecaseimpl.NewLocaleUsecase,
+	wire.Bind(new(usecase.ILocale), new(*usecaseimpl.Usecase)),
 )
 
 var apiSet = wire.NewSet(

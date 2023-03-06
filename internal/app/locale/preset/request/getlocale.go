@@ -4,11 +4,11 @@ import (
 	"airbnb-user-be/internal/pkg/validator"
 )
 
-type GetRegion struct {
+type GetLocale struct {
 	Code string `json:"code" validate:"required"`
 }
 
-func (req *GetRegion) Validate() (bool, error) {
+func (req *GetLocale) Validate() (bool, error) {
 	err := validator.ValidateStruct(req)
 	if err != nil {
 		return false, err

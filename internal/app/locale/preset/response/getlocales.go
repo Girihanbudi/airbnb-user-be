@@ -5,7 +5,7 @@ import (
 	"airbnb-user-be/internal/pkg/pagination"
 )
 
-type GetRegions struct {
-	Regions *[]locale.Region      `json:"regions"`
+type GetLocales struct {
+	Locales *[]locale.Locale      `json:"locales"`
 	Paging  *pagination.SQLPaging `json:"paging"`
 }

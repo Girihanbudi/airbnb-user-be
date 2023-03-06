@@ -10,7 +10,7 @@ import (
 
 func MigrateUp(db gorm.DB) {
 	models := []interface{}{
-		&locale.Region{},
+		&locale.Locale{},
 	}
 
 	if err := db.AutoMigrate(models); err != nil {

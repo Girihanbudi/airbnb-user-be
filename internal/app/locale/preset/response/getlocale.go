@@ -4,6 +4,6 @@ import (
 	"airbnb-user-be/internal/app/locale"
 )
 
-type GetRegion struct {
-	Region *locale.Region
+type GetLocale struct {
+	Locale *locale.Locale `json:"locale"`
 }

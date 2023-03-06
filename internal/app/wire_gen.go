@@ -37,13 +37,13 @@ func ProvideApp() (*App, error) {
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
-	repo := repoimpl.NewRegionRepo(repoimplOptions)
+	repo := repoimpl.NewLocaleRepo(repoimplOptions)
 	usecaseimplOptions := usecaseimpl.Options{
-		RegionRepo: repo,
+		LocaleRepo: repo,
 	}
-	usecase := usecaseimpl.NewRegionUsecase(usecaseimplOptions)
+	usecase := usecaseimpl.NewLocaleUsecase(usecaseimplOptions)
 	gqlOptions := gql.Options{
-		Region: usecase,
+		Locale: usecase,
 	}
 	handler := gql.ProvideLocaleHandler(gqlOptions)
 	appOptions := Options{

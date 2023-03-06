@@ -5,11 +5,11 @@ import (
 	"airbnb-user-be/internal/pkg/validator"
 )
 
-type GetRegions struct {
+type GetLocales struct {
 	Pagination pagination.SQLPaging `json:"pagination"`
 }
 
-func (req *GetRegions) Validate() (bool, error) {
+func (req *GetLocales) Validate() (bool, error) {
 	err := validator.ValidateStruct(req)
 	if err != nil {
 		return false, err

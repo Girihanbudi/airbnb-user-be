@@ -8,22 +8,22 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func (h Handler) GetRegion(params graphql.ResolveParams) (interface{}, error) {
+func (h Handler) GetLocale(params graphql.ResolveParams) (interface{}, error) {
 	code, exist := params.Args["code"]
 	if !exist {
 		return nil, stderror.DEF_AUTH_401.Error
 	}
 
-	cmd := request.GetRegion{
+	cmd := request.GetLocale{
 		Code: code.(string),
 	}
 
-	res, err := h.Region.GetRegion(params.Context, cmd)
+	res, err := h.Locale.GetLocale(params.Context, cmd)
 
 	return res, err.Error
 }
 
-func (h Handler) GetRegions(params graphql.ResolveParams) (interface{}, error) {
+func (h Handler) GetLocales(params graphql.ResolveParams) (interface{}, error) {
 	limit, exist := params.Args["limit"]
 	paging := pagination.DefaultSQLPaging
 	if exist {
@@ -34,11 +34,11 @@ func (h Handler) GetRegions(params graphql.ResolveParams) (interface{}, error) {
 		paging.Page = page.(int)
 	}
 
-	cmd := request.GetRegions{
+	cmd := request.GetLocales{
 		Pagination: paging,
 	}
 
-	res, err := h.Region.GetRegions(params.Context, cmd)
+	res, err := h.Locale.GetLocales(params.Context, cmd)
 
 	return res, err.Error
 }
