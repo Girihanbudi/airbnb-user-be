@@ -1,4 +1,4 @@
-package migrate
+package migration
 
 import (
 	"airbnb-user-be/internal/app/locale"
@@ -13,7 +13,7 @@ func MigrateUp(db gorm.DB) {
 		&locale.Locale{},
 	}
 
-	if err := db.AutoMigrate(models); err != nil {
+	if err := db.AutoMigrate(models...); err != nil {
 		log.Fatal(orm.Instance, "failed to run migration", err)
 	}
 }
