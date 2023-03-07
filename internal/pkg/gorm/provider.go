@@ -16,8 +16,11 @@ type Engine struct {
 
 func ProvideORM(config Config) *Engine {
 	ctx := context.Background()
-	return &Engine{
+	engine := Engine{
 		Ctx:    &ctx,
 		Config: config,
 	}
+
+	engine.InitConnection()
+	return &engine
 }
