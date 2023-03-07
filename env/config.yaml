@@ -3,7 +3,7 @@ httpserver:
   port: "8080"
 db:
   user: "postgres"
-  password: "localhost"
+  password: "postgres"
   name: "airbnb-user"
   host: "localhost"
   port: "5432"
