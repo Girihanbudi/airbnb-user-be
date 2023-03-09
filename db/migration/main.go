@@ -1,7 +1,7 @@
 package main
 
 import (
-	m "airbnb-user-be/db/migration"
+	m "airbnb-user-be/db/migration/migrator"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/log"
@@ -17,7 +17,8 @@ func main() {
 		log.Fatal(Instance, "migration failed with arguments not found", nil)
 	}
 
-	config := env.ProvideEnv().DB
+	defaultEnvConfig := env.ProvideDefaultEnvConf()
+	config := env.ProvideEnv(defaultEnvConfig).DB
 	engine := gorm.ProvideORM(config)
 
 	switch *cmd {
