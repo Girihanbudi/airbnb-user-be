@@ -1,15 +1,18 @@
 package log
 
-import "log"
+import log "github.com/sirupsen/logrus"
+
+const key = "Instance"
 
 func Event(instance, msg string) {
-	log.Printf("%s: %s.\n", instance, msg)
+	log.WithField(key, instance).Info(msg)
 }
 
 func Fatal(instance, msg string, err error) {
-	if err != nil {
-		log.Fatalf("%s: %s. %s", instance, msg, err.Error())
-	} else {
-		log.Fatalf("%s: %s.", instance, msg)
-	}
+
+	log.WithField(key, instance).Fatal(msg, err.Error())
+}
+
+func Error(instance, msg string, err error) {
+	log.WithField(key, instance).Errorln(msg, err.Error())
 }
