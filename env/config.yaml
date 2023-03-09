@@ -1,3 +1,5 @@
+stage: "local"
+domain: "localhost"
 httpserver:
   host: "localhost"
   port: "8080"
