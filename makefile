@@ -22,8 +22,8 @@ gqlrun:
 
 .PHONY: migrateup
 migrateup:
-	go run db/main.go -migration=up
+	go run db/migration/main.go -migration=up
 
 .PHONY: migratedown
 migratedown:
-	go run db/main.go -migration=down
+	go run db/migration/main.go -migration=down
