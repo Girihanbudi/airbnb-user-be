@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var Instance string = "ORM"
+const Instance string = "ORM"
 
 type Engine struct {
 	DB  *gorm.DB

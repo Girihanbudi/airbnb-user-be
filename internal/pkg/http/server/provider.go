@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var Instance = "HTTP Server"
+const Instance = "HTTP Server"
 
 type Options struct {
 	Config
