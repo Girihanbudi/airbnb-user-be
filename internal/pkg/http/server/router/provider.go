@@ -1,6 +1,8 @@
 package router
 
 import (
+	"airbnb-user-be/internal/pkg/http/server/middleware/cookie"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,6 +12,9 @@ func ProvideRouter() *gin.Engine {
 
 	// GIN apply CORS setting
 	router.Use(CORSSetting())
+
+	// GIN bind all cookie
+	router.Use(cookie.BindAll())
 
 	return router
 }
