@@ -7,6 +7,7 @@ import (
 )
 
 var PackageSet = wire.NewSet(
+	env.ProvideDefaultEnvConf,
 	env.ProvideEnv,
 	env.ExtractServerConfig,
 	env.ExtractDBConfig,

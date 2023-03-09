@@ -8,14 +8,31 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Instance string = "Env"
+const Instance string = "Env"
 
-func ProvideEnv() Config {
+// global env declaration
+var CONFIG Config
+
+type EnvConfig struct {
+	Path     string
+	FileName string
+	Ext      string
+}
+
+func ProvideDefaultEnvConf() EnvConfig {
+	return EnvConfig{
+		Path:     "./env",
+		FileName: "config",
+		Ext:      "yaml",
+	}
+}
+
+func ProvideEnv(conf EnvConfig) Config {
 	log.Event(Instance, "reading config...")
 
-	viper.AddConfigPath("./env")
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
+	viper.AddConfigPath(conf.Path)
+	viper.SetConfigName(conf.FileName)
+	viper.SetConfigType(conf.Ext)
 
 	env := Config{}
 	if err := viper.ReadInConfig(); err != nil {
@@ -25,6 +42,8 @@ func ProvideEnv() Config {
 	if err := viper.Unmarshal(&env); err != nil {
 		log.Fatal(Instance, "failed to unmarshal config", err)
 	}
+
+	CONFIG = env
 
 	return env
 }
