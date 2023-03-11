@@ -1,0 +1,10 @@
+# vs code
+cmd/app/__debug_bin.exe
+
+# directory structure
+bin/*
+pkg/*
+!.gitkeep
+
+# goop - go package manager
+.vendor
