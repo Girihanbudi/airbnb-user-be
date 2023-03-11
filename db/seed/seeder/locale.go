@@ -13,7 +13,7 @@ func SeedLocale(db gorm.DB) error {
 		makeLocale("id-ID", "Indonesian", "Bahasa Indonesia", "Indonesia", 1057, "ind", "id"),
 	}
 
-	return db.CreateInBatches(&data, 100).Error
+	return db.CreateInBatches(&data, batchSize).Error
 }
 
 func makeLocale(code, name, local, location string, lcid int, ISO639_1, ISO639_2 string) locale.Locale {
