@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.25
+	github.com/sirupsen/logrus v1.9.0
 	github.com/swaggo/files v1.0.0
 	github.com/swaggo/swag v1.8.1
 	github.com/thoas/go-funk v0.9.3
@@ -23,7 +24,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 )
 
