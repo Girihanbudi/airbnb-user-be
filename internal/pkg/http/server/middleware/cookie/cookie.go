@@ -7,5 +7,6 @@ import (
 func BindAll() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		BindLocale(ctx)
+		ctx.Next()
 	}
 }
