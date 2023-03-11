@@ -3,7 +3,7 @@ package pagination
 type SQLPaging struct {
 	Limit    int `json:"limit"`
 	Page     int `json:"page"`
-	PageSize int `json:"page_size"`
+	PageSize int `json:"pageSize"`
 }
 
 func (paging *SQLPaging) GetOffset() int {
