@@ -8,6 +8,7 @@ import (
 	"sync"
 
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
+	translation "airbnb-user-be/internal/app/translation/repo"
 )
 
 var Instance = "App"
@@ -15,6 +16,7 @@ var Instance = "App"
 type Options struct {
 	HttpServer *server.Server
 
+	Translation      translation.IErrTranslation
 	LocaleGqlHandler *localegql.Handler
 }
 
