@@ -8,8 +8,9 @@ package app
 
 import (
 	"airbnb-user-be/internal/app/locale/api/gql"
-	"airbnb-user-be/internal/app/locale/repo/repoimpl"
+	repoimpl2 "airbnb-user-be/internal/app/locale/repo/repoimpl"
 	"airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
+	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/http/server"
@@ -24,7 +25,8 @@ import (
 // Injectors from wire.go:
 
 func ProvideApp() (*App, error) {
-	config := env.ProvideEnv()
+	envConfig := env.ProvideDefaultEnvConf()
+	config := env.ProvideEnv(envConfig)
 	serverConfig := env.ExtractServerConfig(config)
 	engine := router.ProvideRouter()
 	options := server.Options{
@@ -37,9 +39,13 @@ func ProvideApp() (*App, error) {
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
-	repo := repoimpl.NewLocaleRepo(repoimplOptions)
+	repo := repoimpl.NewErrTranslationRepo(repoimplOptions)
+	options2 := repoimpl2.Options{
+		Gorm: gormEngine,
+	}
+	repoimplRepo := repoimpl2.NewLocaleRepo(options2)
 	usecaseimplOptions := usecaseimpl.Options{
-		LocaleRepo: repo,
+		LocaleRepo: repoimplRepo,
 	}
 	usecase := usecaseimpl.NewLocaleUsecase(usecaseimplOptions)
 	gqlOptions := gql.Options{
@@ -48,6 +54,7 @@ func ProvideApp() (*App, error) {
 	handler := gql.ProvideLocaleHandler(gqlOptions)
 	appOptions := Options{
 		HttpServer:       serverServer,
+		Translation:      repo,
 		LocaleGqlHandler: handler,
 	}
 	app := &App{

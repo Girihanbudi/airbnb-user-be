@@ -9,6 +9,7 @@ import (
 	http "airbnb-user-be/internal/pkg/http/server/wire"
 
 	locale "airbnb-user-be/internal/app/locale/wire"
+	translation "airbnb-user-be/internal/app/translation/wire"
 
 	"github.com/google/wire"
 )
@@ -26,6 +27,7 @@ func ProvideApp() (*App, error) {
 
 		AppSet,
 
+		translation.ModuleSet,
 		locale.ModuleSet,
 	))
 }
