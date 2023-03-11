@@ -2,11 +2,13 @@ package repo
 
 import (
 	"airbnb-user-be/internal/app/locale"
-	"airbnb-user-be/internal/pkg/pagination"
 	"context"
 )
 
 type ILocale interface {
-	GetLocales(ctx context.Context, page *pagination.SQLPaging) (Locales *[]locale.Locale, paging *pagination.SQLPaging, err error)
+	GetLocales(ctx context.Context) (Locales *[]locale.Locale, err error)
 	GetLocale(ctx context.Context, code string) (Locale *locale.Locale, err error)
+	CreateLocale(ctx context.Context, locale *locale.Locale) (err error)
+	UpdateLocale(ctx context.Context, locale *locale.Locale) (err error)
+	DeleteLocale(ctx context.Context, code string) (err error)
 }

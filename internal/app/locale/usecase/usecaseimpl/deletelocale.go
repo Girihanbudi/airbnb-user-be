@@ -3,14 +3,13 @@ package usecaseimpl
 import (
 	errpreset "airbnb-user-be/internal/app/locale/preset/error"
 	"airbnb-user-be/internal/app/locale/preset/request"
-	"airbnb-user-be/internal/app/locale/preset/response"
 	transutil "airbnb-user-be/internal/app/translation/util"
 	"airbnb-user-be/internal/pkg/appcontext"
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
 )
 
-func (u Usecase) GetLocale(ctx context.Context, cmd request.GetLocale) (res response.GetLocale, err *stderror.StdError) {
+func (u Usecase) DeleteLocale(ctx context.Context, cmd request.DeleteLocale) (err *stderror.StdError) {
 	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
 
 	if valid, _ := cmd.Validate(); !valid {
@@ -18,13 +17,11 @@ func (u Usecase) GetLocale(ctx context.Context, cmd request.GetLocale) (res resp
 		return
 	}
 
-	Locale, getLocaleErr := u.LocaleRepo.GetLocale(ctx, cmd.Code)
-	if getLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_GET_404, clientLocale)
+	deleteLocaleErr := u.LocaleRepo.DeleteLocale(ctx, cmd.Code)
+	if deleteLocaleErr != nil {
+		err = transutil.TranslateError(ctx, errpreset.LOCALE_DELETE_500, clientLocale)
 		return
 	}
-
-	res.Locale = Locale
 
 	return
 }

@@ -8,6 +8,6 @@ import (
 )
 
 type ILocale interface {
+	GetLocales(ctx context.Context) (res response.GetLocales, err *stderror.StdError)
 	GetLocale(ctx context.Context, cmd request.GetLocale) (res response.GetLocale, err *stderror.StdError)
-	GetLocales(ctx context.Context, cmd request.GetLocales) (res response.GetLocales, err *stderror.StdError)
 }
