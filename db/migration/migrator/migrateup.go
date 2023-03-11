@@ -2,6 +2,7 @@ package migration
 
 import (
 	"airbnb-user-be/internal/app/locale"
+	"airbnb-user-be/internal/app/translation"
 	orm "airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/log"
 
@@ -11,6 +12,7 @@ import (
 func MigrateUp(db gorm.DB) {
 	models := []interface{}{
 		&locale.Locale{},
+		&translation.ErrTranslation{},
 	}
 
 	if err := db.AutoMigrate(models...); err != nil {
