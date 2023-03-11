@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -45,18 +46,26 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Locale struct {
-		Code     func(childComplexity int) int
-		Iso639_1 func(childComplexity int) int
-		Iso639_2 func(childComplexity int) int
-		Lcid     func(childComplexity int) int
-		Local    func(childComplexity int) int
-		Location func(childComplexity int) int
-		Name     func(childComplexity int) int
+		Code      func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Iso639_1  func(childComplexity int) int
+		Iso639_2  func(childComplexity int) int
+		Lcid      func(childComplexity int) int
+		Local     func(childComplexity int) int
+		Location  func(childComplexity int) int
+		Name      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
 	}
 
 	Mutation struct {
 		CreateLocale func(childComplexity int, input model.NewLocale) int
 		RemoveLocale func(childComplexity int, input model.DeleteLocale) int
+	}
+
+	Paging struct {
+		Limit    func(childComplexity int) int
+		Page     func(childComplexity int) int
+		PageSize func(childComplexity int) int
 	}
 
 	Query struct {
@@ -89,54 +98,68 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Locale.Code":
+	case "Locale.code":
 		if e.complexity.Locale.Code == nil {
 			break
 		}
 
 		return e.complexity.Locale.Code(childComplexity), true
 
-	case "Locale.ISO639_1":
+	case "Locale.createdAt":
+		if e.complexity.Locale.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Locale.CreatedAt(childComplexity), true
+
+	case "Locale.iso639_1":
 		if e.complexity.Locale.Iso639_1 == nil {
 			break
 		}
 
 		return e.complexity.Locale.Iso639_1(childComplexity), true
 
-	case "Locale.ISO639_2":
+	case "Locale.iso639_2":
 		if e.complexity.Locale.Iso639_2 == nil {
 			break
 		}
 
 		return e.complexity.Locale.Iso639_2(childComplexity), true
 
-	case "Locale.LCID":
+	case "Locale.lcid":
 		if e.complexity.Locale.Lcid == nil {
 			break
 		}
 
 		return e.complexity.Locale.Lcid(childComplexity), true
 
-	case "Locale.Local":
+	case "Locale.local":
 		if e.complexity.Locale.Local == nil {
 			break
 		}
 
 		return e.complexity.Locale.Local(childComplexity), true
 
-	case "Locale.Location":
+	case "Locale.location":
 		if e.complexity.Locale.Location == nil {
 			break
 		}
 
 		return e.complexity.Locale.Location(childComplexity), true
 
-	case "Locale.Name":
+	case "Locale.name":
 		if e.complexity.Locale.Name == nil {
 			break
 		}
 
 		return e.complexity.Locale.Name(childComplexity), true
+
+	case "Locale.updatedAt":
+		if e.complexity.Locale.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Locale.UpdatedAt(childComplexity), true
 
 	case "Mutation.createLocale":
 		if e.complexity.Mutation.CreateLocale == nil {
@@ -161,6 +184,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveLocale(childComplexity, args["input"].(model.DeleteLocale)), true
+
+	case "Paging.limit":
+		if e.complexity.Paging.Limit == nil {
+			break
+		}
+
+		return e.complexity.Paging.Limit(childComplexity), true
+
+	case "Paging.page":
+		if e.complexity.Paging.Page == nil {
+			break
+		}
+
+		return e.complexity.Paging.Page(childComplexity), true
+
+	case "Paging.pageSize":
+		if e.complexity.Paging.PageSize == nil {
+			break
+		}
+
+		return e.complexity.Paging.PageSize(childComplexity), true
 
 	case "Query.locale":
 		if e.complexity.Query.Locale == nil {
@@ -368,8 +412,8 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Locale_Code(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_Code(ctx, field)
+func (ec *executionContext) _Locale_code(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_code(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -399,7 +443,7 @@ func (ec *executionContext) _Locale_Code(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_Code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_code(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -412,8 +456,8 @@ func (ec *executionContext) fieldContext_Locale_Code(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_Name(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_Name(ctx, field)
+func (ec *executionContext) _Locale_name(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -443,7 +487,7 @@ func (ec *executionContext) _Locale_Name(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_Name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -456,8 +500,8 @@ func (ec *executionContext) fieldContext_Locale_Name(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_Local(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_Local(ctx, field)
+func (ec *executionContext) _Locale_local(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_local(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -484,7 +528,7 @@ func (ec *executionContext) _Locale_Local(ctx context.Context, field graphql.Col
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_Local(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_local(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -497,8 +541,8 @@ func (ec *executionContext) fieldContext_Locale_Local(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_Location(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_Location(ctx, field)
+func (ec *executionContext) _Locale_location(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_location(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -525,7 +569,7 @@ func (ec *executionContext) _Locale_Location(ctx context.Context, field graphql.
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_Location(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_location(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -538,8 +582,8 @@ func (ec *executionContext) fieldContext_Locale_Location(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_LCID(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_LCID(ctx, field)
+func (ec *executionContext) _Locale_lcid(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_lcid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -559,17 +603,14 @@ func (ec *executionContext) _Locale_LCID(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_LCID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_lcid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -582,8 +623,8 @@ func (ec *executionContext) fieldContext_Locale_LCID(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_ISO639_2(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_ISO639_2(ctx, field)
+func (ec *executionContext) _Locale_iso639_2(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_iso639_2(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -610,7 +651,7 @@ func (ec *executionContext) _Locale_ISO639_2(ctx context.Context, field graphql.
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_ISO639_2(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_iso639_2(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -623,8 +664,8 @@ func (ec *executionContext) fieldContext_Locale_ISO639_2(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Locale_ISO639_1(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Locale_ISO639_1(ctx, field)
+func (ec *executionContext) _Locale_iso639_1(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_iso639_1(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -651,7 +692,7 @@ func (ec *executionContext) _Locale_ISO639_1(ctx context.Context, field graphql.
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Locale_ISO639_1(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Locale_iso639_1(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Locale",
 		Field:      field,
@@ -659,6 +700,94 @@ func (ec *executionContext) fieldContext_Locale_ISO639_1(ctx context.Context, fi
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Locale_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Locale_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Locale",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Locale_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Locale) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Locale_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Locale_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Locale",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -702,20 +831,24 @@ func (ec *executionContext) fieldContext_Mutation_createLocale(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "Code":
-				return ec.fieldContext_Locale_Code(ctx, field)
-			case "Name":
-				return ec.fieldContext_Locale_Name(ctx, field)
-			case "Local":
-				return ec.fieldContext_Locale_Local(ctx, field)
-			case "Location":
-				return ec.fieldContext_Locale_Location(ctx, field)
-			case "LCID":
-				return ec.fieldContext_Locale_LCID(ctx, field)
-			case "ISO639_2":
-				return ec.fieldContext_Locale_ISO639_2(ctx, field)
-			case "ISO639_1":
-				return ec.fieldContext_Locale_ISO639_1(ctx, field)
+			case "code":
+				return ec.fieldContext_Locale_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Locale_name(ctx, field)
+			case "local":
+				return ec.fieldContext_Locale_local(ctx, field)
+			case "location":
+				return ec.fieldContext_Locale_location(ctx, field)
+			case "lcid":
+				return ec.fieldContext_Locale_lcid(ctx, field)
+			case "iso639_2":
+				return ec.fieldContext_Locale_iso639_2(ctx, field)
+			case "iso639_1":
+				return ec.fieldContext_Locale_iso639_1(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Locale_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Locale_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Locale", field.Name)
 		},
@@ -772,20 +905,24 @@ func (ec *executionContext) fieldContext_Mutation_removeLocale(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "Code":
-				return ec.fieldContext_Locale_Code(ctx, field)
-			case "Name":
-				return ec.fieldContext_Locale_Name(ctx, field)
-			case "Local":
-				return ec.fieldContext_Locale_Local(ctx, field)
-			case "Location":
-				return ec.fieldContext_Locale_Location(ctx, field)
-			case "LCID":
-				return ec.fieldContext_Locale_LCID(ctx, field)
-			case "ISO639_2":
-				return ec.fieldContext_Locale_ISO639_2(ctx, field)
-			case "ISO639_1":
-				return ec.fieldContext_Locale_ISO639_1(ctx, field)
+			case "code":
+				return ec.fieldContext_Locale_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Locale_name(ctx, field)
+			case "local":
+				return ec.fieldContext_Locale_local(ctx, field)
+			case "location":
+				return ec.fieldContext_Locale_location(ctx, field)
+			case "lcid":
+				return ec.fieldContext_Locale_lcid(ctx, field)
+			case "iso639_2":
+				return ec.fieldContext_Locale_iso639_2(ctx, field)
+			case "iso639_1":
+				return ec.fieldContext_Locale_iso639_1(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Locale_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Locale_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Locale", field.Name)
 		},
@@ -800,6 +937,129 @@ func (ec *executionContext) fieldContext_Mutation_removeLocale(ctx context.Conte
 	if fc.Args, err = ec.field_Mutation_removeLocale_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Paging_limit(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Paging_limit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Limit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Paging_limit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Paging",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Paging_page(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Paging_page(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Page, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Paging_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Paging",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Paging_pageSize(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Paging_pageSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Paging_pageSize(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Paging",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -842,20 +1102,24 @@ func (ec *executionContext) fieldContext_Query_locales(ctx context.Context, fiel
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "Code":
-				return ec.fieldContext_Locale_Code(ctx, field)
-			case "Name":
-				return ec.fieldContext_Locale_Name(ctx, field)
-			case "Local":
-				return ec.fieldContext_Locale_Local(ctx, field)
-			case "Location":
-				return ec.fieldContext_Locale_Location(ctx, field)
-			case "LCID":
-				return ec.fieldContext_Locale_LCID(ctx, field)
-			case "ISO639_2":
-				return ec.fieldContext_Locale_ISO639_2(ctx, field)
-			case "ISO639_1":
-				return ec.fieldContext_Locale_ISO639_1(ctx, field)
+			case "code":
+				return ec.fieldContext_Locale_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Locale_name(ctx, field)
+			case "local":
+				return ec.fieldContext_Locale_local(ctx, field)
+			case "location":
+				return ec.fieldContext_Locale_location(ctx, field)
+			case "lcid":
+				return ec.fieldContext_Locale_lcid(ctx, field)
+			case "iso639_2":
+				return ec.fieldContext_Locale_iso639_2(ctx, field)
+			case "iso639_1":
+				return ec.fieldContext_Locale_iso639_1(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Locale_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Locale_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Locale", field.Name)
 		},
@@ -898,20 +1162,24 @@ func (ec *executionContext) fieldContext_Query_locale(ctx context.Context, field
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "Code":
-				return ec.fieldContext_Locale_Code(ctx, field)
-			case "Name":
-				return ec.fieldContext_Locale_Name(ctx, field)
-			case "Local":
-				return ec.fieldContext_Locale_Local(ctx, field)
-			case "Location":
-				return ec.fieldContext_Locale_Location(ctx, field)
-			case "LCID":
-				return ec.fieldContext_Locale_LCID(ctx, field)
-			case "ISO639_2":
-				return ec.fieldContext_Locale_ISO639_2(ctx, field)
-			case "ISO639_1":
-				return ec.fieldContext_Locale_ISO639_1(ctx, field)
+			case "code":
+				return ec.fieldContext_Locale_code(ctx, field)
+			case "name":
+				return ec.fieldContext_Locale_name(ctx, field)
+			case "local":
+				return ec.fieldContext_Locale_local(ctx, field)
+			case "location":
+				return ec.fieldContext_Locale_location(ctx, field)
+			case "lcid":
+				return ec.fieldContext_Locale_lcid(ctx, field)
+			case "iso639_2":
+				return ec.fieldContext_Locale_iso639_2(ctx, field)
+			case "iso639_1":
+				return ec.fieldContext_Locale_iso639_1(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Locale_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Locale_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Locale", field.Name)
 		},
@@ -2865,65 +3133,65 @@ func (ec *executionContext) unmarshalInputNewLocale(ctx context.Context, obj int
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Code", "Name", "Local", "Location", "LCID", "ISO639_2", "ISO639_1"}
+	fieldsInOrder := [...]string{"code", "name", "local", "location", "lcid", "iso639_2", "iso639_1"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "Code":
+		case "code":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Code"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
 			it.Code, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "Name":
+		case "name":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 			it.Name, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "Local":
+		case "local":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Local"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("local"))
 			it.Local, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "Location":
+		case "location":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Location"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("location"))
 			it.Location, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "LCID":
+		case "lcid":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("LCID"))
-			it.Lcid, err = ec.unmarshalNInt2int(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lcid"))
+			it.Lcid, err = ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "ISO639_2":
+		case "iso639_2":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ISO639_2"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("iso639_2"))
 			it.Iso639_2, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "ISO639_1":
+		case "iso639_1":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ISO639_1"))
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("iso639_1"))
 			it.Iso639_1, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
@@ -2952,43 +3220,54 @@ func (ec *executionContext) _Locale(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Locale")
-		case "Code":
+		case "code":
 
-			out.Values[i] = ec._Locale_Code(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "Name":
-
-			out.Values[i] = ec._Locale_Name(ctx, field, obj)
+			out.Values[i] = ec._Locale_code(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "Local":
+		case "name":
 
-			out.Values[i] = ec._Locale_Local(ctx, field, obj)
-
-		case "Location":
-
-			out.Values[i] = ec._Locale_Location(ctx, field, obj)
-
-		case "LCID":
-
-			out.Values[i] = ec._Locale_LCID(ctx, field, obj)
+			out.Values[i] = ec._Locale_name(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "ISO639_2":
+		case "local":
 
-			out.Values[i] = ec._Locale_ISO639_2(ctx, field, obj)
+			out.Values[i] = ec._Locale_local(ctx, field, obj)
 
-		case "ISO639_1":
+		case "location":
 
-			out.Values[i] = ec._Locale_ISO639_1(ctx, field, obj)
+			out.Values[i] = ec._Locale_location(ctx, field, obj)
 
+		case "lcid":
+
+			out.Values[i] = ec._Locale_lcid(ctx, field, obj)
+
+		case "iso639_2":
+
+			out.Values[i] = ec._Locale_iso639_2(ctx, field, obj)
+
+		case "iso639_1":
+
+			out.Values[i] = ec._Locale_iso639_1(ctx, field, obj)
+
+		case "createdAt":
+
+			out.Values[i] = ec._Locale_createdAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+
+			out.Values[i] = ec._Locale_updatedAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3035,6 +3314,39 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		}
 	}
 	out.Dispatch()
+	return out
+}
+
+var pagingImplementors = []string{"Paging"}
+
+func (ec *executionContext) _Paging(ctx context.Context, sel ast.SelectionSet, obj *model.Paging) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, pagingImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Paging")
+		case "limit":
+
+			out.Values[i] = ec._Paging_limit(ctx, field, obj)
+
+		case "page":
+
+			out.Values[i] = ec._Paging_page(ctx, field, obj)
+
+		case "pageSize":
+
+			out.Values[i] = ec._Paging_pageSize(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3454,21 +3766,6 @@ func (ec *executionContext) unmarshalNDeleteLocale2airbnbᚑuserᚑbeᚋgraphᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
 func (ec *executionContext) marshalNLocale2airbnbᚑuserᚑbeᚋgraphᚋmodelᚐLocale(ctx context.Context, sel ast.SelectionSet, v model.Locale) graphql.Marshaler {
 	return ec._Locale(ctx, sel, &v)
 }
@@ -3539,6 +3836,21 @@ func (ec *executionContext) unmarshalNString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	res := graphql.MarshalString(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := graphql.MarshalTime(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3823,6 +4135,22 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
 	return res
 }
 

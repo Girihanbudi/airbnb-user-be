@@ -2,14 +2,24 @@
 #
 # https://gqlgen.com/getting-started/
 
+scalar Time
+
+type Paging {
+  limit: Int
+  page: Int
+  pageSize: Int
+}
+
 type Locale {
-  Code: String!
-  Name: String!
-  Local: String
-  Location: String
-  LCID: Int!
-  ISO639_2: String
-  ISO639_1: String
+  code: String!
+  name: String!
+  local: String
+  location: String
+  lcid: Int
+  iso639_2: String
+  iso639_1: String
+  createdAt: Time!
+  updatedAt: Time!
 }
 
 type Query {
@@ -18,13 +28,13 @@ type Query {
 }
 
 input NewLocale {
-  Code: String!
-  Name: String!
-  Local: String
-  Location: String
-  LCID: Int!
-  ISO639_2: String
-  ISO639_1: String
+  code: String!
+  name: String!
+  local: String
+  location: String
+  lcid: Int
+  iso639_2: String
+  iso639_1: String
 }
 
 input DeleteLocale {

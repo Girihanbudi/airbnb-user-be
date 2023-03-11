@@ -2,26 +2,38 @@
 
 package model
 
+import (
+	"time"
+)
+
 type DeleteLocale struct {
 	Code string `json:"code"`
 }
 
 type Locale struct {
-	Code     string  `json:"Code"`
-	Name     string  `json:"Name"`
-	Local    *string `json:"Local"`
-	Location *string `json:"Location"`
-	Lcid     int     `json:"LCID"`
-	Iso639_2 *string `json:"ISO639_2"`
-	Iso639_1 *string `json:"ISO639_1"`
+	Code      string    `json:"code"`
+	Name      string    `json:"name"`
+	Local     *string   `json:"local"`
+	Location  *string   `json:"location"`
+	Lcid      *int      `json:"lcid"`
+	Iso639_2  *string   `json:"iso639_2"`
+	Iso639_1  *string   `json:"iso639_1"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type NewLocale struct {
-	Code     string  `json:"Code"`
-	Name     string  `json:"Name"`
-	Local    *string `json:"Local"`
-	Location *string `json:"Location"`
-	Lcid     int     `json:"LCID"`
-	Iso639_2 *string `json:"ISO639_2"`
-	Iso639_1 *string `json:"ISO639_1"`
+	Code     string  `json:"code"`
+	Name     string  `json:"name"`
+	Local    *string `json:"local"`
+	Location *string `json:"location"`
+	Lcid     *int    `json:"lcid"`
+	Iso639_2 *string `json:"iso639_2"`
+	Iso639_1 *string `json:"iso639_1"`
+}
+
+type Paging struct {
+	Limit    *int `json:"limit"`
+	Page     *int `json:"page"`
+	PageSize *int `json:"pageSize"`
 }
