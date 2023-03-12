@@ -7,11 +7,15 @@
 package app
 
 import (
+	gql2 "airbnb-user-be/internal/app/currency/api/gql"
+	repoimpl3 "airbnb-user-be/internal/app/currency/repo/repoimpl"
+	usecaseimpl2 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/locale/api/gql"
 	repoimpl2 "airbnb-user-be/internal/app/locale/repo/repoimpl"
 	"airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	"airbnb-user-be/internal/pkg/env"
+	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
@@ -27,15 +31,15 @@ import (
 func ProvideApp() (*App, error) {
 	envConfig := env.ProvideDefaultEnvConf()
 	config := env.ProvideEnv(envConfig)
-	serverConfig := env.ExtractServerConfig(config)
+	configConfig := tool.ExtractServerConfig(config)
 	engine := router.ProvideRouter()
 	options := server.Options{
-		Config: serverConfig,
+		Config: configConfig,
 		Router: engine,
 	}
 	serverServer := server.ProvideServer(options)
-	gormConfig := env.ExtractDBConfig(config)
-	gormEngine := gorm.ProvideORM(gormConfig)
+	config2 := tool.ExtractDBConfig(config)
+	gormEngine := gorm.ProvideORM(config2)
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
@@ -52,10 +56,23 @@ func ProvideApp() (*App, error) {
 		Locale: usecase,
 	}
 	handler := gql.ProvideLocaleHandler(gqlOptions)
+	options3 := repoimpl3.Options{
+		Gorm: gormEngine,
+	}
+	repo2 := repoimpl3.NewCurrencyRepo(options3)
+	options4 := usecaseimpl2.Options{
+		CurrencyRepo: repo2,
+	}
+	usecaseimplUsecase := usecaseimpl2.NewCurrencyUsecase(options4)
+	options5 := gql2.Options{
+		Currency: usecaseimplUsecase,
+	}
+	gqlHandler := gql2.ProvideCurrencyHandler(options5)
 	appOptions := Options{
-		HttpServer:       serverServer,
-		Translation:      repo,
-		LocaleGqlHandler: handler,
+		HttpServer:         serverServer,
+		Translation:        repo,
+		LocaleGqlHandler:   handler,
+		CurrencyGqlHandler: gqlHandler,
 	}
 	app := &App{
 		Options: appOptions,
