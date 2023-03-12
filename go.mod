@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.25
+	github.com/Rhymond/go-money v1.0.9
 	github.com/sirupsen/logrus v1.9.0
 	github.com/swaggo/files v1.0.0
 	github.com/swaggo/swag v1.8.1
