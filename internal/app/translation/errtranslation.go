@@ -11,8 +11,8 @@ type ErrTranslation struct {
 	LocaleCode string    `json:"locale_code" gorm:"primaryKey"`
 	Message    string    `json:"message" gorm:"not null"`
 	HttpCode   int       `json:"http_code" gorm:"not null"`
-	CreatedAt  time.Time `json:"createdAt" gorm:"not null"`
-	UpdatedAt  time.Time `json:"updatedAt" gorm:"not null"`
+	CreatedAt  time.Time `json:"created_at" gorm:"not null"`
+	UpdatedAt  time.Time `json:"updated_at" gorm:"not null"`
 }
 
 func (e *ErrTranslation) BeforeCreate(tx *gorm.DB) (err error) {

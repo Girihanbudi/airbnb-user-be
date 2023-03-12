@@ -15,8 +15,8 @@ type Locale struct {
 	ISO639_1 *string `json:"iso639_1"`
 	ISO639_2 *string `json:"iso639_2"`
 
-	CreatedAt time.Time `json:"createdAt" gorm:"not null"`
-	UpdatedAt time.Time `json:"updatedAt" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at" gorm:"not null"`
+	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
 }
 
 func (l *Locale) BeforeCreate(tx *gorm.DB) (err error) {
