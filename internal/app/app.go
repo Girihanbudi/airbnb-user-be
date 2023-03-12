@@ -7,6 +7,7 @@ import (
 	"context"
 	"sync"
 
+	currencygql "airbnb-user-be/internal/app/currency/api/gql"
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
 	translation "airbnb-user-be/internal/app/translation/repo"
 )
@@ -16,8 +17,9 @@ var Instance = "App"
 type Options struct {
 	HttpServer *server.Server
 
-	Translation      translation.IErrTranslation
-	LocaleGqlHandler *localegql.Handler
+	Translation        translation.IErrTranslation
+	LocaleGqlHandler   *localegql.Handler
+	CurrencyGqlHandler *currencygql.Handler
 }
 
 type App struct {

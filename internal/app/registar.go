@@ -3,6 +3,7 @@ package app
 import (
 	_ "airbnb-user-be/docs"
 	"airbnb-user-be/graph"
+	gqlcurrency "airbnb-user-be/internal/app/currency/api/gql"
 	gqllocale "airbnb-user-be/internal/app/locale/api/gql"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -13,12 +14,13 @@ import (
 )
 
 // Defining the Graphql handler
-func graphqlHandler(localeHandler gqllocale.Handler) gin.HandlerFunc {
+func graphqlHandler(localeHandler gqllocale.Handler, currencyHandler gqlcurrency.Handler) gin.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(
 		graph.Config{Resolvers: &graph.Resolver{
-			Locale: localeHandler,
+			Locale:   localeHandler,
+			Currency: currencyHandler,
 		}}))
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
@@ -34,8 +36,11 @@ func graphqlHandler(localeHandler gqllocale.Handler) gin.HandlerFunc {
 // }
 
 func (a App) RegisterHttpHandler() {
-
-	a.HttpServer.Router.POST("/graph", graphqlHandler(*a.LocaleGqlHandler))
+	// register modules to graph solver handler
+	a.HttpServer.Router.POST("/graph", graphqlHandler(
+		*a.LocaleGqlHandler,
+		*a.CurrencyGqlHandler,
+	))
 	// a.HttpServer.Router.GET("/", graphqlPlaygroundHandler())
 	a.HttpServer.Router.GET("/docs/*any", ginswagger.WrapHandler(swaggerfiles.Handler))
 }

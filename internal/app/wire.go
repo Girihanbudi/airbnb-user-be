@@ -8,6 +8,7 @@ import (
 	gorm "airbnb-user-be/internal/pkg/gorm/wire"
 	http "airbnb-user-be/internal/pkg/http/server/wire"
 
+	currency "airbnb-user-be/internal/app/currency/wire"
 	locale "airbnb-user-be/internal/app/locale/wire"
 	translation "airbnb-user-be/internal/app/translation/wire"
 
@@ -29,5 +30,6 @@ func ProvideApp() (*App, error) {
 
 		translation.ModuleSet,
 		locale.ModuleSet,
+		currency.ModuleSet,
 	))
 }
