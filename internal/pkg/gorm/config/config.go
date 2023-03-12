@@ -1,4 +1,4 @@
-package gorm
+package config
 
 type Config struct {
 	User     string `mapstructure:"user"`

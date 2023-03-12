@@ -2,6 +2,7 @@ package wire
 
 import (
 	"airbnb-user-be/internal/pkg/env"
+	"airbnb-user-be/internal/pkg/env/tool"
 
 	"github.com/google/wire"
 )
@@ -9,6 +10,6 @@ import (
 var PackageSet = wire.NewSet(
 	env.ProvideDefaultEnvConf,
 	env.ProvideEnv,
-	env.ExtractServerConfig,
-	env.ExtractDBConfig,
+	tool.ExtractServerConfig,
+	tool.ExtractDBConfig,
 )

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"airbnb-user-be/internal/pkg/http/server/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,7 @@ import (
 const Instance = "HTTP Server"
 
 type Options struct {
-	Config
+	config.Config
 	Router *gin.Engine
 }
 

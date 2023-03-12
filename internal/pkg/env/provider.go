@@ -1,8 +1,7 @@
 package env
 
 import (
-	"airbnb-user-be/internal/pkg/gorm"
-	httpServer "airbnb-user-be/internal/pkg/http/server"
+	"airbnb-user-be/internal/pkg/env/config"
 	"airbnb-user-be/internal/pkg/log"
 
 	"github.com/spf13/viper"
@@ -11,7 +10,7 @@ import (
 const Instance string = "Env"
 
 // global env declaration
-var CONFIG Config
+var CONFIG config.Config
 
 type EnvConfig struct {
 	Path     string
@@ -27,14 +26,14 @@ func ProvideDefaultEnvConf() EnvConfig {
 	}
 }
 
-func ProvideEnv(conf EnvConfig) Config {
+func ProvideEnv(conf EnvConfig) config.Config {
 	log.Event(Instance, "reading config...")
 
 	viper.AddConfigPath(conf.Path)
 	viper.SetConfigName(conf.FileName)
 	viper.SetConfigType(conf.Ext)
 
-	env := Config{}
+	env := config.Config{}
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal(Instance, "failed to read config", err)
 	}
@@ -46,12 +45,4 @@ func ProvideEnv(conf EnvConfig) Config {
 	CONFIG = env
 
 	return env
-}
-
-func ExtractServerConfig(config Config) httpServer.Config {
-	return config.HttpServer
-}
-
-func ExtractDBConfig(config Config) gorm.Config {
-	return config.DB
 }
