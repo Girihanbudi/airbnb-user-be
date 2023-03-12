@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type Currency struct {
+	Code   string `json:"code"`
+	Symbol string `json:"symbol"`
+	Name   string `json:"name"`
+}
+
 type DeleteLocale struct {
 	Code string `json:"code"`
 }

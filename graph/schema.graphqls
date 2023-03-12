@@ -4,12 +4,14 @@
 
 scalar Time
 
+# Metadata
 type Paging {
   limit: Int
   page: Int
   pageSize: Int
 }
 
+# Locale
 type Locale {
   code: String!
   name: String!
@@ -22,9 +24,17 @@ type Locale {
   updatedAt: Time!
 }
 
+# Currency
+type Currency {
+  code: String!
+  symbol: String!
+  name: String!
+}
+
 type Query {
   locales: [Locale!]!
   locale(code: String!): Locale
+  currencies: [Currency!]!
 }
 
 input NewLocale {
@@ -40,6 +50,8 @@ input NewLocale {
 input DeleteLocale {
   code: String!
 }
+
+# Currency
 
 type Mutation {
   createLocale(input: NewLocale!): Locale!
