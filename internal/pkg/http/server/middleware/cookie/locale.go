@@ -8,7 +8,6 @@ import (
 )
 
 func BindLocale(ctx *gin.Context) {
-
 	Locale, err := ctx.Request.Cookie(appcontext.LocaleCode)
 	if err != nil {
 		CreateLocale(ctx, nil)
@@ -37,9 +36,8 @@ func CreateLocale(ctx *gin.Context, val *string) {
 
 func SetLocale(ctx *gin.Context, val interface{}) {
 	if val == nil {
-		newVal := appcontext.LocaleDefault
-		val = &newVal
+		appcontext.SetFromGinRouter(ctx, appcontext.LocaleCode, appcontext.LocaleDefault)
+	} else {
+		appcontext.SetFromGinRouter(ctx, appcontext.LocaleCode, val)
 	}
-
-	appcontext.SetFromGinRouter(ctx, appcontext.LocaleCode, val)
 }
