@@ -8,13 +8,14 @@ import (
 )
 
 func BindLocale(ctx *gin.Context) {
-	Locale, err := ctx.Request.Cookie(appcontext.LocaleCode)
+	locale, err := ctx.Cookie(appcontext.LocaleCode)
 	if err != nil {
 		CreateLocale(ctx, nil)
 		SetLocale(ctx, nil)
 		return
 	}
-	SetLocale(ctx, Locale.Value)
+
+	SetLocale(ctx, locale)
 }
 
 func CreateLocale(ctx *gin.Context, val *string) {
@@ -23,14 +24,13 @@ func CreateLocale(ctx *gin.Context, val *string) {
 		val = &newVal
 	}
 
-	useSecureConnection := env.CONFIG.Stage != string(env.StageLocal)
 	ctx.SetCookie(
 		appcontext.LocaleCode,
 		*val, appcontext.LocaleDuration,
 		"/",
 		env.CONFIG.Domain,
-		useSecureConnection,
-		true,
+		env.CONFIG.Stage != string(env.StageLocal),
+		false,
 	)
 }
 
