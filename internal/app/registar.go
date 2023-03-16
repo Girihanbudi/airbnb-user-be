@@ -27,17 +27,9 @@ func graphqlHandler(localeHandler gqllocale.Handler, currencyHandler gqlcurrency
 	}
 }
 
-// Defining the Playground handler
-// func graphqlPlaygroundHandler() gin.HandlerFunc {
-// 	h := playground.Handler("GraphQL", "/query")
-// 	return func(c *gin.Context) {
-// 		h.ServeHTTP(c.Writer, c.Request)
-// 	}
-// }
-
 func (a App) RegisterHttpHandler() {
 	// register modules to graph solver handler
-	a.HttpServer.Router.POST("/graph", graphqlHandler(
+	a.HttpServer.Router.GET("/graph", graphqlHandler(
 		*a.LocaleGqlHandler,
 		*a.CurrencyGqlHandler,
 	))
