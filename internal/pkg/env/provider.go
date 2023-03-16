@@ -3,6 +3,7 @@ package env
 import (
 	"airbnb-user-be/internal/pkg/env/config"
 	"airbnb-user-be/internal/pkg/log"
+	"fmt"
 
 	"github.com/spf13/viper"
 )
@@ -42,6 +43,7 @@ func ProvideEnv(conf EnvConfig) config.Config {
 		log.Fatal(Instance, "failed to unmarshal config", err)
 	}
 
+	log.Event(Instance, fmt.Sprintf("using %s stage mode", env.Stage))
 	CONFIG = env
 
 	return env
