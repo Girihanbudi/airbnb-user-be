@@ -1,12 +1,19 @@
 package router
 
 import (
+	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/http/server/middleware/cookie"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ProvideRouter() *gin.Engine {
+	if env.CONFIG.Stage == string(env.StageLocal) {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	router := gin.New()
 	router.Use(gin.Recovery())
 
