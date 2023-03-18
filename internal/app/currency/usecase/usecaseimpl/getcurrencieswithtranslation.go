@@ -7,7 +7,6 @@ import (
 	"airbnb-user-be/internal/pkg/appcontext"
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
-	"fmt"
 )
 
 func (u Usecase) GetCurrenciesWithTranslation(ctx context.Context) (res response.GetCurrencyWithTranslation, err *stderror.StdError) {
@@ -18,7 +17,6 @@ func (u Usecase) GetCurrenciesWithTranslation(ctx context.Context) (res response
 		err = transutil.TranslateError(ctx, errpreset.CURRENCY_GET_500, clientLocale)
 		return
 	}
-	fmt.Println("currencies data ====", currencies)
 
 	res.Currencies = currencies
 
