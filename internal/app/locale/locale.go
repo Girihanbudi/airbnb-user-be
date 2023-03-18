@@ -2,8 +2,6 @@ package locale
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Locale struct {
@@ -17,17 +15,4 @@ type Locale struct {
 
 	CreatedAt time.Time `json:"created_at" gorm:"not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
-}
-
-func (l *Locale) BeforeCreate(tx *gorm.DB) (err error) {
-	now := time.Now()
-	l.CreatedAt = now
-	l.UpdatedAt = now
-
-	return
-}
-
-func (l *Locale) BeforeSave(tx *gorm.DB) (err error) {
-	l.UpdatedAt = time.Now()
-	return
 }
