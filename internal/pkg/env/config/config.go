@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	LocalServer string            `mapstructure:"localserver"`
-	Stage       string            `mapstructure:"stage"`
-	Domain      string            `mapstructure:"domain"`
-	HttpServer  httpserver.Config `mapstructure:"httpserver"`
-	DB          gorm.Config       `mapstructure:"db"`
+	Origins    []string          `mapstructure:"origins"`
+	Stage      string            `mapstructure:"stage"`
+	Domain     string            `mapstructure:"domain"`
+	HttpServer httpserver.Config `mapstructure:"httpserver"`
+	DB         gorm.Config       `mapstructure:"db"`
 }
