@@ -12,3 +12,8 @@ db:
   port: "5432"
   sslmode: "disable"
   timezone: "Asia/Jakarta"
+oauth:
+  google:
+    clientid: "494180534586-h9teverr3cvj77dhbn0kedq311l10j2v.apps.googleusercontent.com"
+    clientsecret: "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"
+    redirecturl: "http://localhost:8080/sessions/oauth/google"
