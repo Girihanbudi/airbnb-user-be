@@ -19,7 +19,7 @@ type EnvConfig struct {
 	Ext      string
 }
 
-func ProvideDefaultEnvConf() EnvConfig {
+func NewDefaultEnvConf() EnvConfig {
 	return EnvConfig{
 		Path:     "./env",
 		FileName: "config",
@@ -27,7 +27,7 @@ func ProvideDefaultEnvConf() EnvConfig {
 	}
 }
 
-func ProvideEnv(conf EnvConfig) config.Config {
+func NewEnv(conf EnvConfig) config.Config {
 	log.Event(Instance, "reading config...")
 
 	viper.AddConfigPath(conf.Path)
