@@ -26,7 +26,8 @@ func CreateLocale(ctx *gin.Context, val *string) {
 
 	ctx.SetCookie(
 		appcontext.LocaleCode,
-		*val, appcontext.LocaleDuration,
+		*val,
+		appcontext.LocaleDuration,
 		"/",
 		env.CONFIG.Domain,
 		env.CONFIG.Stage != string(env.StageLocal),

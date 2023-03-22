@@ -26,7 +26,8 @@ func CreateCurrency(ctx *gin.Context, val *string) {
 
 	ctx.SetCookie(
 		appcontext.CurrencyCode,
-		*val, appcontext.CurrencyDuration,
+		*val,
+		appcontext.CurrencyDuration,
 		"/",
 		env.CONFIG.Domain,
 		env.CONFIG.Stage != string(env.StageLocal),
