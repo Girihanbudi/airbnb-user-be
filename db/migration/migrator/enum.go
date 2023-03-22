@@ -7,6 +7,8 @@ const (
 	MigrationDown
 )
 
+var keys = []string{"up", "down"}
+
 func (m Migration) String() string {
-	return []string{"up", "down"}[m]
+	return keys[m]
 }
