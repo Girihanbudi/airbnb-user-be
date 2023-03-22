@@ -8,8 +8,8 @@ import (
 )
 
 var PackageSet = wire.NewSet(
-	router.ProvideRouter,
+	router.NewRouter,
 
 	wire.Struct(new(server.Options), "*"),
-	server.ProvideServer,
+	server.NewServer,
 )

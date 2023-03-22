@@ -15,7 +15,7 @@ type Engine struct {
 	config.Config
 }
 
-func ProvideORM(config config.Config) *Engine {
+func NewORM(config config.Config) *Engine {
 	ctx := context.Background()
 	engine := Engine{
 		Ctx:    &ctx,

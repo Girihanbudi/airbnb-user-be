@@ -25,7 +25,7 @@ import (
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	serviceApp, err := app.ProvideApp()
+	serviceApp, err := app.NewApp()
 	if err != nil {
 		log.Panic(err)
 	}

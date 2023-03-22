@@ -8,8 +8,8 @@ import (
 
 func TestSeedCurrencyTranslation(t *testing.T) {
 	t.Log("seeding currency translation...")
-	config := env.ProvideEnv(envConfig).DB
-	engine := gorm.ProvideORM(config)
+	config := env.NewEnv(envConfig).DB
+	engine := gorm.NewORM(config)
 	if err := SeedCurrencyTranslation(*engine.DB); err != nil {
 		t.Error("failed to seed currency translation", err)
 	}

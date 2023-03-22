@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ProvideRouter() *gin.Engine {
+func NewRouter() *gin.Engine {
 	if env.CONFIG.Stage == string(env.StageLocal) {
 		gin.SetMode(gin.DebugMode)
 	} else {

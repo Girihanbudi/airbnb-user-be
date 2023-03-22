@@ -12,6 +12,6 @@ type Handler struct {
 	Options
 }
 
-func ProvideCurrencyHandler(options Options) *Handler {
+func NewCurrencyHandler(options Options) *Handler {
 	return &Handler{options}
 }

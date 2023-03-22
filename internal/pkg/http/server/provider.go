@@ -20,6 +20,6 @@ type Server struct {
 	Options
 }
 
-func ProvideServer(options Options) *Server {
+func NewServer(options Options) *Server {
 	return &Server{Options: options}
 }

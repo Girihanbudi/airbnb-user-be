@@ -30,5 +30,5 @@ var usecaseSet = wire.NewSet(
 
 var apiSet = wire.NewSet(
 	wire.Struct(new(gql.Options), "*"),
-	gql.ProvideLocaleHandler,
+	gql.NewLocaleHandler,
 )

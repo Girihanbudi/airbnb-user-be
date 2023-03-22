@@ -7,5 +7,5 @@ import (
 )
 
 var PackageSet = wire.NewSet(
-	gorm.ProvideORM,
+	gorm.NewORM,
 )

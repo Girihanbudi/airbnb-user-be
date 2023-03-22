@@ -12,6 +12,6 @@ type Handler struct {
 	Options
 }
 
-func ProvideLocaleHandler(options Options) *Handler {
+func NewLocaleHandler(options Options) *Handler {
 	return &Handler{options}
 }
