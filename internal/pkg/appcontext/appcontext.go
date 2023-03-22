@@ -1,6 +1,8 @@
 package appcontext
 
-const day = 60 * 60 * 24
+const minute = 60
+const hour = minute * 60
+const day = hour * 24
 
 const (
 	LocaleCode     = "locale" // locale application context code
@@ -17,4 +19,11 @@ const (
 const (
 	OauthCode     = "oauth"   // oauth application context code
 	OauthDuration = 365 * day // expires in a week
+)
+
+const (
+	AccessTokenCode      = "at"        // access token application context code
+	AccessTokenDuration  = 15 * minute // expires in 15 minutes
+	RefreshTokenCode     = "rt"        // refresh token application context code
+	RefreshTokenDuration = 7 * day     // expires in a week
 )
