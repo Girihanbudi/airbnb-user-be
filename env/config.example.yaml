@@ -1,0 +1,19 @@
+stage:
+origins:
+domain:
+httpserver:
+  host:
+  port:
+db:
+  user:
+  password:
+  name:
+  host:
+  port:
+  sslmode:
+  timezone:
+oauth:
+  google:
+    clientid:
+    clientsecret:
+    redirecturl:

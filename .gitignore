@@ -8,3 +8,6 @@ pkg/*
 
 # goop - go package manager
 .vendor
+
+# ignore env
+env/config.yaml
