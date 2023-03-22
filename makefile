@@ -1,5 +1,5 @@
-.PHONY: wireapp
-wireapp:
+.PHONY: injectapp
+injectapp:
 	cd ./internal/app && wire
 
 .PHONY: documentation
