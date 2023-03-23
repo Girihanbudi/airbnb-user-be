@@ -2,10 +2,23 @@ package router
 
 import (
 	"airbnb-user-be/internal/pkg/env"
-	"airbnb-user-be/internal/pkg/http/server/middleware/cookie"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
+
+func DefaultCORSSetting() gin.HandlerFunc {
+
+	return cors.New(cors.Config{
+		AllowOrigins: env.CONFIG.Origins,
+		AllowMethods: []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowHeaders: []string{"Origin", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "accept", "Cache-Control", "X-Requested-With"},
+		// ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	})
+}
 
 func NewRouter() *gin.Engine {
 	if env.CONFIG.Stage == string(env.StageLocal) {
@@ -16,12 +29,6 @@ func NewRouter() *gin.Engine {
 
 	router := gin.New()
 	router.Use(gin.Recovery())
-
-	// GIN apply CORS setting
-	router.Use(CORSSetting())
-
-	// GIN bind all cookie
-	router.Use(cookie.BindAll())
 
 	return router
 }
