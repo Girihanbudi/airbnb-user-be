@@ -7,18 +7,21 @@
 package app
 
 import (
+	"airbnb-user-be/internal/app/auth/api/rest"
+	"airbnb-user-be/internal/app/auth/usecase/usecaseimpl"
 	gql2 "airbnb-user-be/internal/app/currency/api/gql"
 	repoimpl3 "airbnb-user-be/internal/app/currency/repo/repoimpl"
-	usecaseimpl2 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
+	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/locale/api/gql"
 	repoimpl2 "airbnb-user-be/internal/app/locale/repo/repoimpl"
-	"airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
+	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
+	"airbnb-user-be/internal/pkg/oauth/google"
 	"github.com/google/wire"
 )
 
@@ -28,51 +31,62 @@ import (
 
 // Injectors from wire.go:
 
-func ProvideApp() (*App, error) {
-	envConfig := env.ProvideDefaultEnvConf()
-	config := env.ProvideEnv(envConfig)
+func NewApp() (*App, error) {
+	config := env.ProvideEnv()
 	configConfig := tool.ExtractServerConfig(config)
-	engine := router.ProvideRouter()
+	engine := router.NewRouter()
 	options := server.Options{
 		Config: configConfig,
 		Router: engine,
 	}
-	serverServer := server.ProvideServer(options)
+	serverServer := server.NewServer(options)
 	config2 := tool.ExtractDBConfig(config)
-	gormEngine := gorm.ProvideORM(config2)
+	gormEngine := gorm.NewORM(config2)
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
 	repo := repoimpl.NewErrTranslationRepo(repoimplOptions)
+	config3 := tool.ExtractOauthGoogleConfig(config)
+	oauth := google.NewGoogleOauth(config3)
+	usecaseimplOptions := usecaseimpl.Options{
+		GoogleOauth: oauth,
+	}
+	usecase := usecaseimpl.NewAuthUsecase(usecaseimplOptions)
+	restOptions := rest.Options{
+		Router: engine,
+		Auth:   usecase,
+	}
+	handler := rest.NewAuthHandler(restOptions)
 	options2 := repoimpl2.Options{
 		Gorm: gormEngine,
 	}
 	repoimplRepo := repoimpl2.NewLocaleRepo(options2)
-	usecaseimplOptions := usecaseimpl.Options{
+	options3 := usecaseimpl2.Options{
 		LocaleRepo: repoimplRepo,
 	}
-	usecase := usecaseimpl.NewLocaleUsecase(usecaseimplOptions)
+	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options3)
 	gqlOptions := gql.Options{
-		Locale: usecase,
+		Locale: usecaseimplUsecase,
 	}
-	handler := gql.ProvideLocaleHandler(gqlOptions)
-	options3 := repoimpl3.Options{
+	gqlHandler := gql.NewLocaleHandler(gqlOptions)
+	options4 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
-	repo2 := repoimpl3.NewCurrencyRepo(options3)
-	options4 := usecaseimpl2.Options{
+	repo2 := repoimpl3.NewCurrencyRepo(options4)
+	options5 := usecaseimpl3.Options{
 		CurrencyRepo: repo2,
 	}
-	usecaseimplUsecase := usecaseimpl2.NewCurrencyUsecase(options4)
-	options5 := gql2.Options{
-		Currency: usecaseimplUsecase,
+	usecase2 := usecaseimpl3.NewCurrencyUsecase(options5)
+	options6 := gql2.Options{
+		Currency: usecase2,
 	}
-	gqlHandler := gql2.ProvideCurrencyHandler(options5)
+	handler2 := gql2.NewCurrencyHandler(options6)
 	appOptions := Options{
 		HttpServer:         serverServer,
 		Translation:        repo,
-		LocaleGqlHandler:   handler,
-		CurrencyGqlHandler: gqlHandler,
+		AuthHandler:        handler,
+		LocaleGqlHandler:   gqlHandler,
+		CurrencyGqlHandler: handler2,
 	}
 	app := &App{
 		Options: appOptions,
