@@ -28,7 +28,6 @@ func NewRouter() *gin.Engine {
 	}
 
 	router := gin.New()
-	router.Use(gin.Recovery())
 
 	return router
 }

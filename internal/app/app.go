@@ -1,14 +1,20 @@
 package app
 
 import (
+	"airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/http/server"
+	httprouter "airbnb-user-be/internal/pkg/http/server/router"
 	"airbnb-user-be/internal/pkg/log"
 	"airbnb-user-be/internal/pkg/validator"
 	"context"
 	"sync"
 
+	"github.com/gin-gonic/gin"
+
+	authrest "airbnb-user-be/internal/app/auth/api/rest"
 	currencygql "airbnb-user-be/internal/app/currency/api/gql"
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
+	"airbnb-user-be/internal/app/middleware/cookie"
 	translation "airbnb-user-be/internal/app/translation/repo"
 )
 
@@ -18,6 +24,7 @@ type Options struct {
 	HttpServer *server.Server
 
 	Translation        translation.IErrTranslation
+	AuthHandler        *authrest.Handler
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler
 }
@@ -37,6 +44,21 @@ func (a App) runModules(ctx context.Context) {
 
 	// init app validator
 	validator.InitValidator()
+
+	// init app cache
+	auth.InitAuthCache()
+
+	// recover from panic
+	a.HttpServer.Router.Use(gin.Recovery())
+
+	// GIN apply CORS setting
+	a.HttpServer.Router.Use(httprouter.DefaultCORSSetting())
+
+	// GIN bind all cookie
+	a.HttpServer.Router.Use(cookie.BindAll())
+
+	// Register all routes
+	a.registerHttpHandler()
 
 	go func() {
 		err := a.HttpServer.Start()

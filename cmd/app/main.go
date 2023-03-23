@@ -2,6 +2,7 @@ package main
 
 import (
 	"airbnb-user-be/internal/app"
+	"airbnb-user-be/internal/pkg/env"
 	"context"
 	"log"
 	"os"
@@ -23,14 +24,19 @@ import (
 
 // @securityDefinitions.basic BasicAuth
 func main() {
+	// init app environment
+	defaultEnvConfig := env.NewDefaultEnvConf()
+	env.InitEnv(defaultEnvConfig)
+
+	// create app context
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
+	// create service app
 	serviceApp, err := app.NewApp()
 	if err != nil {
 		log.Panic(err)
 	}
 
-	serviceApp.RegisterHttpHandler()
 	serviceApp.Run(ctx)
 	stop()
 }
