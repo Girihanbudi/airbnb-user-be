@@ -1,7 +1,7 @@
-package oauth
+package auth
 
 import (
-	"airbnb-user-be/internal/pkg/appcontext"
+	"airbnb-user-be/env/appcontext"
 	"airbnb-user-be/internal/pkg/env"
 	"crypto/rand"
 	"encoding/base64"
