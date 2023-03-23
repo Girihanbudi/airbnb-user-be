@@ -1,7 +1,7 @@
 package cookie
 
 import (
-	"airbnb-user-be/internal/pkg/appcontext"
+	"airbnb-user-be/env/appcontext"
 	"airbnb-user-be/internal/pkg/env"
 
 	"github.com/gin-gonic/gin"
