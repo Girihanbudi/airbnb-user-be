@@ -27,12 +27,15 @@ func graphqlHandler(localeHandler gqllocale.Handler, currencyHandler gqlcurrency
 	}
 }
 
-func (a App) RegisterHttpHandler() {
+func (a App) registerHttpHandler() {
+	// register auth handler
+	a.AuthHandler.RegisterApi()
+
 	// register modules to graph solver handler
 	a.HttpServer.Router.GET("/graph", graphqlHandler(
 		*a.LocaleGqlHandler,
 		*a.CurrencyGqlHandler,
 	))
-	// a.HttpServer.Router.GET("/", graphqlPlaygroundHandler())
+
 	a.HttpServer.Router.GET("/docs/*any", ginswagger.WrapHandler(swaggerfiles.Handler))
 }
