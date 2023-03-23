@@ -9,7 +9,7 @@ import (
 func TranslateError(ctx context.Context, code, localeCode string) (err *stderror.StdError) {
 	trans, getTransErr := repoimpl.ErrTranslationRepo.GetErrTranslation(ctx, code, localeCode)
 	if getTransErr != nil {
-		err = stderror.DEF_SERVER_500.ErrorMsg(getTransErr)
+		err = &stderror.DEF_SERVER_500
 		return
 	}
 	newErr := stderror.New(trans.HttpCode, trans.Code, trans.Message)
