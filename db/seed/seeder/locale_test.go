@@ -8,7 +8,8 @@ import (
 
 func TestSeedLocale(t *testing.T) {
 	t.Log("seeding locale...")
-	config := env.NewEnv(envConfig).DB
+	env.InitEnv(envConfig)
+	config := env.ProvideEnv().DB
 	engine := gorm.NewORM(config)
 	if err := SeedLocale(*engine.DB); err != nil {
 		t.Error("failed to seed locale", err)

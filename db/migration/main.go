@@ -18,7 +18,8 @@ func main() {
 	}
 
 	defaultEnvConfig := env.NewDefaultEnvConf()
-	config := env.NewEnv(defaultEnvConfig).DB
+	env.InitEnv(defaultEnvConfig)
+	config := env.ProvideEnv().DB
 	engine := gorm.NewORM(config)
 
 	switch *cmd {
