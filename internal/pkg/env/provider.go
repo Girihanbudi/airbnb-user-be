@@ -27,7 +27,7 @@ func NewDefaultEnvConf() EnvConfig {
 	}
 }
 
-func NewEnv(conf EnvConfig) config.Config {
+func InitEnv(conf EnvConfig) {
 	log.Event(Instance, "reading config...")
 
 	viper.AddConfigPath(conf.Path)
@@ -45,6 +45,8 @@ func NewEnv(conf EnvConfig) config.Config {
 
 	log.Event(Instance, fmt.Sprintf("using %s stage mode", env.Stage))
 	CONFIG = env
+}
 
-	return env
+func ProvideEnv() config.Config {
+	return CONFIG
 }

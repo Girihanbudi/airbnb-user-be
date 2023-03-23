@@ -8,8 +8,7 @@ import (
 )
 
 var PackageSet = wire.NewSet(
-	env.NewDefaultEnvConf,
-	env.NewEnv,
+	env.ProvideEnv,
 	tool.ExtractServerConfig,
 	tool.ExtractDBConfig,
 	tool.ExtractOauthGoogleConfig,
