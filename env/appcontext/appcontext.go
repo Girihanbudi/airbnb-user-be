@@ -27,3 +27,7 @@ const (
 	RefreshTokenCode     = "rt"        // refresh token application context code
 	RefreshTokenDuration = 7 * day     // expires in a week
 )
+
+const (
+	UserCode = "userid" // user id application context code
+)
