@@ -14,10 +14,9 @@ func Event(instance, msg string) {
 }
 
 func Fatal(instance, msg string, err error) {
-
-	log.WithField(key, instance).Fatal(msg, err.Error())
+	log.WithField(key, instance).Fatal(msg, ": ", err.Error())
 }
 
 func Error(instance, msg string, err error) {
-	log.WithField(key, instance).Errorln(msg, err.Error())
+	log.WithField(key, instance).Errorln(msg, ": ", err.Error())
 }
