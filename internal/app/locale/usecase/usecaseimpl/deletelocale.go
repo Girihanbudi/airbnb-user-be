@@ -19,7 +19,7 @@ func (u Usecase) DeleteLocale(ctx context.Context, cmd request.DeleteLocale) (er
 
 	deleteLocaleErr := u.LocaleRepo.DeleteLocale(ctx, cmd.Code)
 	if deleteLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_DELETE_500, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.LOCALE_DELETE_503, clientLocale)
 		return
 	}
 

@@ -30,7 +30,7 @@ func (u Usecase) CreateLocale(ctx context.Context, cmd request.CreateLocale) (er
 
 	createLocaleErr := u.LocaleRepo.CreateLocale(ctx, &locale)
 	if createLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_CREATE_500, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.LOCALE_CREATE_503, clientLocale)
 		return
 	}
 

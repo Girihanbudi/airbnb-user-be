@@ -19,7 +19,7 @@ func (u Usecase) UpdateLocale(ctx context.Context, cmd request.CreateLocale) (er
 
 	locale, getLocaleErr := u.LocaleRepo.GetLocale(ctx, cmd.Code)
 	if getLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_GET_500, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.LOCALE_GET_503, clientLocale)
 		return
 	}
 
@@ -31,7 +31,7 @@ func (u Usecase) UpdateLocale(ctx context.Context, cmd request.CreateLocale) (er
 
 	updateLocaleErr := u.LocaleRepo.UpdateLocale(ctx, locale)
 	if updateLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_UPDATE_500, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.LOCALE_UPDATE_503, clientLocale)
 		return
 	}
 
