@@ -10,12 +10,13 @@ import (
 	"airbnb-user-be/internal/app/auth/api/rest"
 	"airbnb-user-be/internal/app/auth/usecase/usecaseimpl"
 	gql2 "airbnb-user-be/internal/app/currency/api/gql"
-	repoimpl3 "airbnb-user-be/internal/app/currency/repo/repoimpl"
+	repoimpl4 "airbnb-user-be/internal/app/currency/repo/repoimpl"
 	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/locale/api/gql"
-	repoimpl2 "airbnb-user-be/internal/app/locale/repo/repoimpl"
+	repoimpl3 "airbnb-user-be/internal/app/locale/repo/repoimpl"
 	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
+	repoimpl2 "airbnb-user-be/internal/app/user/repo/repoimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
@@ -48,8 +49,18 @@ func NewApp() (*App, error) {
 	repo := repoimpl.NewErrTranslationRepo(repoimplOptions)
 	config3 := tool.ExtractOauthGoogleConfig(config)
 	oauth := google.NewGoogleOauth(config3)
+	options2 := repoimpl2.Options{
+		Gorm: gormEngine,
+	}
+	repoimplRepo := repoimpl2.NewUserRepo(options2)
+	options3 := repoimpl3.Options{
+		Gorm: gormEngine,
+	}
+	repo2 := repoimpl3.NewLocaleRepo(options3)
 	usecaseimplOptions := usecaseimpl.Options{
 		GoogleOauth: oauth,
+		UserRepo:    repoimplRepo,
+		LocaleRepo:  repo2,
 	}
 	usecase := usecaseimpl.NewAuthUsecase(usecaseimplOptions)
 	restOptions := rest.Options{
@@ -57,30 +68,26 @@ func NewApp() (*App, error) {
 		Auth:   usecase,
 	}
 	handler := rest.NewAuthHandler(restOptions)
-	options2 := repoimpl2.Options{
-		Gorm: gormEngine,
+	options4 := usecaseimpl2.Options{
+		LocaleRepo: repo2,
 	}
-	repoimplRepo := repoimpl2.NewLocaleRepo(options2)
-	options3 := usecaseimpl2.Options{
-		LocaleRepo: repoimplRepo,
-	}
-	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options3)
+	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options4)
 	gqlOptions := gql.Options{
 		Locale: usecaseimplUsecase,
 	}
 	gqlHandler := gql.NewLocaleHandler(gqlOptions)
-	options4 := repoimpl3.Options{
+	options5 := repoimpl4.Options{
 		Gorm: gormEngine,
 	}
-	repo2 := repoimpl3.NewCurrencyRepo(options4)
-	options5 := usecaseimpl3.Options{
-		CurrencyRepo: repo2,
+	repo3 := repoimpl4.NewCurrencyRepo(options5)
+	options6 := usecaseimpl3.Options{
+		CurrencyRepo: repo3,
 	}
-	usecase2 := usecaseimpl3.NewCurrencyUsecase(options5)
-	options6 := gql2.Options{
+	usecase2 := usecaseimpl3.NewCurrencyUsecase(options6)
+	options7 := gql2.Options{
 		Currency: usecase2,
 	}
-	handler2 := gql2.NewCurrencyHandler(options6)
+	handler2 := gql2.NewCurrencyHandler(options7)
 	appOptions := Options{
 		HttpServer:         serverServer,
 		Translation:        repo,
