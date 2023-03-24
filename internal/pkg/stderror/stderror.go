@@ -9,6 +9,7 @@ type StdError struct {
 	HttpCode     int    `json:"-"`
 	InternalCode string `json:"internalCode"`
 	Error        error  `json:"-"`
+	Message      string `json:"message,omitempty"`
 }
 
 func New(code int, internalCode string, errMsg ...any) StdError {
