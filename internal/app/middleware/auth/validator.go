@@ -14,16 +14,12 @@ import (
 
 func GinBindBearerAuthorization() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		clientLocale := ctx.Request.Context().Value(appcontext.LocaleCode).(string)
 		schema := "bearer"
 		value := ctx.GetHeader("Authorization")
-		if len(value) <= len(schema) {
-			err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_001, clientLocale)
-			stdresponse.GinMakeHttpResponseErr(ctx, err)
-			return
+		if len(value) > len(schema) {
+			appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, value)
 		}
 
-		appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, value)
 		ctx.Next()
 	}
 }
