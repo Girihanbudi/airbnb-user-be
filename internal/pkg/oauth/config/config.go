@@ -5,5 +5,6 @@ import (
 )
 
 type Config struct {
-	Google google.Config `mapstructure:"google"`
+	RedirectUrl string        `mapstructure:"redirecturl"`
+	Google      google.Config `mapstructure:"google"`
 }
