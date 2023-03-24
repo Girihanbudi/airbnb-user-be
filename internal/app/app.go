@@ -14,7 +14,8 @@ import (
 	authrest "airbnb-user-be/internal/app/auth/api/rest"
 	currencygql "airbnb-user-be/internal/app/currency/api/gql"
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
-	"airbnb-user-be/internal/app/middleware/cookie"
+	authmid "airbnb-user-be/internal/app/middleware/auth"
+	cookiemid "airbnb-user-be/internal/app/middleware/cookie"
 	translation "airbnb-user-be/internal/app/translation/repo"
 )
 
@@ -55,7 +56,11 @@ func (a App) runModules(ctx context.Context) {
 	a.HttpServer.Router.Use(httprouter.DefaultCORSSetting())
 
 	// GIN bind all cookie
-	a.HttpServer.Router.Use(cookie.BindAll())
+	a.HttpServer.Router.Use(cookiemid.BindAll())
+
+	// GIN bind access token if any
+	// bind access token in all route to adapt with graphql endpoint
+	a.HttpServer.Router.Use(authmid.GinBindBearerAuthorization())
 
 	// Register all routes
 	a.registerHttpHandler()
