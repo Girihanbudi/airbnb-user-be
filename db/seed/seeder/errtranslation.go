@@ -1,7 +1,11 @@
 package seeder
 
 import (
-	localeErr "airbnb-user-be/internal/app/locale/preset/error"
+	currencyerr "airbnb-user-be/internal/app/currency/preset/error"
+	localeerr "airbnb-user-be/internal/app/locale/preset/error"
+	middlewareerr "airbnb-user-be/internal/app/middleware/preset/error"
+	"net/http"
+
 	"airbnb-user-be/internal/app/translation"
 
 	"gorm.io/gorm"
@@ -10,20 +14,41 @@ import (
 func SeedErrTranslation(db gorm.DB) error {
 
 	data := []translation.ErrTranslation{
-		// En
-		MakeErrTranslation(localeErr.LOCALE_VAL_400, "en-US", 400, "Failed to validate request"),
-		MakeErrTranslation(localeErr.LOCALE_GET_404, "en-US", 404, "Locale record not found"),
-		MakeErrTranslation(localeErr.LOCALE_GET_500, "en-US", 500, "Internal server error"),
-		MakeErrTranslation(localeErr.LOCALE_CREATE_500, "en-US", 500, "Failed to create locale due to internal server error"),
-		MakeErrTranslation(localeErr.LOCALE_UPDATE_500, "en-US", 500, "Failed to update locale due to internal server error"),
-		MakeErrTranslation(localeErr.LOCALE_DELETE_500, "en-US", 500, "Failed to delete locale due to internal server error"),
-		// Id
-		MakeErrTranslation(localeErr.LOCALE_VAL_400, "id-ID", 400, "Gagal melakukan validasi request"),
-		MakeErrTranslation(localeErr.LOCALE_GET_404, "id-ID", 404, "Rekaman tidak ditemukan"),
-		MakeErrTranslation(localeErr.LOCALE_GET_500, "id-ID", 500, "Terjadi kesalahan server"),
-		MakeErrTranslation(localeErr.LOCALE_CREATE_500, "id-ID", 500, "Gagal membuat locale karena terjadi kesalahan server"),
-		MakeErrTranslation(localeErr.LOCALE_UPDATE_500, "id-ID", 500, "Gagal mengupdate locale karena terjadi kesalahan server"),
-		MakeErrTranslation(localeErr.LOCALE_DELETE_500, "id-ID", 500, "Gagal menghapus locale karena terjadi kesalahan server"),
+		// En translation
+		// Middleware
+		MakeErrTranslation(middlewareerr.AUTH_MID_001, "en-US", http.StatusUnauthorized, "Authorization not found"),
+		// Locale
+		MakeErrTranslation(localeerr.LOCALE_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
+		MakeErrTranslation(localeerr.LOCALE_GET_404, "en-US", http.StatusNotFound, "Locale record not found"),
+		MakeErrTranslation(localeerr.LOCALE_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
+		MakeErrTranslation(localeerr.LOCALE_CREATE_503, "en-US", http.StatusServiceUnavailable, "Failed to create locale due to internal server error"),
+		MakeErrTranslation(localeerr.LOCALE_UPDATE_503, "en-US", http.StatusServiceUnavailable, "Failed to update locale due to internal server error"),
+		MakeErrTranslation(localeerr.LOCALE_DELETE_503, "en-US", http.StatusServiceUnavailable, "Failed to delete locale due to internal server error"),
+		// Currency
+		MakeErrTranslation(currencyerr.CURRENCY_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
+		MakeErrTranslation(currencyerr.CURRENCY_GET_404, "en-US", http.StatusNotFound, "Currency record not found"),
+		MakeErrTranslation(currencyerr.CURRENCY_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
+		MakeErrTranslation(currencyerr.CURRENCY_CREATE_503, "en-US", http.StatusServiceUnavailable, "Failed to create currency due to internal server error"),
+		MakeErrTranslation(currencyerr.CURRENCY_UPDATE_503, "en-US", http.StatusServiceUnavailable, "Failed to update currency due to internal server error"),
+		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "en-US", http.StatusServiceUnavailable, "Failed to delete currency due to internal server error"),
+
+		// Id translation
+		// Middleware
+		MakeErrTranslation(middlewareerr.AUTH_MID_001, "id-ID", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
+		// Locale
+		MakeErrTranslation(localeerr.LOCALE_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
+		MakeErrTranslation(localeerr.LOCALE_GET_404, "id-ID", http.StatusNotFound, "Rekaman lokal tidak ditemukan"),
+		MakeErrTranslation(localeerr.LOCALE_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
+		MakeErrTranslation(localeerr.LOCALE_CREATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal membuat lokal karena terjadi kesalahan server"),
+		MakeErrTranslation(localeerr.LOCALE_UPDATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal mengupdate lokal karena terjadi kesalahan server"),
+		MakeErrTranslation(localeerr.LOCALE_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus lokal karena terjadi kesalahan server"),
+		// Currency
+		MakeErrTranslation(currencyerr.CURRENCY_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
+		MakeErrTranslation(currencyerr.CURRENCY_GET_404, "id-ID", http.StatusNotFound, "Rekaman mata uang tidak ditemukan"),
+		MakeErrTranslation(currencyerr.CURRENCY_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
+		MakeErrTranslation(currencyerr.CURRENCY_CREATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal membuat mata uang karena terjadi kesalahan server"),
+		MakeErrTranslation(currencyerr.CURRENCY_UPDATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal mengupdate mata uang karena terjadi kesalahan server"),
+		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus mata uang karena terjadi kesalahan server"),
 	}
 
 	return db.CreateInBatches(&data, batchSize).Error
