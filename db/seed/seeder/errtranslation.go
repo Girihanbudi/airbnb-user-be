@@ -6,14 +6,14 @@ import (
 	middlewareerr "airbnb-user-be/internal/app/middleware/preset/error"
 	"net/http"
 
-	"airbnb-user-be/internal/app/translation"
+	translationmodule "airbnb-user-be/internal/app/translation"
 
 	"gorm.io/gorm"
 )
 
 func SeedErrTranslation(db gorm.DB) error {
 
-	data := []translation.ErrTranslation{
+	data := []translationmodule.ErrTranslation{
 		// En translation
 		// Middleware
 		MakeErrTranslation(middlewareerr.AUTH_MID_001, "en-US", http.StatusUnauthorized, "Authorization not found"),
@@ -51,11 +51,22 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus mata uang karena terjadi kesalahan server"),
 	}
 
+	var errTranslationRecords []translationmodule.ErrTranslation
+	if err := db.Find(&errTranslationRecords).Error; err != nil {
+		return err
+	}
+
+	if len(errTranslationRecords) > 0 {
+		if err := db.Delete(&errTranslationRecords).Error; err != nil {
+			return err
+		}
+	}
+
 	return db.CreateInBatches(&data, batchSize).Error
 }
 
-func MakeErrTranslation(code, localeCode string, httpCode int, message string) translation.ErrTranslation {
-	return translation.ErrTranslation{
+func MakeErrTranslation(code, localeCode string, httpCode int, message string) translationmodule.ErrTranslation {
+	return translationmodule.ErrTranslation{
 		Code:       code,
 		LocaleCode: localeCode,
 		HttpCode:   httpCode,
