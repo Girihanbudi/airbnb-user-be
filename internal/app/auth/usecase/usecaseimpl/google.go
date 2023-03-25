@@ -4,7 +4,7 @@ import (
 	"airbnb-user-be/env/appcontext"
 	module "airbnb-user-be/internal/app/auth"
 	usermodule "airbnb-user-be/internal/app/user"
-	"airbnb-user-be/internal/pkg/cache/auth"
+	authcache "airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/codegenerator"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/jwt"
@@ -19,11 +19,6 @@ import (
 )
 
 func (u Usecase) ContinueWithGoogle(ctx gin.Context) {
-	if _, ok := ctx.Request.Context().Value(appcontext.AccessTokenCode).(string); ok {
-		ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
-		return
-	}
-
 	// Create oauthState cookie
 	oauthState := codegenerator.RandomEncodedBytes(16)
 	// appcontext.SetFromGinRouter(&ctx, appcontext.OauthCode, oauthState)
@@ -46,13 +41,13 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 	oauthState, _ := ctx.Cookie(appcontext.OauthCode)
 
 	if ctx.Request.FormValue("state") != oauthState {
-		ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
+		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 		return
 	}
 
 	data, err := u.extractGoogleUserData(ctx.Request.FormValue("code"))
 	if err != nil {
-		ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
+		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 		return
 	}
 
@@ -71,7 +66,7 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 		// get locale list for references
 		locales, err := u.LocaleRepo.GetLocales(reqCtx)
 		if err != nil {
-			ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
+			ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 		}
 
 		// create user default setting
@@ -90,24 +85,27 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 		}
 		// otherwise using current locale
 		if !isLocaleFound {
-			userDefaultSetting.Locale = reqCtx.Value(appcontext.LocaleCode).(string)
-			userDefaultSetting.Currency = reqCtx.Value(appcontext.CurrencyCode).(string)
+			userDefaultSetting.Locale = appcontext.GetLocale(reqCtx)
+			userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
 		}
 		user.DefaultSetting = userDefaultSetting
 
 		// insert new user to database
 		err = u.UserRepo.CreateUser(ctx.Request.Context(), &user)
 		if err != nil {
-			ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
+			ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 		}
 
 	}
 
 	atKey, err := gonanoid.New()
 	if err != nil {
-		ctx.Redirect(http.StatusTemporaryRedirect, env.CONFIG.Oauth.RedirectUrl)
+		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 	}
-	auth.Cache.Set(atKey, user.Id, appcontext.AccessTokenDuration).Result()
+
+	if err := authcache.Set(atKey, user.Id, appcontext.AccessTokenDuration); err != nil {
+		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	}
 
 	claims := jwt.MapClaims{}
 	claims["jti"] = atKey
@@ -115,14 +113,16 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 
 	// set user cookie
 	ctx.SetCookie(
-		appcontext.CurrencyCode,
+		appcontext.AccessTokenCode,
 		*at,
-		appcontext.CurrencyDuration,
+		appcontext.AccessTokenDuration,
 		"/",
 		env.CONFIG.Domain,
 		true,
 		true,
 	)
+
+	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 }
 
 func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserInfo, err error) {
