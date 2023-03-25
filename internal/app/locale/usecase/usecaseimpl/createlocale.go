@@ -11,7 +11,7 @@ import (
 )
 
 func (u Usecase) CreateLocale(ctx context.Context, cmd request.CreateLocale) (err *stderror.StdError) {
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
 		err = transutil.TranslateError(ctx, errpreset.LOCALE_VAL_400, clientLocale)

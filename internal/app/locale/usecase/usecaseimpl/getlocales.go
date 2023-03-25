@@ -10,7 +10,7 @@ import (
 )
 
 func (u Usecase) GetLocales(ctx context.Context) (res response.GetLocales, err *stderror.StdError) {
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
+	clientLocale := appcontext.GetLocale(ctx)
 
 	locales, getLocalesErr := u.LocaleRepo.GetLocales(ctx)
 	if getLocalesErr != nil {

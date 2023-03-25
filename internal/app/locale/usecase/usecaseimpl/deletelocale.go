@@ -10,7 +10,7 @@ import (
 )
 
 func (u Usecase) DeleteLocale(ctx context.Context, cmd request.DeleteLocale) (err *stderror.StdError) {
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
 		err = transutil.TranslateError(ctx, errpreset.LOCALE_VAL_400, clientLocale)

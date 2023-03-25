@@ -10,7 +10,7 @@ import (
 )
 
 func (u Usecase) GetCurrenciesWithTranslation(ctx context.Context) (res response.GetCurrencyWithTranslation, err *stderror.StdError) {
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
+	clientLocale := appcontext.GetLocale(ctx)
 
 	currencies, getCurrenciesErr := u.CurrencyRepo.GetCurrenciesWithTranslation(ctx, clientLocale)
 	if getCurrenciesErr != nil {
