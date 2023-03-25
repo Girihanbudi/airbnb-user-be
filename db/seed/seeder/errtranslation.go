@@ -17,6 +17,8 @@ func SeedErrTranslation(db gorm.DB) error {
 		// En translation
 		// Middleware
 		MakeErrTranslation(middlewareerr.AUTH_MID_001, "en-US", http.StatusUnauthorized, "Authorization not found"),
+		MakeErrTranslation(middlewareerr.AUTH_MID_002, "en-US", http.StatusUnauthorized, "Token is not valid"),
+		MakeErrTranslation(middlewareerr.AUTH_MID_003, "en-US", http.StatusForbidden, "User already login"),
 		// Locale
 		MakeErrTranslation(localeerr.LOCALE_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
 		MakeErrTranslation(localeerr.LOCALE_GET_404, "en-US", http.StatusNotFound, "Locale record not found"),
@@ -35,6 +37,8 @@ func SeedErrTranslation(db gorm.DB) error {
 		// Id translation
 		// Middleware
 		MakeErrTranslation(middlewareerr.AUTH_MID_001, "id-ID", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
+		MakeErrTranslation(middlewareerr.AUTH_MID_002, "id-ID", http.StatusUnauthorized, "Token tidak valid"),
+		MakeErrTranslation(middlewareerr.AUTH_MID_003, "id-ID", http.StatusForbidden, "User already login"),
 		// Locale
 		MakeErrTranslation(localeerr.LOCALE_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
 		MakeErrTranslation(localeerr.LOCALE_GET_404, "id-ID", http.StatusNotFound, "Rekaman lokal tidak ditemukan"),
