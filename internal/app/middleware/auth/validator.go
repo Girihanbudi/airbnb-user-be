@@ -4,7 +4,7 @@ import (
 	"airbnb-user-be/env/appcontext"
 	errpreset "airbnb-user-be/internal/app/middleware/preset/error"
 	transutil "airbnb-user-be/internal/app/translation/util"
-	"airbnb-user-be/internal/pkg/cache/auth"
+	authcache "airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/jwt"
 	stdresponse "airbnb-user-be/internal/pkg/stdresponse/rest"
 	"context"
@@ -14,10 +14,11 @@ import (
 
 func GinBindBearerAuthorization() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		schema := "bearer"
+		schema := "Bearer"
+		minKeyLength := len(schema) + 1
 		value := ctx.GetHeader("Authorization")
-		if len(value) > len(schema) {
-			appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, value)
+		if len(value) > minKeyLength {
+			appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, value[minKeyLength:])
 		}
 
 		ctx.Next()
@@ -25,14 +26,20 @@ func GinBindBearerAuthorization() gin.HandlerFunc {
 }
 
 func GqlValidateJwtToken(ctx context.Context) (err error) {
-	accessToken := ctx.Value(appcontext.AccessTokenCode).(string)
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
-	if accessToken == "" {
+	accessToken := appcontext.GetAccessToken(ctx)
+	clientLocale := appcontext.GetLocale(ctx)
+	if accessToken == nil {
 		err := transutil.TranslateError(ctx, errpreset.AUTH_MID_001, clientLocale)
 		return err.Error
 	}
-	claims := *jwt.ExtractTokenMetadata(accessToken)
-	userId, _ := auth.Cache.Get(claims["jti"].(string)).Result()
+	tokenMetadata := jwt.ExtractTokenMetadata(*accessToken)
+	if tokenMetadata == nil {
+		err := transutil.TranslateError(ctx, errpreset.AUTH_MID_002, clientLocale)
+		return err.Error
+	}
+
+	claims := *tokenMetadata
+	userId, _ := authcache.Get(claims["jti"].(string))
 	if userId == "" {
 		err := transutil.TranslateError(ctx, errpreset.AUTH_MID_001, clientLocale)
 		return err.Error
@@ -44,15 +51,23 @@ func GqlValidateJwtToken(ctx context.Context) (err error) {
 }
 
 func GinValidateJwtToken(ctx *gin.Context) {
-	accessToken := ctx.Value(appcontext.AccessTokenCode).(string)
-	clientLocale := ctx.Value(appcontext.LocaleCode).(string)
-	if accessToken == "" {
+	accessToken := appcontext.GetAccessToken(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	if accessToken == nil {
 		err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_001, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
-	claims := *jwt.ExtractTokenMetadata(accessToken)
-	userId, _ := auth.Cache.Get(claims["jti"].(string)).Result()
+
+	tokenMetadata := jwt.ExtractTokenMetadata(*accessToken)
+	if tokenMetadata == nil {
+		err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_002, clientLocale)
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	claims := *tokenMetadata
+	userId, _ := authcache.Get(claims["jti"].(string))
 	if userId == "" {
 		err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_001, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
@@ -60,6 +75,18 @@ func GinValidateJwtToken(ctx *gin.Context) {
 	}
 
 	appcontext.SetFromGinRouter(ctx, appcontext.UserCode, userId)
+
+	ctx.Next()
+}
+
+func GinValidateNoJwtTokenFound(ctx *gin.Context) {
+	accessToken := appcontext.GetAccessToken(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	if accessToken != nil {
+		err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_003, clientLocale)
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
 
 	ctx.Next()
 }
