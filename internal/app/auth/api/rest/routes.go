@@ -1,11 +1,11 @@
 package rest
 
+import authmid "airbnb-user-be/internal/app/middleware/auth"
+
 func (h Handler) RegisterApi() {
 	sessions := h.Router.Group("/sessions")
 	{
-		sessions.GET("/google", h.ContinueWithGoogle)
-		// sessions.POST("/email", r.ContinueWithEmail)
-		// sessions.POST("/phone", r.ContinueWithPhoneNumber)
+		sessions.GET("/google", authmid.GinValidateNoJwtTokenFound, h.ContinueWithGoogle)
 
 		oauth := sessions.Group("/oauth")
 		{
