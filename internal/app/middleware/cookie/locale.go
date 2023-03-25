@@ -3,6 +3,7 @@ package cookie
 import (
 	"airbnb-user-be/env/appcontext"
 	"airbnb-user-be/internal/pkg/env"
+	"airbnb-user-be/internal/pkg/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,8 @@ func CreateLocale(ctx *gin.Context, val *string) {
 		newVal := appcontext.LocaleDefault
 		val = &newVal
 	}
+
+	ctx.SetSameSite(http.DefaultSameSite())
 
 	ctx.SetCookie(
 		appcontext.LocaleCode,
