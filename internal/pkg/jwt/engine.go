@@ -18,7 +18,7 @@ func GenerateToken(creds map[string]interface{}, duration int) *string {
 		return nil
 	}
 
-	expirationTime := time.Now().Add(time.Duration(duration))
+	expirationTime := time.Now().Add(time.Duration(duration / 60 * int(time.Minute)))
 
 	claims["jti"] = tokenId                            // token unique id
 	claims["iss"] = env.CONFIG.Domain                  // issuer
@@ -44,7 +44,6 @@ func GenerateToken(creds map[string]interface{}, duration int) *string {
 }
 
 func ExtractTokenMetadata(token string) *jwt.MapClaims {
-
 	jwtToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unknown signing method")
@@ -60,5 +59,6 @@ func ExtractTokenMetadata(token string) *jwt.MapClaims {
 	if !ok {
 		return nil
 	}
+
 	return &claims
 }
