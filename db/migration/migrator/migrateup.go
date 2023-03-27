@@ -1,6 +1,7 @@
 package migration
 
 import (
+	countrymodule "airbnb-user-be/internal/app/country"
 	currencymodule "airbnb-user-be/internal/app/currency"
 	localemodule "airbnb-user-be/internal/app/locale"
 	translationmodule "airbnb-user-be/internal/app/translation"
@@ -14,6 +15,7 @@ import (
 func MigrateUp(db gorm.DB) {
 	models := []interface{}{
 		&localemodule.Locale{},
+		&countrymodule.Country{},
 		&translationmodule.ErrTranslation{},
 		&currencymodule.Currency{},
 		&currencymodule.CurrencyTranslation{},
