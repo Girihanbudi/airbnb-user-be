@@ -10,6 +10,7 @@ import (
 	oauth "airbnb-user-be/internal/pkg/oauth/wire"
 
 	auth "airbnb-user-be/internal/app/auth/wire"
+	country "airbnb-user-be/internal/app/country/wire"
 	currency "airbnb-user-be/internal/app/currency/wire"
 	locale "airbnb-user-be/internal/app/locale/wire"
 	translation "airbnb-user-be/internal/app/translation/wire"
@@ -34,6 +35,7 @@ func NewApp() (*App, error) {
 			AppSet,
 
 			user.ModuleSet,
+			country.ModuleSet,
 			auth.ModuleSet,
 			translation.ModuleSet,
 			locale.ModuleSet,

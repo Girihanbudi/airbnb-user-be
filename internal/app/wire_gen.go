@@ -8,15 +8,18 @@ package app
 
 import (
 	"airbnb-user-be/internal/app/auth/api/rest"
-	"airbnb-user-be/internal/app/auth/usecase/usecaseimpl"
-	gql2 "airbnb-user-be/internal/app/currency/api/gql"
-	repoimpl4 "airbnb-user-be/internal/app/currency/repo/repoimpl"
-	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
-	"airbnb-user-be/internal/app/locale/api/gql"
-	repoimpl3 "airbnb-user-be/internal/app/locale/repo/repoimpl"
-	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
+	usecaseimpl2 "airbnb-user-be/internal/app/auth/usecase/usecaseimpl"
+	"airbnb-user-be/internal/app/country/api/gql"
+	repoimpl2 "airbnb-user-be/internal/app/country/repo/repoimpl"
+	"airbnb-user-be/internal/app/country/usecase/usecaseimpl"
+	gql3 "airbnb-user-be/internal/app/currency/api/gql"
+	repoimpl5 "airbnb-user-be/internal/app/currency/repo/repoimpl"
+	usecaseimpl4 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
+	gql2 "airbnb-user-be/internal/app/locale/api/gql"
+	repoimpl4 "airbnb-user-be/internal/app/locale/repo/repoimpl"
+	usecaseimpl3 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
-	repoimpl2 "airbnb-user-be/internal/app/user/repo/repoimpl"
+	repoimpl3 "airbnb-user-be/internal/app/user/repo/repoimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
@@ -47,51 +50,64 @@ func NewApp() (*App, error) {
 		Gorm: gormEngine,
 	}
 	repo := repoimpl.NewErrTranslationRepo(repoimplOptions)
-	config3 := tool.ExtractOauthGoogleConfig(config)
-	oauth := google.NewGoogleOauth(config3)
 	options2 := repoimpl2.Options{
 		Gorm: gormEngine,
 	}
-	repoimplRepo := repoimpl2.NewUserRepo(options2)
+	repoimplRepo := repoimpl2.NewCountryRepo(options2)
+	usecaseimplOptions := usecaseimpl.Options{
+		CountryRepo: repoimplRepo,
+	}
+	usecase := usecaseimpl.NewCountryUsecase(usecaseimplOptions)
+	gqlOptions := gql.Options{
+		Country: usecase,
+	}
+	handler := gql.NewCountryHandler(gqlOptions)
+	config3 := tool.ExtractOauthGoogleConfig(config)
+	oauth := google.NewGoogleOauth(config3)
 	options3 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
-	repo2 := repoimpl3.NewLocaleRepo(options3)
-	usecaseimplOptions := usecaseimpl.Options{
-		GoogleOauth: oauth,
-		UserRepo:    repoimplRepo,
-		LocaleRepo:  repo2,
-	}
-	usecase := usecaseimpl.NewAuthUsecase(usecaseimplOptions)
-	restOptions := rest.Options{
-		Router: engine,
-		Auth:   usecase,
-	}
-	handler := rest.NewAuthHandler(restOptions)
-	options4 := usecaseimpl2.Options{
-		LocaleRepo: repo2,
-	}
-	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options4)
-	gqlOptions := gql.Options{
-		Locale: usecaseimplUsecase,
-	}
-	gqlHandler := gql.NewLocaleHandler(gqlOptions)
-	options5 := repoimpl4.Options{
+	repo2 := repoimpl3.NewUserRepo(options3)
+	options4 := repoimpl4.Options{
 		Gorm: gormEngine,
 	}
-	repo3 := repoimpl4.NewCurrencyRepo(options5)
+	repo3 := repoimpl4.NewLocaleRepo(options4)
+	options5 := usecaseimpl2.Options{
+		GoogleOauth: oauth,
+		UserRepo:    repo2,
+		LocaleRepo:  repo3,
+	}
+	usecaseimplUsecase := usecaseimpl2.NewAuthUsecase(options5)
+	restOptions := rest.Options{
+		Router: engine,
+		Auth:   usecaseimplUsecase,
+	}
+	restHandler := rest.NewAuthHandler(restOptions)
 	options6 := usecaseimpl3.Options{
-		CurrencyRepo: repo3,
+		LocaleRepo: repo3,
 	}
-	usecase2 := usecaseimpl3.NewCurrencyUsecase(options6)
+	usecase2 := usecaseimpl3.NewLocaleUsecase(options6)
 	options7 := gql2.Options{
-		Currency: usecase2,
+		Locale: usecase2,
 	}
-	handler2 := gql2.NewCurrencyHandler(options7)
+	gqlHandler := gql2.NewLocaleHandler(options7)
+	options8 := repoimpl5.Options{
+		Gorm: gormEngine,
+	}
+	repo4 := repoimpl5.NewCurrencyRepo(options8)
+	options9 := usecaseimpl4.Options{
+		CurrencyRepo: repo4,
+	}
+	usecase3 := usecaseimpl4.NewCurrencyUsecase(options9)
+	options10 := gql3.Options{
+		Currency: usecase3,
+	}
+	handler2 := gql3.NewCurrencyHandler(options10)
 	appOptions := Options{
 		HttpServer:         serverServer,
 		Translation:        repo,
-		AuthHandler:        handler,
+		CountryHandler:     handler,
+		AuthHandler:        restHandler,
 		LocaleGqlHandler:   gqlHandler,
 		CurrencyGqlHandler: handler2,
 	}
