@@ -11,6 +11,15 @@ type Paging {
   pageSize: Int
 }
 
+# Country
+type Country {
+  iso: String!
+  iso_3: String
+  name: String!
+  numCode: Int
+  phoneCode: Int!
+}
+
 # Locale
 type Locale {
   code: String!
@@ -32,6 +41,7 @@ type Currency {
 }
 
 type Query {
+  countries(limit: Int, page: Int): [Country!]!
   locales: [Locale!]!
   locale(code: String!): Locale
   currencies: [Currency!]!

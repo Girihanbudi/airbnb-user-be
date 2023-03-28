@@ -1,6 +1,7 @@
 package graph
 
 import (
+	country "airbnb-user-be/internal/app/country/api/gql"
 	currency "airbnb-user-be/internal/app/currency/api/gql"
 	locale "airbnb-user-be/internal/app/locale/api/gql"
 )
@@ -10,6 +11,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
+	Country  country.Handler
 	Locale   locale.Handler
 	Currency currency.Handler
 }

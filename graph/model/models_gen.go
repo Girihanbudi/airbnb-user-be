@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+type Country struct {
+	Iso       string  `json:"iso"`
+	Iso3      *string `json:"iso_3"`
+	Name      string  `json:"name"`
+	NumCode   *int    `json:"numCode"`
+	PhoneCode int     `json:"phoneCode"`
+}
+
 type Currency struct {
 	Code   string `json:"code"`
 	Symbol string `json:"symbol"`
