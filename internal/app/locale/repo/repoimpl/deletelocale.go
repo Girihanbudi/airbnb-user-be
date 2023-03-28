@@ -1,11 +1,11 @@
 package repoimpl
 
 import (
-	"airbnb-user-be/internal/app/locale"
+	module "airbnb-user-be/internal/app/locale"
 	"context"
 )
 
 func (r Repo) DeleteLocale(ctx context.Context, code string) (err error) {
-	err = r.Gorm.DB.Delete(&locale.Locale{}, code).Error
+	err = r.Gorm.DB.Delete(&module.Locale{}, code).Error
 	return
 }
