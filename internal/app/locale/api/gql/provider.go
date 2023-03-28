@@ -1,11 +1,11 @@
 package gql
 
 import (
-	locale "airbnb-user-be/internal/app/locale/usecase"
+	"airbnb-user-be/internal/app/locale/usecase"
 )
 
 type Options struct {
-	Locale locale.ILocale
+	Locale usecase.ILocale
 }
 
 type Handler struct {

@@ -1,11 +1,11 @@
 package gql
 
 import (
-	currency "airbnb-user-be/internal/app/currency/usecase"
+	"airbnb-user-be/internal/app/currency/usecase"
 )
 
 type Options struct {
-	Currency currency.ICurrency
+	Currency usecase.ICurrency
 }
 
 type Handler struct {
