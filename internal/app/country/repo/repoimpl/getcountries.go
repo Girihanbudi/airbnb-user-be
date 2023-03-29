@@ -10,6 +10,7 @@ func (r Repo) GetCountries(ctx context.Context, paging *pagination.SQLPaging) (c
 
 	err = r.Gorm.DB.
 		Scopes(pagination.GormPaginate(&module.Country{}, paging, r.Gorm.DB)).
+		Where("phone_code != ?", 0).
 		Find(&countries).Error
 
 	return
