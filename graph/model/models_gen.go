@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+type Countries struct {
+	Data []*Country  `json:"data"`
+	Meta *Pagination `json:"meta"`
+}
+
 type Country struct {
 	Iso       string  `json:"iso"`
 	Iso3      *string `json:"iso_3"`
@@ -46,7 +51,7 @@ type NewLocale struct {
 	Iso639_1 *string `json:"iso639_1"`
 }
 
-type Paging struct {
+type Pagination struct {
 	Limit    *int `json:"limit"`
 	Page     *int `json:"page"`
 	PageSize *int `json:"pageSize"`

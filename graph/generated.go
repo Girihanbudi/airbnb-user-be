@@ -45,6 +45,11 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Countries struct {
+		Data func(childComplexity int) int
+		Meta func(childComplexity int) int
+	}
+
 	Country struct {
 		Iso       func(childComplexity int) int
 		Iso3      func(childComplexity int) int
@@ -76,7 +81,7 @@ type ComplexityRoot struct {
 		RemoveLocale func(childComplexity int, input model.DeleteLocale) int
 	}
 
-	Paging struct {
+	Pagination struct {
 		Limit    func(childComplexity int) int
 		Page     func(childComplexity int) int
 		PageSize func(childComplexity int) int
@@ -95,7 +100,7 @@ type MutationResolver interface {
 	RemoveLocale(ctx context.Context, input model.DeleteLocale) (*model.Locale, error)
 }
 type QueryResolver interface {
-	Countries(ctx context.Context, limit *int, page *int) ([]*model.Country, error)
+	Countries(ctx context.Context, limit *int, page *int) (*model.Countries, error)
 	Locales(ctx context.Context) ([]*model.Locale, error)
 	Locale(ctx context.Context, code string) (*model.Locale, error)
 	Currencies(ctx context.Context) ([]*model.Currency, error)
@@ -115,6 +120,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Countries.data":
+		if e.complexity.Countries.Data == nil {
+			break
+		}
+
+		return e.complexity.Countries.Data(childComplexity), true
+
+	case "Countries.meta":
+		if e.complexity.Countries.Meta == nil {
+			break
+		}
+
+		return e.complexity.Countries.Meta(childComplexity), true
 
 	case "Country.iso":
 		if e.complexity.Country.Iso == nil {
@@ -259,26 +278,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveLocale(childComplexity, args["input"].(model.DeleteLocale)), true
 
-	case "Paging.limit":
-		if e.complexity.Paging.Limit == nil {
+	case "Pagination.limit":
+		if e.complexity.Pagination.Limit == nil {
 			break
 		}
 
-		return e.complexity.Paging.Limit(childComplexity), true
+		return e.complexity.Pagination.Limit(childComplexity), true
 
-	case "Paging.page":
-		if e.complexity.Paging.Page == nil {
+	case "Pagination.page":
+		if e.complexity.Pagination.Page == nil {
 			break
 		}
 
-		return e.complexity.Paging.Page(childComplexity), true
+		return e.complexity.Pagination.Page(childComplexity), true
 
-	case "Paging.pageSize":
-		if e.complexity.Paging.PageSize == nil {
+	case "Pagination.pageSize":
+		if e.complexity.Pagination.PageSize == nil {
 			break
 		}
 
-		return e.complexity.Paging.PageSize(childComplexity), true
+		return e.complexity.Pagination.PageSize(childComplexity), true
 
 	case "Query.countries":
 		if e.complexity.Query.Countries == nil {
@@ -528,6 +547,111 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Countries_data(ctx context.Context, field graphql.CollectedField, obj *model.Countries) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Countries_data(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Country)
+	fc.Result = res
+	return ec.marshalNCountry2ᚕᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐCountryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Countries_data(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Countries",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "iso":
+				return ec.fieldContext_Country_iso(ctx, field)
+			case "iso_3":
+				return ec.fieldContext_Country_iso_3(ctx, field)
+			case "name":
+				return ec.fieldContext_Country_name(ctx, field)
+			case "numCode":
+				return ec.fieldContext_Country_numCode(ctx, field)
+			case "phoneCode":
+				return ec.fieldContext_Country_phoneCode(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Country", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Countries_meta(ctx context.Context, field graphql.CollectedField, obj *model.Countries) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Countries_meta(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Meta, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Pagination)
+	fc.Result = res
+	return ec.marshalOPagination2ᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐPagination(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Countries_meta(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Countries",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "limit":
+				return ec.fieldContext_Pagination_limit(ctx, field)
+			case "page":
+				return ec.fieldContext_Pagination_page(ctx, field)
+			case "pageSize":
+				return ec.fieldContext_Pagination_pageSize(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Pagination", field.Name)
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _Country_iso(ctx context.Context, field graphql.CollectedField, obj *model.Country) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Country_iso(ctx, field)
@@ -1404,8 +1528,8 @@ func (ec *executionContext) fieldContext_Mutation_removeLocale(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Paging_limit(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Paging_limit(ctx, field)
+func (ec *executionContext) _Pagination_limit(ctx context.Context, field graphql.CollectedField, obj *model.Pagination) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Pagination_limit(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1432,9 +1556,9 @@ func (ec *executionContext) _Paging_limit(ctx context.Context, field graphql.Col
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Paging_limit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Pagination_limit(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Paging",
+		Object:     "Pagination",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1445,8 +1569,8 @@ func (ec *executionContext) fieldContext_Paging_limit(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Paging_page(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Paging_page(ctx, field)
+func (ec *executionContext) _Pagination_page(ctx context.Context, field graphql.CollectedField, obj *model.Pagination) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Pagination_page(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1473,9 +1597,9 @@ func (ec *executionContext) _Paging_page(ctx context.Context, field graphql.Coll
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Paging_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Pagination_page(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Paging",
+		Object:     "Pagination",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1486,8 +1610,8 @@ func (ec *executionContext) fieldContext_Paging_page(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Paging_pageSize(ctx context.Context, field graphql.CollectedField, obj *model.Paging) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Paging_pageSize(ctx, field)
+func (ec *executionContext) _Pagination_pageSize(ctx context.Context, field graphql.CollectedField, obj *model.Pagination) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Pagination_pageSize(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1514,9 +1638,9 @@ func (ec *executionContext) _Paging_pageSize(ctx context.Context, field graphql.
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Paging_pageSize(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Pagination_pageSize(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Paging",
+		Object:     "Pagination",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -1547,14 +1671,11 @@ func (ec *executionContext) _Query_countries(ctx context.Context, field graphql.
 		ec.Error(ctx, err)
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Country)
+	res := resTmp.(*model.Countries)
 	fc.Result = res
-	return ec.marshalNCountry2ᚕᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐCountryᚄ(ctx, field.Selections, res)
+	return ec.marshalOCountries2ᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐCountries(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_countries(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1565,18 +1686,12 @@ func (ec *executionContext) fieldContext_Query_countries(ctx context.Context, fi
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "iso":
-				return ec.fieldContext_Country_iso(ctx, field)
-			case "iso_3":
-				return ec.fieldContext_Country_iso_3(ctx, field)
-			case "name":
-				return ec.fieldContext_Country_name(ctx, field)
-			case "numCode":
-				return ec.fieldContext_Country_numCode(ctx, field)
-			case "phoneCode":
-				return ec.fieldContext_Country_phoneCode(ctx, field)
+			case "data":
+				return ec.fieldContext_Countries_data(ctx, field)
+			case "meta":
+				return ec.fieldContext_Countries_meta(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Country", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Countries", field.Name)
 		},
 	}
 	defer func() {
@@ -3790,6 +3905,38 @@ func (ec *executionContext) unmarshalInputNewLocale(ctx context.Context, obj int
 
 // region    **************************** object.gotpl ****************************
 
+var countriesImplementors = []string{"Countries"}
+
+func (ec *executionContext) _Countries(ctx context.Context, sel ast.SelectionSet, obj *model.Countries) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, countriesImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Countries")
+		case "data":
+
+			out.Values[i] = ec._Countries_data(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "meta":
+
+			out.Values[i] = ec._Countries_meta(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var countryImplementors = []string{"Country"}
 
 func (ec *executionContext) _Country(ctx context.Context, sel ast.SelectionSet, obj *model.Country) graphql.Marshaler {
@@ -3989,27 +4136,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
-var pagingImplementors = []string{"Paging"}
+var paginationImplementors = []string{"Pagination"}
 
-func (ec *executionContext) _Paging(ctx context.Context, sel ast.SelectionSet, obj *model.Paging) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, pagingImplementors)
+func (ec *executionContext) _Pagination(ctx context.Context, sel ast.SelectionSet, obj *model.Pagination) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, paginationImplementors)
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Paging")
+			out.Values[i] = graphql.MarshalString("Pagination")
 		case "limit":
 
-			out.Values[i] = ec._Paging_limit(ctx, field, obj)
+			out.Values[i] = ec._Pagination_limit(ctx, field, obj)
 
 		case "page":
 
-			out.Values[i] = ec._Paging_page(ctx, field, obj)
+			out.Values[i] = ec._Pagination_page(ctx, field, obj)
 
 		case "pageSize":
 
-			out.Values[i] = ec._Paging_pageSize(ctx, field, obj)
+			out.Values[i] = ec._Pagination_pageSize(ctx, field, obj)
 
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -4973,6 +5120,13 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOCountries2ᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐCountries(ctx context.Context, sel ast.SelectionSet, v *model.Countries) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Countries(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
 	if v == nil {
 		return nil, nil
@@ -4994,6 +5148,13 @@ func (ec *executionContext) marshalOLocale2ᚖairbnbᚑuserᚑbeᚋgraphᚋmodel
 		return graphql.Null
 	}
 	return ec._Locale(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOPagination2ᚖairbnbᚑuserᚑbeᚋgraphᚋmodelᚐPagination(ctx context.Context, sel ast.SelectionSet, v *model.Pagination) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Pagination(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

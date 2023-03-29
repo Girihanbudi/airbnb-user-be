@@ -5,7 +5,7 @@
 scalar Time
 
 # Metadata
-type Paging {
+type Pagination {
   limit: Int
   page: Int
   pageSize: Int
@@ -18,6 +18,11 @@ type Country {
   name: String!
   numCode: Int
   phoneCode: Int!
+}
+
+type Countries {
+  data: [Country!]!
+  meta: Pagination
 }
 
 # Locale
@@ -41,7 +46,7 @@ type Currency {
 }
 
 type Query {
-  countries(limit: Int, page: Int): [Country!]!
+  countries(limit: Int, page: Int): Countries
   locales: [Locale!]!
   locale(code: String!): Locale
   currencies: [Currency!]!

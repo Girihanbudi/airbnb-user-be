@@ -9,7 +9,7 @@ import (
 )
 
 // Countries is the resolver for the countries field.
-func (r *queryResolver) Countries(ctx context.Context, limit *int, page *int) ([]*model.Country, error) {
+func (r *queryResolver) Countries(ctx context.Context, limit *int, page *int) (*model.Countries, error) {
 
 	data, err := r.Resolver.Country.GetCountries(ctx, limit, page)
 	if err != nil {
@@ -28,5 +28,17 @@ func (r *queryResolver) Countries(ctx context.Context, limit *int, page *int) ([
 		return &country
 	}).([]*model.Country)
 
-	return countries, nil
+	pagination := data.Pagination
+	meta := model.Pagination{
+		Limit:    &pagination.Limit,
+		Page:     &pagination.Page,
+		PageSize: &pagination.PageSize,
+	}
+
+	response := model.Countries{
+		Data: countries,
+		Meta: &meta,
+	}
+
+	return &response, nil
 }

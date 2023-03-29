@@ -20,6 +20,7 @@ func (u Usecase) GetCountries(ctx context.Context, req request.GetCountries) (re
 	}
 
 	res.Countries = countries
+	res.Pagination = &req.Pagination
 
 	return
 }
