@@ -1,6 +1,10 @@
 package rest
 
 import (
+	"airbnb-user-be/internal/pkg/env"
+	stdresponse "airbnb-user-be/internal/pkg/stdresponse/rest"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,6 +13,11 @@ func (h Handler) ContinueWithGoogle(ctx *gin.Context) {
 }
 
 func (h Handler) OauthGoogleCallback(ctx *gin.Context) {
+	err := h.Auth.OauthGoogleCallback(*ctx)
+	if err != nil {
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
 
-	h.Auth.OauthGoogleCallback(*ctx)
+	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 }
