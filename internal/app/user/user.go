@@ -31,7 +31,7 @@ func (m *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 	id, err := gonanoid.New()
 	if err != nil {
-		return err
+		return
 	}
 
 	m.Id = id
