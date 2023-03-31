@@ -9,25 +9,26 @@ import (
 	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
-func GenerateToken(creds map[string]interface{}, duration int) *string {
-	// Create the JWT claims
-	claims := jwt.MapClaims{}
-
-	tokenId, err := gonanoid.New()
-	if err != nil {
-		return nil
+func GenerateToken(duration int, additionalCreds *map[string]interface{}) (token string, claims jwt.MapClaims, err error) {
+	claims = jwt.MapClaims{}
+	tokenId, generateIdErr := gonanoid.New()
+	if generateIdErr != nil {
+		err = generateIdErr
+		return
 	}
 
-	expirationTime := time.Now().Add(time.Duration(duration / 60 * int(time.Minute)))
+	expiry := time.Now().Add(time.Duration(duration / 60 * int(time.Minute)))
 
-	claims["jti"] = tokenId                            // token unique id
-	claims["iss"] = env.CONFIG.Domain                  // issuer
-	claims["exp"] = jwt.NewNumericDate(expirationTime) // expired time
+	claims["jti"] = tokenId                    // token unique id
+	claims["iss"] = env.CONFIG.Domain          // issuer
+	claims["exp"] = jwt.NewNumericDate(expiry) // expired time
 
 	// added additional claims
-	for k, v := range creds {
-		if _, ok := claims[k]; ok {
-			claims[k] = v
+	if additionalCreds != nil {
+		for k, v := range *additionalCreds {
+			if _, ok := claims[k]; ok {
+				claims[k] = v
+			}
 		}
 	}
 
@@ -35,12 +36,13 @@ func GenerateToken(creds map[string]interface{}, duration int) *string {
 
 	// sign the generated key using secretKey
 	key := []byte(env.CONFIG.Jwt.Secret)
-	token, err := jwtToken.SignedString(key)
-	if err != nil {
-		return nil
+	token, signWithKeyErr := jwtToken.SignedString(key)
+	if signWithKeyErr != nil {
+		err = signWithKeyErr
+		return
 	}
 
-	return &token
+	return
 }
 
 func ExtractTokenMetadata(token string) *jwt.MapClaims {
