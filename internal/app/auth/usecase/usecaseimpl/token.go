@@ -1,126 +1,74 @@
 package usecaseimpl
 
-// import (
-// 	"encoding/json"
-// 	"net/http"
-// 	"time"
+import (
+	"airbnb-user-be/env/appcontext"
+	errpreset "airbnb-user-be/internal/app/auth/preset/error"
+	transutil "airbnb-user-be/internal/app/translation/util"
+	authcache "airbnb-user-be/internal/pkg/cache/auth"
+	"airbnb-user-be/internal/pkg/env"
+	"airbnb-user-be/internal/pkg/jwt"
+	"airbnb-user-be/internal/pkg/stderror"
 
-// 	"github.com/golang-jwt/jwt/v4"
-// )
+	"github.com/gin-gonic/gin"
+)
 
-// // Create the Signin handler
-// func Signin(w http.ResponseWriter, r *http.Request) {
-// 	var creds Credentials
-// 	// Get the JSON body and decode into credentials
-// 	err := json.NewDecoder(r.Body).Decode(&creds)
-// 	if err != nil {
-// 		// If the structure of the body is wrong, return an HTTP error
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
+func (u Usecase) createAndStoreTokensPair(ctx gin.Context, userId string) (err *stderror.StdError) {
+	reqCtx := ctx.Request.Context()
+	clientLocale := appcontext.GetLocale(reqCtx)
+	at, claims, createAtErr := jwt.GenerateToken(appcontext.AccessTokenDuration, nil)
+	if createAtErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_400, clientLocale)
+		return
+	}
 
-// 	// Get the expected password from our in memory map
-// 	expectedPassword, ok := users[creds.Username]
+	storeAtErr := authcache.Set(claims["jti"].(string), userId, appcontext.AccessTokenDuration)
+	if storeAtErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_502, clientLocale)
+		return
+	}
 
-// 	// If a password exists for the given user
-// 	// AND, if it is the same as the password we received, the we can move ahead
-// 	// if NOT, then we return an "Unauthorized" status
-// 	if !ok || expectedPassword != creds.Password {
-// 		w.WriteHeader(http.StatusUnauthorized)
-// 		return
-// 	}
+	rt, claims, createRtErr := jwt.GenerateToken(appcontext.RefreshTokenDuration, nil)
+	if createRtErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_400, clientLocale)
+		return
+	}
 
-// 	// Declare the expiration time of the token
-// 	// here, we have kept it as 5 minutes
-// 	expirationTime := time.Now().Add(5 * time.Minute)
-// 	// Create the JWT claims, which includes the username and expiry time
-// 	claims := &Claims{
-// 		Username: creds.Username,
-// 		RegisteredClaims: jwt.RegisteredClaims{
-// 			// In JWT, the expiry time is expressed as unix milliseconds
-// 			ExpiresAt: jwt.NewNumericDate(expirationTime),
-// 		},
-// 	}
+	storeRtErr := authcache.Set(claims["jti"].(string), userId, appcontext.RefreshTokenDuration)
+	if storeRtErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_502, clientLocale)
+		return
+	}
 
-// 	// Declare the token with the algorithm used for signing, and the claims
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-// 	// Create the JWT string
-// 	tokenString, err := token.SignedString(jwtKey)
-// 	if err != nil {
-// 		// If there is an error in creating the JWT return an internal server error
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		return
-// 	}
+	// set cookies
+	ctx.SetCookie(
+		appcontext.AccessTokenCode,
+		at,
+		appcontext.AccessTokenDuration,
+		"/",
+		env.CONFIG.Domain,
+		env.CONFIG.Stage != string(env.StageLocal),
+		true,
+	)
 
-// 	// Finally, we set the client cookie for "token" as the JWT we just generated
-// 	// we also set an expiry time which is the same as the token itself
-// 	http.SetCookie(w, &http.Cookie{
-// 		Name:    "token",
-// 		Value:   tokenString,
-// 		Expires: expirationTime,
-// 	})
-// }
+	ctx.SetCookie(
+		appcontext.RefreshTokenCode,
+		rt,
+		appcontext.RefreshTokenDuration,
+		"/sessions/refresh",
+		env.CONFIG.Domain,
+		env.CONFIG.Stage != string(env.StageLocal),
+		true,
+	)
 
-// func Refresh(w http.ResponseWriter, r *http.Request) {
-// 	// (BEGIN) The code until this point is the same as the first part of the `Welcome` route
-// 	c, err := r.Cookie("token")
-// 	if err != nil {
-// 		if err == http.ErrNoCookie {
-// 			w.WriteHeader(http.StatusUnauthorized)
-// 			return
-// 		}
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
-// 	tknStr := c.Value
-// 	claims := &Claims{}
-// 	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-// 		return jwtKey, nil
-// 	})
-// 	if err != nil {
-// 		if err == jwt.ErrSignatureInvalid {
-// 			w.WriteHeader(http.StatusUnauthorized)
-// 			return
-// 		}
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
-// 	if !tkn.Valid {
-// 		w.WriteHeader(http.StatusUnauthorized)
-// 		return
-// 	}
-// 	// (END) The code until this point is the same as the first part of the `Welcome` route
+	ctx.SetCookie(
+		appcontext.IsLoggedInCode,
+		"true",
+		appcontext.RefreshTokenDuration,
+		"/",
+		env.CONFIG.Domain,
+		false,
+		false,
+	)
 
-// 	// We ensure that a new token is not issued until enough time has elapsed
-// 	// In this case, a new token will only be issued if the old token is within
-// 	// 30 seconds of expiry. Otherwise, return a bad request status
-// 	if time.Until(claims.ExpiresAt.Time) > 30*time.Second {
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	// Now, create a new token for the current use, with a renewed expiration time
-// 	expirationTime := time.Now().Add(5 * time.Minute)
-// 	claims.ExpiresAt = jwt.NewNumericDate(expirationTime)
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-// 	tokenString, err := token.SignedString(jwtKey)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	// Set the new token as the users `token` cookie
-// 	http.SetCookie(w, &http.Cookie{
-// 		Name:    "token",
-// 		Value:   tokenString,
-// 		Expires: expirationTime,
-// 	})
-// }
-
-// func Logout(w http.ResponseWriter, r *http.Request) {
-// 	// immediately clear the token cookie
-// 	http.SetCookie(w, &http.Cookie{
-// 		Name:    "token",
-// 		Expires: time.Now(),
-// 	})
-// }
+	return
+}
