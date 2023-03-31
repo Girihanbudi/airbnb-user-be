@@ -1,0 +1,8 @@
+package error
+
+var (
+	AUTH_GET_400 = "AUTH_GET_400"
+	AUTH_GET_401 = "AUTH_GET_401"
+	AUTH_GET_502 = "AUTH_GET_502"
+	AUTH_GET_503 = "AUTH_GET_503"
+)
