@@ -1,6 +1,7 @@
 package seeder
 
 import (
+	autherr "airbnb-user-be/internal/app/auth/preset/error"
 	currencyerr "airbnb-user-be/internal/app/currency/preset/error"
 	localeerr "airbnb-user-be/internal/app/locale/preset/error"
 	middlewareerr "airbnb-user-be/internal/app/middleware/preset/error"
@@ -19,6 +20,11 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(middlewareerr.AUTH_MID_001, "en-US", http.StatusUnauthorized, "Authorization not found"),
 		MakeErrTranslation(middlewareerr.AUTH_MID_002, "en-US", http.StatusUnauthorized, "Token is not valid"),
 		MakeErrTranslation(middlewareerr.AUTH_MID_003, "en-US", http.StatusForbidden, "User already login"),
+		//Auth
+		MakeErrTranslation(autherr.AUTH_GET_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
+		MakeErrTranslation(autherr.AUTH_GET_401, "en-US", http.StatusUnauthorized, "Authorization token not found"),
+		MakeErrTranslation(autherr.AUTH_GET_502, "en-US", http.StatusBadGateway, "Cannot communicate with oauth provider"),
+		MakeErrTranslation(autherr.AUTH_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
 		// Locale
 		MakeErrTranslation(localeerr.LOCALE_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
 		MakeErrTranslation(localeerr.LOCALE_GET_404, "en-US", http.StatusNotFound, "Locale record not found"),
@@ -39,6 +45,11 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(middlewareerr.AUTH_MID_001, "id-ID", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
 		MakeErrTranslation(middlewareerr.AUTH_MID_002, "id-ID", http.StatusUnauthorized, "Token tidak valid"),
 		MakeErrTranslation(middlewareerr.AUTH_MID_003, "id-ID", http.StatusForbidden, "User already login"),
+		//Auth
+		MakeErrTranslation(autherr.AUTH_GET_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
+		MakeErrTranslation(autherr.AUTH_GET_401, "id-ID", http.StatusUnauthorized, "Token otorisasi tidak ditemukan"),
+		MakeErrTranslation(autherr.AUTH_GET_502, "id-ID", http.StatusBadGateway, "Tidak dapat berkomunikasi dengan penyedia oauth"),
+		MakeErrTranslation(autherr.AUTH_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
 		// Locale
 		MakeErrTranslation(localeerr.LOCALE_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
 		MakeErrTranslation(localeerr.LOCALE_GET_404, "id-ID", http.StatusNotFound, "Rekaman lokal tidak ditemukan"),
@@ -53,6 +64,7 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(currencyerr.CURRENCY_CREATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal membuat mata uang karena terjadi kesalahan server"),
 		MakeErrTranslation(currencyerr.CURRENCY_UPDATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal mengupdate mata uang karena terjadi kesalahan server"),
 		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus mata uang karena terjadi kesalahan server"),
+		//Auth
 	}
 
 	var errTranslationRecords []translationmodule.ErrTranslation
