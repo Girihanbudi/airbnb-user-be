@@ -12,7 +12,13 @@ db:
   port:
   sslmode:
   timezone:
+cache:
+  auth:
+    host:
+    password:
+    db:
 oauth:
+  redirecturl:
   google:
     clientid:
     clientsecret:
@@ -20,10 +26,5 @@ oauth:
     userinfoapi:
     scopes:
 jwt:
-  # from https://generate-secret.now.sh/32
+  # example using https://generate-secret.now.sh/32
   secret:
-cache:
-  auth:
-    host:
-    password:
-    db:
