@@ -8,4 +8,5 @@ import (
 type IUser interface {
 	GetUserByEmail(ctx context.Context, email string) (user module.User, err error)
 	CreateUser(ctx context.Context, user *module.User) (err error)
+	CreateOrUpdateUserAccount(ctx context.Context, account *module.Account) (err error)
 }
