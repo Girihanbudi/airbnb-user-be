@@ -3,11 +3,12 @@ package usecaseimpl
 import (
 	"airbnb-user-be/env/appcontext"
 	module "airbnb-user-be/internal/app/auth"
+	errpreset "airbnb-user-be/internal/app/auth/preset/error"
+	transutil "airbnb-user-be/internal/app/translation/util"
 	usermodule "airbnb-user-be/internal/app/user"
-	authcache "airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/codegenerator"
 	"airbnb-user-be/internal/pkg/env"
-	"airbnb-user-be/internal/pkg/jwt"
+	"airbnb-user-be/internal/pkg/stderror"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,13 +16,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 func (u Usecase) ContinueWithGoogle(ctx gin.Context) {
-	// Create oauthState cookie
+	// Create CSRF token cookie
 	oauthState := codegenerator.RandomEncodedBytes(16)
-	// appcontext.SetFromGinRouter(&ctx, appcontext.OauthCode, oauthState)
+
 	ctx.SetCookie(
 		appcontext.OauthCode,
 		oauthState,
@@ -36,27 +36,27 @@ func (u Usecase) ContinueWithGoogle(ctx gin.Context) {
 	ctx.Redirect(http.StatusTemporaryRedirect, link)
 }
 
-func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
-	// Read oauthState from Cookie
+func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
+	reqCtx := ctx.Request.Context()
+	clientLocale := appcontext.GetLocale(reqCtx)
+
+	// Read CSRF token from Cookie
 	oauthState, _ := ctx.Cookie(appcontext.OauthCode)
 
 	if ctx.Request.FormValue("state") != oauthState {
-		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_401, clientLocale)
 		return
 	}
 
-	data, err := u.extractGoogleUserData(ctx.Request.FormValue("code"))
-	if err != nil {
-		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	data, account, extractDataErr := u.extractGoogleUserData(ctx.Request.FormValue("code"))
+	if extractDataErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_502, clientLocale)
 		return
 	}
 
-	reqCtx := ctx.Request.Context()
-
+	// update or create user if not exist
 	var user usermodule.User
-
-	// create user if not exist
-	if user, err = u.UserRepo.GetUserByEmail(reqCtx, data.Email); err != nil {
+	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(reqCtx, data.Email); getUserErr != nil {
 		user.FirstName = data.GivenName
 		user.FullName = data.Name
 		user.Email = &data.Email
@@ -64,9 +64,10 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 		user.Role = usermodule.UserRole.String()
 
 		// get locale list for references
-		locales, err := u.LocaleRepo.GetLocales(reqCtx)
-		if err != nil {
-			ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+		locales, getLocalesErr := u.LocaleRepo.GetLocales(reqCtx)
+		if getLocalesErr != nil {
+			err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+			return
 		}
 
 		// create user default setting
@@ -85,53 +86,49 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) {
 		}
 		// otherwise using current locale
 		if !isLocaleFound {
-			userDefaultSetting.Locale = appcontext.GetLocale(reqCtx)
+			userDefaultSetting.Locale = clientLocale
 			userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
 		}
 		user.DefaultSetting = userDefaultSetting
 
 		// insert new user to database
-		err = u.UserRepo.CreateUser(ctx.Request.Context(), &user)
-		if err != nil {
-			ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
+		if createUserErr != nil {
+			err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+			return
 		}
-
+	} else {
+		user = recordUser
 	}
 
-	atKey, err := gonanoid.New()
-	if err != nil {
-		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	// update or create user account if not exist
+	account.UserId = user.Id
+	createAcountErr := u.UserRepo.CreateOrUpdateUserAccount(reqCtx, &account)
+	if createAcountErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+		return
 	}
 
-	if err := authcache.Set(atKey, user.Id, appcontext.AccessTokenDuration); err != nil {
-		ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
-	}
-
-	claims := jwt.MapClaims{}
-	claims["jti"] = atKey
-	at := jwt.GenerateToken(claims, appcontext.AccessTokenDuration)
-
-	// set user cookie
-	ctx.SetCookie(
-		appcontext.AccessTokenCode,
-		*at,
-		appcontext.AccessTokenDuration,
-		"/",
-		env.CONFIG.Domain,
-		true,
-		true,
-	)
-
-	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	return u.createAndStoreTokensPair(ctx, user.Id)
 }
 
-func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserInfo, err error) {
+func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserInfo, account usermodule.Account, err error) {
 	token, err := u.GoogleOauth.Exchange(context.Background(), code)
 	if err != nil {
 		err = fmt.Errorf("code exchange wrong: %s", err.Error())
 		return
 	}
 
+	fmt.Printf("%+v\n", token)
+
+	// bind token info
+	account.Provider = module.ProviderGoogle.String()
+	account.AccessToken = token.AccessToken
+	account.RefreshToken = token.RefreshToken
+	account.ExpiredAt = token.Expiry
+	account.TokenType = token.TokenType
+
+	// get user info from google apis
 	response, err := http.Get(u.GoogleOauth.UserInfoApi + token.AccessToken)
 	if err != nil {
 		err = fmt.Errorf("failed getting user info: %s", err.Error())
@@ -141,12 +138,14 @@ func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserI
 	// run to the closest return
 	defer response.Body.Close()
 
+	// read message
 	contents, err := io.ReadAll(response.Body)
 	if err != nil {
 		err = fmt.Errorf("failed read response: %s", err.Error())
 		return
 	}
 
+	// bind to user info struct
 	err = json.Unmarshal(contents, &userInfo)
 
 	return
