@@ -3,12 +3,13 @@ package auth
 type Provider int
 
 const (
-	ProviderGoogle Provider = iota
-	ProviderEmail
+	ProviderEmail Provider = iota
+	ProviderPhone
+	ProviderGoogle
 )
 
-var keys = []string{"google", "email"}
-var providers = []Provider{ProviderGoogle, ProviderEmail}
+var keys = []string{"email", "phone", "google"}
+var providers = []Provider{ProviderEmail, ProviderPhone, ProviderGoogle}
 
 func (m Provider) String() string {
 	return keys[m]
