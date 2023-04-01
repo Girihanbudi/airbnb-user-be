@@ -11,6 +11,7 @@ import (
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -147,6 +148,14 @@ func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserI
 
 	// bind to user info struct
 	err = json.Unmarshal(contents, &userInfo)
+	if err != nil {
+		return
+	}
+
+	if userInfo.Email == "" {
+		err = errors.New("email not found")
+		return
+	}
 
 	return
 }
