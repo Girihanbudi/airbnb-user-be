@@ -12,4 +12,5 @@ var PackageSet = wire.NewSet(
 	tool.ExtractServerConfig,
 	tool.ExtractDBConfig,
 	tool.ExtractOauthGoogleConfig,
+	tool.ExtractOauthFacebookConfig,
 )
