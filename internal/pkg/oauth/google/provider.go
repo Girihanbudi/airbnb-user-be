@@ -16,9 +16,9 @@ func NewGoogleOauth(config config.Config) Oauth {
 	var oauth Oauth
 	oauth.ClientID = config.ClientId
 	oauth.ClientSecret = config.ClientSecret
-	oauth.RedirectURL = config.RedirectUrl
 	oauth.Endpoint = google.Endpoint
 	oauth.UserInfoApi = config.UserInfoApi
+	oauth.RedirectURL = config.RedirectUrl
 	oauth.Scopes = config.Scopes
 
 	return oauth
