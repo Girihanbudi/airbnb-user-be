@@ -62,7 +62,7 @@ func (a App) runModules(ctx context.Context) {
 
 	// GIN bind access token if any
 	// bind access token in all route to adapt with graphql endpoint
-	a.HttpServer.Router.Use(authmid.GinBindBearerAuthorization())
+	a.HttpServer.Router.Use(authmid.GinBindAccessToken())
 
 	// Register all routes
 	a.registerHttpHandler()
