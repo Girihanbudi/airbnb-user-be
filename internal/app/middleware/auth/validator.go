@@ -15,8 +15,11 @@ import (
 
 func GinBindAccessToken() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		at, _ := ctx.Cookie(appcontext.AccessTokenCode)
-		appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, at)
+		at, err := ctx.Cookie(appcontext.AccessTokenCode)
+		if err == nil {
+			appcontext.SetFromGinRouter(ctx, appcontext.AccessTokenCode, at)
+		}
+
 		ctx.Next()
 	}
 }
