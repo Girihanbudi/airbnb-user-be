@@ -1,6 +1,7 @@
 package wire
 
 import (
+	"airbnb-user-be/internal/pkg/oauth/facebook"
 	"airbnb-user-be/internal/pkg/oauth/google"
 
 	"github.com/google/wire"
@@ -8,4 +9,5 @@ import (
 
 var PackageSet = wire.NewSet(
 	google.NewGoogleOauth,
+	facebook.NewFacebookOauth,
 )
