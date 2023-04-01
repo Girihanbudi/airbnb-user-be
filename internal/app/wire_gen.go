@@ -25,6 +25,7 @@ import (
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
+	"airbnb-user-be/internal/pkg/oauth/facebook"
 	"airbnb-user-be/internal/pkg/oauth/google"
 	"github.com/google/wire"
 )
@@ -64,6 +65,8 @@ func NewApp() (*App, error) {
 	handler := gql.NewCountryHandler(gqlOptions)
 	config3 := tool.ExtractOauthGoogleConfig(config)
 	oauth := google.NewGoogleOauth(config3)
+	config4 := tool.ExtractOauthFacebookConfig(config)
+	facebookOauth := facebook.NewFacebookOauth(config4)
 	options3 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
@@ -73,9 +76,10 @@ func NewApp() (*App, error) {
 	}
 	repo3 := repoimpl4.NewLocaleRepo(options4)
 	options5 := usecaseimpl2.Options{
-		GoogleOauth: oauth,
-		UserRepo:    repo2,
-		LocaleRepo:  repo3,
+		GoogleOauth:   oauth,
+		FacebookOauth: facebookOauth,
+		UserRepo:      repo2,
+		LocaleRepo:    repo3,
 	}
 	usecaseimplUsecase := usecaseimpl2.NewAuthUsecase(options5)
 	restOptions := rest.Options{
