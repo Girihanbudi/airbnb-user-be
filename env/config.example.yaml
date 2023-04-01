@@ -22,9 +22,14 @@ oauth:
   google:
     clientid:
     clientsecret:
-    redirecturl:
     userinfoapi:
+    redirecturl:
     scopes:
+  facebook:
+    clientid:
+    clientsecret:
+    userinfoapi:
+    redirecturl:
 jwt:
   # example using https://generate-secret.now.sh/32
   secret:
