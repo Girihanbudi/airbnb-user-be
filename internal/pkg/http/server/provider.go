@@ -15,9 +15,9 @@ type Options struct {
 }
 
 type Server struct {
+	Options
 	address string
 	server  *http.Server
-	Options
 }
 
 func NewServer(options Options) *Server {
