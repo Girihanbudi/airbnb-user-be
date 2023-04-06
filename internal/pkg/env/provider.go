@@ -13,26 +13,26 @@ const Instance string = "Env"
 // global env declaration
 var CONFIG config.Config
 
-type EnvConfig struct {
+type Options struct {
 	Path     string
 	FileName string
 	Ext      string
 }
 
-func NewDefaultEnvConf() EnvConfig {
-	return EnvConfig{
+func NewDefaultOptions() Options {
+	return Options{
 		Path:     "./env",
 		FileName: "config",
 		Ext:      "yaml",
 	}
 }
 
-func InitEnv(conf EnvConfig) {
+func InitEnv(options Options) {
 	log.Event(Instance, "reading config...")
 
-	viper.AddConfigPath(conf.Path)
-	viper.SetConfigName(conf.FileName)
-	viper.SetConfigType(conf.Ext)
+	viper.AddConfigPath(options.Path)
+	viper.SetConfigName(options.FileName)
+	viper.SetConfigType(options.Ext)
 
 	env := config.Config{}
 	if err := viper.ReadInConfig(); err != nil {
