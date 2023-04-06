@@ -7,5 +7,6 @@ import (
 )
 
 var PackageSet = wire.NewSet(
+	wire.Struct(new(gorm.Options), "*"),
 	gorm.NewORM,
 )

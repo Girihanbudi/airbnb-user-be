@@ -14,17 +14,21 @@ import (
 
 const Instance string = "ORM"
 
-type Engine struct {
-	DB  *gorm.DB
-	Ctx *context.Context
+type Options struct {
 	config.Config
 }
 
-func NewORM(config config.Config) *Engine {
+type Engine struct {
+	Options
+	DB  *gorm.DB
+	Ctx *context.Context
+}
+
+func NewORM(options Options) *Engine {
 	ctx := context.Background()
 	engine := Engine{
-		Ctx:    &ctx,
-		Config: config,
+		Ctx:     &ctx,
+		Options: options,
 	}
 
 	engine.InitConnection()
