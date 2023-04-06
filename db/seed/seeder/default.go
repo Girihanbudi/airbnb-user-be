@@ -6,7 +6,7 @@ import (
 
 var batchSize = 100
 
-var envConfig = env.EnvConfig{
+var envOps = env.Options{
 	Path:     "../../../env",
 	FileName: "config",
 	Ext:      "yaml",

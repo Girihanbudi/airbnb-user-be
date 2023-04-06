@@ -17,10 +17,10 @@ func main() {
 		log.Fatal(Instance, "migration failed with arguments not found", nil)
 	}
 
-	defaultEnvConfig := env.NewDefaultEnvConf()
-	env.InitEnv(defaultEnvConfig)
+	defaultEnvOps := env.NewDefaultOptions()
+	env.InitEnv(defaultEnvOps)
 	config := env.ProvideEnv().DB
-	engine := gorm.NewORM(config)
+	engine := gorm.NewORM(gorm.Options{Config: config})
 
 	switch *cmd {
 	case m.MigrationUp.String():

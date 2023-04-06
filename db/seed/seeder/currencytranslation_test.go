@@ -8,9 +8,9 @@ import (
 
 func TestSeedCurrencyTranslation(t *testing.T) {
 	t.Log("seeding currency translation...")
-	env.InitEnv(envConfig)
+	env.InitEnv(envOps)
 	config := env.ProvideEnv().DB
-	engine := gorm.NewORM(config)
+	engine := gorm.NewORM(gorm.Options{Config: config})
 	if err := SeedCurrencyTranslation(*engine.DB); err != nil {
 		t.Error("failed to seed currency translation", err)
 	}

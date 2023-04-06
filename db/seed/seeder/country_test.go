@@ -8,9 +8,9 @@ import (
 
 func TestSeedCountry(t *testing.T) {
 	t.Log("seeding country...")
-	env.InitEnv(envConfig)
+	env.InitEnv(envOps)
 	config := env.ProvideEnv().DB
-	engine := gorm.NewORM(config)
+	engine := gorm.NewORM(gorm.Options{Config: config})
 	if err := SeedCountry(*engine.DB); err != nil {
 		t.Error("failed to seed country", err)
 	}

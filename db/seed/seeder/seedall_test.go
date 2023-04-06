@@ -8,9 +8,9 @@ import (
 )
 
 func TestSeedAll(t *testing.T) {
-	env.InitEnv(envConfig)
+	env.InitEnv(envOps)
 	config := env.ProvideEnv().DB
-	engine := gorm.NewORM(config)
+	engine := gorm.NewORM(gorm.Options{Config: config})
 	db := *engine.DB
 
 	t.Log("seeding error translation...")

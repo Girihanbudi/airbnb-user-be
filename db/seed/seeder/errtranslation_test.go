@@ -8,9 +8,9 @@ import (
 
 func TestSeedErrTranslation(t *testing.T) {
 	t.Log("seeding error translation...")
-	env.InitEnv(envConfig)
+	env.InitEnv(envOps)
 	config := env.ProvideEnv().DB
-	engine := gorm.NewORM(config)
+	engine := gorm.NewORM(gorm.Options{Config: config})
 	if err := SeedErrTranslation(*engine.DB); err != nil {
 		t.Error("failed to seed error translation", err)
 	}
