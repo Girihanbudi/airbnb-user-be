@@ -25,8 +25,8 @@ import (
 // @securityDefinitions.basic BasicAuth
 func main() {
 	// init app environment
-	defaultEnvConfig := env.NewDefaultOptions()
-	env.InitEnv(defaultEnvConfig)
+	defaultEnvOps := env.NewDefaultOptions()
+	env.InitEnv(defaultEnvOps)
 
 	// create app context
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
