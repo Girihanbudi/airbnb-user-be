@@ -7,19 +7,25 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+type Options struct {
+	config.Config
+}
+
 type Oauth struct {
+	Options
 	oauth2.Config
 	UserInfoApi string
 }
 
-func NewGoogleOauth(config config.Config) Oauth {
+func NewGoogleOauth(options Options) Oauth {
 	var oauth Oauth
-	oauth.ClientID = config.ClientId
-	oauth.ClientSecret = config.ClientSecret
+	oauth.ClientID = options.ClientId
+	oauth.ClientSecret = options.ClientSecret
 	oauth.Endpoint = google.Endpoint
-	oauth.UserInfoApi = config.UserInfoApi
-	oauth.RedirectURL = config.RedirectUrl
-	oauth.Scopes = config.Scopes
+	oauth.UserInfoApi = options.UserInfoApi
+	oauth.RedirectURL = options.RedirectUrl
+	oauth.Scopes = options.Scopes
+	oauth.Options = options
 
 	return oauth
 }

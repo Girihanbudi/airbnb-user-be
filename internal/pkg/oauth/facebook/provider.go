@@ -7,19 +7,25 @@ import (
 	"golang.org/x/oauth2/facebook"
 )
 
+type Options struct {
+	config.Config
+}
+
 type Oauth struct {
+	Options
 	oauth2.Config
 	UserInfoApi string
 }
 
-func NewFacebookOauth(config config.Config) Oauth {
+func NewFacebookOauth(options Options) Oauth {
 	var oauth Oauth
-	oauth.ClientID = config.ClientId
-	oauth.ClientSecret = config.ClientSecret
+	oauth.ClientID = options.ClientId
+	oauth.ClientSecret = options.ClientSecret
 	oauth.Endpoint = facebook.Endpoint
-	oauth.UserInfoApi = config.UserInfoApi
-	oauth.RedirectURL = config.RedirectUrl
-	oauth.Scopes = config.Scopes
+	oauth.UserInfoApi = options.UserInfoApi
+	oauth.RedirectURL = options.RedirectUrl
+	oauth.Scopes = options.Scopes
+	oauth.Options = options
 
 	return oauth
 }

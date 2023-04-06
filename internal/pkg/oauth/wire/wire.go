@@ -8,6 +8,9 @@ import (
 )
 
 var PackageSet = wire.NewSet(
+	wire.Struct(new(google.Options), "*"),
 	google.NewGoogleOauth,
+
+	wire.Struct(new(facebook.Options), "*"),
 	facebook.NewFacebookOauth,
 )
