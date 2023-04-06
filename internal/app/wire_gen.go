@@ -46,7 +46,10 @@ func NewApp() (*App, error) {
 	}
 	serverServer := server.NewServer(options)
 	config2 := tool.ExtractDBConfig(config)
-	gormEngine := gorm.NewORM(config2)
+	gormOptions := gorm.Options{
+		Config: config2,
+	}
+	gormEngine := gorm.NewORM(gormOptions)
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
@@ -64,9 +67,15 @@ func NewApp() (*App, error) {
 	}
 	handler := gql.NewCountryHandler(gqlOptions)
 	config3 := tool.ExtractOauthGoogleConfig(config)
-	oauth := google.NewGoogleOauth(config3)
+	googleOptions := google.Options{
+		Config: config3,
+	}
+	oauth := google.NewGoogleOauth(googleOptions)
 	config4 := tool.ExtractOauthFacebookConfig(config)
-	facebookOauth := facebook.NewFacebookOauth(config4)
+	facebookOptions := facebook.Options{
+		Config: config4,
+	}
+	facebookOauth := facebook.NewFacebookOauth(facebookOptions)
 	options3 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
