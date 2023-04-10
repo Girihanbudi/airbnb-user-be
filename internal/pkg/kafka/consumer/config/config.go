@@ -1,7 +1,7 @@
 package config
 
 import (
-	router "airbnb-messaging-be/internal/pkg/kafka/router/config"
+	router "airbnb-user-be/internal/pkg/kafka/router/config"
 )
 
 type Config struct {

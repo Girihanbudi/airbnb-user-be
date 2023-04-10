@@ -1,10 +1,10 @@
 package wire
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka"
-	"airbnb-messaging-be/internal/pkg/kafka/consumer"
-	"airbnb-messaging-be/internal/pkg/kafka/producer"
-	"airbnb-messaging-be/internal/pkg/kafka/router"
+	"airbnb-user-be/internal/pkg/kafka"
+	"airbnb-user-be/internal/pkg/kafka/consumer"
+	"airbnb-user-be/internal/pkg/kafka/producer"
+	"airbnb-user-be/internal/pkg/kafka/router"
 
 	"github.com/google/wire"
 )

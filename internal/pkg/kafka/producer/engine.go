@@ -1,7 +1,7 @@
 package producer
 
 import (
-	"airbnb-messaging-be/internal/pkg/log"
+	"airbnb-user-be/internal/pkg/log"
 	"encoding/json"
 	"errors"
 

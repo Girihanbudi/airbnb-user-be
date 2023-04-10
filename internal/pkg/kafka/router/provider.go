@@ -1,7 +1,7 @@
 package router
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka/router/config"
+	"airbnb-user-be/internal/pkg/kafka/router/config"
 	"strings"
 )
 

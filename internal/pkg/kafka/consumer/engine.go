@@ -1,8 +1,8 @@
 package consumer
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka/router"
-	"airbnb-messaging-be/internal/pkg/log"
+	"airbnb-user-be/internal/pkg/kafka/router"
+	"airbnb-user-be/internal/pkg/log"
 	"context"
 
 	"github.com/Shopify/sarama"

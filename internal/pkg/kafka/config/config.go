@@ -1,7 +1,7 @@
 package config
 
 import (
-	consumer "airbnb-messaging-be/internal/pkg/kafka/consumer/config"
+	consumer "airbnb-user-be/internal/pkg/kafka/consumer/config"
 )
 
 type Config struct {

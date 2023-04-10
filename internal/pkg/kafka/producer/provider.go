@@ -1,8 +1,8 @@
 package producer
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka"
-	"airbnb-messaging-be/internal/pkg/log"
+	"airbnb-user-be/internal/pkg/kafka"
+	"airbnb-user-be/internal/pkg/log"
 
 	"github.com/Shopify/sarama"
 )

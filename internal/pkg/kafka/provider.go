@@ -1,9 +1,9 @@
 package kafka
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka/config"
-	"airbnb-messaging-be/internal/pkg/kafka/router"
-	"airbnb-messaging-be/internal/pkg/log"
+	"airbnb-user-be/internal/pkg/kafka/config"
+	"airbnb-user-be/internal/pkg/kafka/router"
+	"airbnb-user-be/internal/pkg/log"
 
 	"github.com/Shopify/sarama"
 )

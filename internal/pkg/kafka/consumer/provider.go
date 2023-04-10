@@ -1,10 +1,10 @@
 package consumer
 
 import (
-	"airbnb-messaging-be/internal/pkg/kafka"
-	"airbnb-messaging-be/internal/pkg/kafka/consumer/config"
-	"airbnb-messaging-be/internal/pkg/kafka/router"
-	"airbnb-messaging-be/internal/pkg/log"
+	"airbnb-user-be/internal/pkg/kafka"
+	"airbnb-user-be/internal/pkg/kafka/consumer/config"
+	"airbnb-user-be/internal/pkg/kafka/router"
+	"airbnb-user-be/internal/pkg/log"
 	"fmt"
 
 	"github.com/Shopify/sarama"
