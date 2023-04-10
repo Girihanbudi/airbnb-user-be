@@ -17,6 +17,10 @@ cache:
     host:
     password:
     db:
+  otp:
+    host:
+    password:
+    db:
 oauth:
   redirecturl:
   google:
@@ -33,3 +37,13 @@ oauth:
 jwt:
   # example using https://generate-secret.now.sh/32
   secret:
+kafka:
+  clientid:
+  brokers:
+  version:
+  consumer:
+    group:
+    assigner:
+    isuseoldest:
+    router:
+      separator:
