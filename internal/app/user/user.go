@@ -12,6 +12,7 @@ type User struct {
 	FirstName   string  `json:"first_name" gorm:"not null"`
 	FullName    string  `json:"full_name" gorm:"not null"`
 	Email       *string `json:"email" gorm:"unique"`
+	CountryCode *int    `json:"country_code"`
 	PhoneNumber *string `json:"phone_number" gorm:"unique"`
 	Image       string  `json:"image"`
 	Password    *string `json:"password"`
@@ -19,7 +20,7 @@ type User struct {
 
 	CreatedAt  time.Time      `json:"created_at" gorm:"not null"`
 	UpdatedAt  time.Time      `json:"updated_at" gorm:"not null"`
-	VerifiedAt time.Time      `json:"verified_at"`
+	VerifiedAt *time.Time     `json:"verified_at"`
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 
 	DefaultSetting UserDefaultSetting `json:"default_setting" gorm:"foreignKey:UserId"`
