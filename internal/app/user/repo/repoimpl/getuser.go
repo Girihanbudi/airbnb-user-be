@@ -5,7 +5,7 @@ import (
 	"context"
 )
 
-func (r Repo) GetUserById(ctx context.Context, id string) (user module.User, err error) {
+func (r Repo) GetUser(ctx context.Context, id string) (user module.User, err error) {
 	err = r.Gorm.DB.First(&user, id).Error
 	return
 }
