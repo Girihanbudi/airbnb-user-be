@@ -8,5 +8,5 @@ import (
 )
 
 type ICountry interface {
-	GetCountries(ctx context.Context, req request.GetCountries) (res response.GetCountries, err *stderror.StdError)
+	GetCountries(ctx context.Context, cmd request.GetCountries) (res response.GetCountries, err *stderror.StdError)
 }

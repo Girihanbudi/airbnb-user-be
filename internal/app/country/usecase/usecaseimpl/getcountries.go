@@ -10,17 +10,17 @@ import (
 	"context"
 )
 
-func (u Usecase) GetCountries(ctx context.Context, req request.GetCountries) (res response.GetCountries, err *stderror.StdError) {
+func (u Usecase) GetCountries(ctx context.Context, cmd request.GetCountries) (res response.GetCountries, err *stderror.StdError) {
 	clientLocale := appcontext.GetLocale(ctx)
 
-	countries, getCountriesErr := u.CountryRepo.GetCountries(ctx, &req.Pagination)
+	countries, getCountriesErr := u.CountryRepo.GetCountries(ctx, &cmd.Pagination)
 	if getCountriesErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.COUNTRY_GET_503, clientLocale)
 		return
 	}
 
 	res.Countries = countries
-	res.Pagination = &req.Pagination
+	res.Pagination = &cmd.Pagination
 
 	return
 }
