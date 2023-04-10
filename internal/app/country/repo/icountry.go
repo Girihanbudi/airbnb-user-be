@@ -8,4 +8,5 @@ import (
 
 type ICountry interface {
 	GetCountries(ctx context.Context, paging *pagination.SQLPaging) (countries *[]module.Country, err error)
+	GetCountryByPhoneCode(ctx context.Context, phoneCode int) (country module.Country, err error)
 }
