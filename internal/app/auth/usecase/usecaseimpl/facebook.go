@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -58,11 +59,13 @@ func (u Usecase) OauthFacebookCallback(ctx gin.Context) (err *stderror.StdError)
 	// update or create user if not exist
 	var user usermodule.User
 	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(reqCtx, data.Email); getUserErr != nil {
+		currentTime := time.Now()
 		user.FirstName = data.FirstName
 		user.FullName = data.Name
 		user.Email = &data.Email
 		user.Image = data.Picture["data"]["url"].(string)
 		user.Role = usermodule.UserRole.String()
+		user.VerifiedAt = &currentTime
 
 		// get locale list for references
 		locales, getLocalesErr := u.LocaleRepo.GetLocales(reqCtx)
