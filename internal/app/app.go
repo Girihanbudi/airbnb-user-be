@@ -4,6 +4,8 @@ import (
 	"airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/http/server"
 	httprouter "airbnb-user-be/internal/pkg/http/server/router"
+	kafkaconsumer "airbnb-user-be/internal/pkg/kafka/consumer"
+	kafkaproducer "airbnb-user-be/internal/pkg/kafka/producer"
 	"airbnb-user-be/internal/pkg/log"
 	"airbnb-user-be/internal/pkg/validator"
 	"context"
@@ -23,7 +25,9 @@ import (
 var Instance = "App"
 
 type Options struct {
-	HttpServer *server.Server
+	HttpServer    *server.Server
+	EventListener *kafkaconsumer.Listener
+	EventProducer *kafkaproducer.Producer
 
 	Translation        translation.IErrTranslation
 	CountryHandler     *countrygql.Handler
@@ -82,7 +86,15 @@ func (a App) stopModules() {
 
 	var wg sync.WaitGroup
 
-	wg.Add(1)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err := a.EventProducer.Stop()
+		if err != nil {
+			log.Fatal(Instance, "failed to stop event producer", err)
+		}
+	}()
+
 	go func() {
 		defer wg.Done()
 		err := a.HttpServer.Stop()
