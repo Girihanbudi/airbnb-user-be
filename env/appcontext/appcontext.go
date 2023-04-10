@@ -27,6 +27,7 @@ const (
 	AccessTokenDuration  = 15 * minute   // expires in 15 minutes
 	RefreshTokenCode     = "__Secure.rt" // refresh token application context code
 	RefreshTokenDuration = 7 * day       // expires in a week
+	OtpDuration          = 1 * minute
 )
 
 const (
