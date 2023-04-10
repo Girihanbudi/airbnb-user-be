@@ -6,6 +6,6 @@ import (
 )
 
 func (r Repo) GetUserByEmail(ctx context.Context, email string) (user module.User, err error) {
-	err = r.Gorm.DB.First(&user).Error
+	err = r.Gorm.DB.Where("email = ?", email).First(&user).Error
 	return
 }
