@@ -4,7 +4,6 @@ import (
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/gorm/config"
 	"airbnb-user-be/internal/pkg/log"
-	"context"
 	"fmt"
 
 	"gorm.io/driver/postgres"
@@ -20,14 +19,11 @@ type Options struct {
 
 type Engine struct {
 	Options
-	DB  *gorm.DB
-	Ctx *context.Context
+	DB *gorm.DB
 }
 
 func NewORM(options Options) *Engine {
-	ctx := context.Background()
 	engine := Engine{
-		Ctx:     &ctx,
 		Options: options,
 	}
 
