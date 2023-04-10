@@ -25,6 +25,10 @@ import (
 	"airbnb-user-be/internal/pkg/gorm"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
+	"airbnb-user-be/internal/pkg/kafka"
+	"airbnb-user-be/internal/pkg/kafka/consumer"
+	"airbnb-user-be/internal/pkg/kafka/producer"
+	router2 "airbnb-user-be/internal/pkg/kafka/router"
 	"airbnb-user-be/internal/pkg/oauth/facebook"
 	"airbnb-user-be/internal/pkg/oauth/google"
 	"github.com/google/wire"
@@ -45,9 +49,31 @@ func NewApp() (*App, error) {
 		Router: engine,
 	}
 	serverServer := server.NewServer(options)
-	config2 := tool.ExtractDBConfig(config)
-	gormOptions := gorm.Options{
+	config2 := tool.ExtractKafkaConsumerConfig(config)
+	config3 := tool.ExtractKafkaConfig(config)
+	config4 := tool.ExtractKafkaRouterConfig(config)
+	routerOptions := router2.Options{
+		Config: config4,
+	}
+	routerRouter := router2.NewRouter(routerOptions)
+	kafkaOptions := kafka.Options{
+		Config: config3,
+		Router: routerRouter,
+	}
+	client := kafka.NewSaramaClient(kafkaOptions)
+	consumerOptions := consumer.Options{
 		Config: config2,
+		Client: client,
+		Router: routerRouter,
+	}
+	listener := consumer.NewEventListener(consumerOptions)
+	producerOptions := producer.Options{
+		Client: client,
+	}
+	producerProducer := producer.NewEventProducer(producerOptions)
+	config5 := tool.ExtractDBConfig(config)
+	gormOptions := gorm.Options{
+		Config: config5,
 	}
 	gormEngine := gorm.NewORM(gormOptions)
 	repoimplOptions := repoimpl.Options{
@@ -66,14 +92,14 @@ func NewApp() (*App, error) {
 		Country: usecase,
 	}
 	handler := gql.NewCountryHandler(gqlOptions)
-	config3 := tool.ExtractOauthGoogleConfig(config)
+	config6 := tool.ExtractOauthGoogleConfig(config)
 	googleOptions := google.Options{
-		Config: config3,
+		Config: config6,
 	}
 	oauth := google.NewGoogleOauth(googleOptions)
-	config4 := tool.ExtractOauthFacebookConfig(config)
+	config7 := tool.ExtractOauthFacebookConfig(config)
 	facebookOptions := facebook.Options{
-		Config: config4,
+		Config: config7,
 	}
 	facebookOauth := facebook.NewFacebookOauth(facebookOptions)
 	options3 := repoimpl3.Options{
@@ -89,6 +115,8 @@ func NewApp() (*App, error) {
 		FacebookOauth: facebookOauth,
 		UserRepo:      repo2,
 		LocaleRepo:    repo3,
+		CountryRepo:   repoimplRepo,
+		EventProducer: producerProducer,
 	}
 	usecaseimplUsecase := usecaseimpl2.NewAuthUsecase(options5)
 	restOptions := rest.Options{
@@ -118,6 +146,8 @@ func NewApp() (*App, error) {
 	handler2 := gql3.NewCurrencyHandler(options10)
 	appOptions := Options{
 		HttpServer:         serverServer,
+		EventListener:      listener,
+		EventProducer:      producerProducer,
 		Translation:        repo,
 		CountryHandler:     handler,
 		AuthHandler:        restHandler,
