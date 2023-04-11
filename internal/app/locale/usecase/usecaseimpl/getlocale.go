@@ -8,19 +8,26 @@ import (
 	transutil "airbnb-user-be/internal/app/translation/util"
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
 func (u Usecase) GetLocale(ctx context.Context, cmd request.GetLocale) (res response.GetLocale, err *stderror.StdError) {
 	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_VAL_400, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
 	Locale, getLocaleErr := u.LocaleRepo.GetLocale(ctx, cmd.Code)
 	if getLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_GET_404, clientLocale)
+		ec := errpreset.DbServiceUnavailable
+		if errors.Is(getLocaleErr, gorm.ErrRecordNotFound) {
+			ec = errpreset.DbRecordNotFound
+		}
+		err = transutil.TranslateError(ctx, ec, clientLocale)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (u Usecase) GetLocales(ctx context.Context) (res response.GetLocales, err *
 
 	locales, getLocalesErr := u.LocaleRepo.GetLocales(ctx)
 	if getLocalesErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_GET_503, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 

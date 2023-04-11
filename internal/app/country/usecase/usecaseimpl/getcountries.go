@@ -15,7 +15,7 @@ func (u Usecase) GetCountries(ctx context.Context, cmd request.GetCountries) (re
 
 	countries, getCountriesErr := u.CountryRepo.GetCountries(ctx, &cmd.Pagination)
 	if getCountriesErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.COUNTRY_GET_503, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 

@@ -1,10 +1,9 @@
 package error
 
-var (
-	LOCALE_VAL_400    = "LOCALE_VAL_400"
-	LOCALE_GET_404    = "LOCALE_GET_404"
-	LOCALE_GET_503    = "LOCALE_GET_503"
-	LOCALE_CREATE_503 = "LOCALE_CREATE_503"
-	LOCALE_UPDATE_503 = "LOCALE_UPDATE_503"
-	LOCALE_DELETE_503 = "LOCALE_DELETE_503"
+const (
+	DbServiceUnavailable = "CRTY_DB_001" // db server unavailable
+	DbRecordNotFound     = "CRTY_DB_002" // record not found
+	DbEmptyResult        = "CRTY_DB_003" // empty result
+
+	UscBadRequest = "CRTY_USC_001" // validation invalid
 )

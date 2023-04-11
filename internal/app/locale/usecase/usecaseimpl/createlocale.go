@@ -14,7 +14,7 @@ func (u Usecase) CreateLocale(ctx context.Context, cmd request.CreateLocale) (er
 	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_VAL_400, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
@@ -30,7 +30,7 @@ func (u Usecase) CreateLocale(ctx context.Context, cmd request.CreateLocale) (er
 
 	createLocaleErr := u.LocaleRepo.CreateLocale(ctx, &locale)
 	if createLocaleErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.LOCALE_CREATE_503, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 

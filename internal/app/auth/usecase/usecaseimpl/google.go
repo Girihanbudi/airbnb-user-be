@@ -46,13 +46,13 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 	oauthState, _ := ctx.Cookie(appcontext.OauthCode)
 
 	if ctx.Request.FormValue("state") != oauthState {
-		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_401, clientLocale)
+		err = transutil.TranslateError(reqCtx, errpreset.UscInvalidOauth, clientLocale)
 		return
 	}
 
 	data, account, extractDataErr := u.extractGoogleUserData(ctx.Request.FormValue("code"))
 	if extractDataErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_502, clientLocale)
+		err = transutil.TranslateError(reqCtx, errpreset.UscFailedExtractGoogleInfo, clientLocale)
 		return
 	}
 
@@ -70,7 +70,7 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 		// get locale list for references
 		locales, getLocalesErr := u.LocaleRepo.GetLocales(reqCtx)
 		if getLocalesErr != nil {
-			err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+			err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 
@@ -98,7 +98,7 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 		// insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
 		if createUserErr != nil {
-			err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+			err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 	} else {
@@ -109,7 +109,7 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 	account.UserId = user.Id
 	createAcountErr := u.UserRepo.CreateOrUpdateUserAccount(reqCtx, &account)
 	if createAcountErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.AUTH_GET_503, clientLocale)
+		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 

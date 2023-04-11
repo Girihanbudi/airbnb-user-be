@@ -1,7 +1,7 @@
 package error
 
-var (
-	COUNTRY_VAL_400 = "COUNTRY_VAL_400"
-	COUNTRY_GET_404 = "COUNTRY_GET_404"
-	COUNTRY_GET_503 = "COUNTRY_GET_503"
+const (
+	DbServiceUnavailable = "CRTY_DB_001" // db server unavailable
+	DbRecordNotFound     = "CRTY_DB_002" // record not found
+	DbEmptyResult        = "CRTY_DB_003" // empty result
 )

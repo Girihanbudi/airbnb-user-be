@@ -1,10 +1,7 @@
 package error
 
-var (
-	CURRENCY_VAL_400    = "CURRENCY_VAL_400"
-	CURRENCY_GET_404    = "CURRENCY_GET_404"
-	CURRENCY_GET_503    = "CURRENCY_GET_503"
-	CURRENCY_CREATE_503 = "CURRENCY_CREATE_503"
-	CURRENCY_UPDATE_503 = "CURRENCY_UPDATE_503"
-	CURRENCY_DELETE_503 = "CURRENCY_DELETE_503"
+const (
+	DbServiceUnavailable = "CRY_DB_001" // db server unavailable
+	DbRecordNotFound     = "CRY_DB_002" // record not found
+	DbEmptyResult        = "CRY_DB_003" // empty result
 )

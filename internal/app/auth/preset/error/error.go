@@ -1,8 +1,18 @@
 package error
 
-var (
-	AUTH_GET_400 = "AUTH_GET_400"
-	AUTH_GET_401 = "AUTH_GET_401"
-	AUTH_GET_502 = "AUTH_GET_502"
-	AUTH_GET_503 = "AUTH_GET_503"
+const (
+	DbServiceUnavailable = "AUTH_DB_001" // db server unavailable
+	DbRecordNotFound     = "AUTH_DB_002" // record not found
+	DbEmptyResult        = "AUTH_DB_003" // empty result
+
+	UscBadRequest                = "AUTH_USC_001"
+	UscInvalidOauth              = "AUTH_USC_002"
+	UscForbidden                 = "AUTH_USC_003"
+	UscFailedExtractGoogleInfo   = "AUTH_USC_004"
+	UscFailedExtractFacebookInfo = "AUTH_USC_005"
+
+	TknGenerateFailed = "AUTH_TKN_001"
+	TknStoreFailed    = "AUTH_TKN_002"
+
+	EvtSendMsgFailed = "AUTH_EVT_001"
 )

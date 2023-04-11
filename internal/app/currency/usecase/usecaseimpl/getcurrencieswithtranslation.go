@@ -14,7 +14,7 @@ func (u Usecase) GetCurrenciesWithTranslation(ctx context.Context) (res response
 
 	currencies, getCurrenciesErr := u.CurrencyRepo.GetCurrenciesWithTranslation(ctx, clientLocale)
 	if getCurrenciesErr != nil {
-		err = transutil.TranslateError(ctx, errpreset.CURRENCY_GET_503, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 
