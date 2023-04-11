@@ -1,6 +1,7 @@
 package usecaseimpl
 
 import (
+	countryrepo "airbnb-user-be/internal/app/country/repo"
 	localerepo "airbnb-user-be/internal/app/locale/repo"
 	userrepo "airbnb-user-be/internal/app/user/repo"
 	kafkaproducer "airbnb-user-be/internal/pkg/kafka/producer"
@@ -13,6 +14,7 @@ type Options struct {
 	FacebookOauth facebook.Oauth
 	UserRepo      userrepo.IUser
 	LocaleRepo    localerepo.ILocale
+	CountryRepo   countryrepo.ICountry
 	EventProducer *kafkaproducer.Producer
 }
 
