@@ -2,6 +2,7 @@ package seeder
 
 import (
 	autherr "airbnb-user-be/internal/app/auth/preset/error"
+	countryerr "airbnb-user-be/internal/app/country/preset/error"
 	currencyerr "airbnb-user-be/internal/app/currency/preset/error"
 	localeerr "airbnb-user-be/internal/app/locale/preset/error"
 	middlewareerr "airbnb-user-be/internal/app/middleware/preset/error"
@@ -15,56 +16,84 @@ import (
 func SeedErrTranslation(db gorm.DB) error {
 
 	data := []translationmodule.ErrTranslation{
-		// En translation
-		// Middleware
-		MakeErrTranslation(middlewareerr.AUTH_MID_001, "en-US", http.StatusUnauthorized, "Authorization not found"),
-		MakeErrTranslation(middlewareerr.AUTH_MID_002, "en-US", http.StatusUnauthorized, "Token is not valid"),
-		MakeErrTranslation(middlewareerr.AUTH_MID_003, "en-US", http.StatusForbidden, "User already login"),
-		//Auth
-		MakeErrTranslation(autherr.AUTH_GET_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
-		MakeErrTranslation(autherr.AUTH_GET_401, "en-US", http.StatusUnauthorized, "Authorization token not found"),
-		MakeErrTranslation(autherr.AUTH_GET_502, "en-US", http.StatusBadGateway, "Cannot communicate with oauth provider"),
-		MakeErrTranslation(autherr.AUTH_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
-		// Locale
-		MakeErrTranslation(localeerr.LOCALE_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
-		MakeErrTranslation(localeerr.LOCALE_GET_404, "en-US", http.StatusNotFound, "Locale record not found"),
-		MakeErrTranslation(localeerr.LOCALE_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
-		MakeErrTranslation(localeerr.LOCALE_CREATE_503, "en-US", http.StatusServiceUnavailable, "Failed to create locale due to internal server error"),
-		MakeErrTranslation(localeerr.LOCALE_UPDATE_503, "en-US", http.StatusServiceUnavailable, "Failed to update locale due to internal server error"),
-		MakeErrTranslation(localeerr.LOCALE_DELETE_503, "en-US", http.StatusServiceUnavailable, "Failed to delete locale due to internal server error"),
-		// Currency
-		MakeErrTranslation(currencyerr.CURRENCY_VAL_400, "en-US", http.StatusBadRequest, "Failed to validate request"),
-		MakeErrTranslation(currencyerr.CURRENCY_GET_404, "en-US", http.StatusNotFound, "Currency record not found"),
-		MakeErrTranslation(currencyerr.CURRENCY_GET_503, "en-US", http.StatusServiceUnavailable, "Internal server error"),
-		MakeErrTranslation(currencyerr.CURRENCY_CREATE_503, "en-US", http.StatusServiceUnavailable, "Failed to create currency due to internal server error"),
-		MakeErrTranslation(currencyerr.CURRENCY_UPDATE_503, "en-US", http.StatusServiceUnavailable, "Failed to update currency due to internal server error"),
-		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "en-US", http.StatusServiceUnavailable, "Failed to delete currency due to internal server error"),
 
+		/*
+			Middleware
+		*/
+		// En translation
+		MakeErrTranslation(middlewareerr.TokenNotFound, "en", http.StatusUnauthorized, "Authorization not found"),
+		MakeErrTranslation(middlewareerr.TokenNotValid, "en", http.StatusUnauthorized, "Token is not valid"),
+		MakeErrTranslation(middlewareerr.UserAlreadyVerified, "en", http.StatusForbidden, "User already verified"),
 		// Id translation
-		// Middleware
-		MakeErrTranslation(middlewareerr.AUTH_MID_001, "id-ID", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
-		MakeErrTranslation(middlewareerr.AUTH_MID_002, "id-ID", http.StatusUnauthorized, "Token tidak valid"),
-		MakeErrTranslation(middlewareerr.AUTH_MID_003, "id-ID", http.StatusForbidden, "User already login"),
-		//Auth
-		MakeErrTranslation(autherr.AUTH_GET_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
-		MakeErrTranslation(autherr.AUTH_GET_401, "id-ID", http.StatusUnauthorized, "Token otorisasi tidak ditemukan"),
-		MakeErrTranslation(autherr.AUTH_GET_502, "id-ID", http.StatusBadGateway, "Tidak dapat berkomunikasi dengan penyedia oauth"),
-		MakeErrTranslation(autherr.AUTH_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
-		// Locale
-		MakeErrTranslation(localeerr.LOCALE_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
-		MakeErrTranslation(localeerr.LOCALE_GET_404, "id-ID", http.StatusNotFound, "Rekaman lokal tidak ditemukan"),
-		MakeErrTranslation(localeerr.LOCALE_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
-		MakeErrTranslation(localeerr.LOCALE_CREATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal membuat lokal karena terjadi kesalahan server"),
-		MakeErrTranslation(localeerr.LOCALE_UPDATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal mengupdate lokal karena terjadi kesalahan server"),
-		MakeErrTranslation(localeerr.LOCALE_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus lokal karena terjadi kesalahan server"),
-		// Currency
-		MakeErrTranslation(currencyerr.CURRENCY_VAL_400, "id-ID", http.StatusBadRequest, "Gagal melakukan validasi request"),
-		MakeErrTranslation(currencyerr.CURRENCY_GET_404, "id-ID", http.StatusNotFound, "Rekaman mata uang tidak ditemukan"),
-		MakeErrTranslation(currencyerr.CURRENCY_GET_503, "id-ID", http.StatusServiceUnavailable, "Terjadi kesalahan server"),
-		MakeErrTranslation(currencyerr.CURRENCY_CREATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal membuat mata uang karena terjadi kesalahan server"),
-		MakeErrTranslation(currencyerr.CURRENCY_UPDATE_503, "id-ID", http.StatusServiceUnavailable, "Gagal mengupdate mata uang karena terjadi kesalahan server"),
-		MakeErrTranslation(currencyerr.CURRENCY_DELETE_503, "id-ID", http.StatusServiceUnavailable, "Gagal menghapus mata uang karena terjadi kesalahan server"),
-		//Auth
+		MakeErrTranslation(middlewareerr.TokenNotFound, "id", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
+		MakeErrTranslation(middlewareerr.TokenNotValid, "id", http.StatusUnauthorized, "Token tidak valid"),
+		MakeErrTranslation(middlewareerr.UserAlreadyVerified, "id", http.StatusForbidden, "User telah terverifikasi"),
+
+		/*
+			Auth
+		*/
+		// En translation
+		MakeErrTranslation(autherr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
+		MakeErrTranslation(autherr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
+		MakeErrTranslation(autherr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
+		MakeErrTranslation(autherr.UscBadRequest, "en", http.StatusBadRequest, "Requested data is not valid"),
+		MakeErrTranslation(autherr.UscInvalidOauth, "en", http.StatusBadRequest, "Failed to validate oauth state"),
+		MakeErrTranslation(autherr.UscForbidden, "en", http.StatusForbidden, "This request is forbidden for related user"),
+		MakeErrTranslation(autherr.UscFailedExtractGoogleInfo, "en", http.StatusBadRequest, "Failed to extract user info from oauth provider"),
+		MakeErrTranslation(autherr.UscFailedExtractFacebookInfo, "en", http.StatusBadRequest, "Failed to extract user info from oauth provider"),
+		MakeErrTranslation(autherr.TknGenerateFailed, "en", http.StatusInternalServerError, "Failed to generate token"),
+		MakeErrTranslation(autherr.TknStoreFailed, "en", http.StatusServiceUnavailable, "Failed to communicate with cache server"),
+		MakeErrTranslation(autherr.EvtSendMsgFailed, "en", http.StatusServiceUnavailable, "Failed to communicate with broker"),
+		// Id translation
+		MakeErrTranslation(autherr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
+		MakeErrTranslation(autherr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
+		MakeErrTranslation(autherr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
+		MakeErrTranslation(autherr.UscBadRequest, "id", http.StatusBadRequest, "Permintaan tidak valid"),
+		MakeErrTranslation(autherr.UscInvalidOauth, "id", http.StatusBadRequest, "Gagal melakukan validasi oauth state"),
+		MakeErrTranslation(autherr.UscForbidden, "id", http.StatusForbidden, "Permintaan tidak diijinkan untuk user terkait"),
+		MakeErrTranslation(autherr.UscFailedExtractGoogleInfo, "id", http.StatusBadRequest, "Gagal mendapatkan info user dari penyedia oauth"),
+		MakeErrTranslation(autherr.UscFailedExtractFacebookInfo, "id", http.StatusBadRequest, "Gagal mendapatkan info user dari penyedia oauth"),
+		MakeErrTranslation(autherr.TknGenerateFailed, "id", http.StatusInternalServerError, "Gagal membuat token"),
+		MakeErrTranslation(autherr.TknStoreFailed, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan cache server"),
+		MakeErrTranslation(autherr.EvtSendMsgFailed, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan broker"),
+
+		/*
+			Locale
+		*/
+		// En translation
+		MakeErrTranslation(localeerr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
+		MakeErrTranslation(localeerr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
+		MakeErrTranslation(localeerr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
+		MakeErrTranslation(localeerr.UscBadRequest, "en", http.StatusBadRequest, "Requested data is not valid"),
+		// Id translation
+		MakeErrTranslation(localeerr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
+		MakeErrTranslation(localeerr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
+		MakeErrTranslation(localeerr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
+		MakeErrTranslation(localeerr.UscBadRequest, "id", http.StatusBadRequest, "Permintaan tidak valid"),
+
+		/*
+			Currency
+		*/
+		// En translation
+		MakeErrTranslation(currencyerr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
+		MakeErrTranslation(currencyerr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
+		MakeErrTranslation(currencyerr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
+		// Id translation
+		MakeErrTranslation(currencyerr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
+		MakeErrTranslation(currencyerr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
+		MakeErrTranslation(currencyerr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
+
+		/*
+			Country
+		*/
+		// En translation
+		MakeErrTranslation(countryerr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
+		MakeErrTranslation(countryerr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
+		MakeErrTranslation(countryerr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
+		// Id translation
+		MakeErrTranslation(countryerr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
+		MakeErrTranslation(countryerr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
+		MakeErrTranslation(countryerr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
 	}
 
 	var errTranslationRecords []translationmodule.ErrTranslation

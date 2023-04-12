@@ -9,8 +9,8 @@ import (
 func SeedLocale(db gorm.DB) error {
 
 	data := []localemodule.Locale{
-		makeLocale("en-US", "English", "English", "United States", 1033, "eng", "en"),
-		makeLocale("id-ID", "Indonesian", "Bahasa Indonesia", "Indonesia", 1057, "ind", "id"),
+		makeLocale("en", "English", "English", "United States", 1033, "eng", "en"),
+		makeLocale("id", "Indonesian", "Bahasa Indonesia", "Indonesia", 1057, "ind", "id"),
 	}
 
 	var localeRecords []localemodule.Locale
