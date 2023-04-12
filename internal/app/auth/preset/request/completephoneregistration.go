@@ -6,7 +6,7 @@ import (
 )
 
 type CompletePhoneRegistration struct {
-	Otp         string `json:"countryCode" validation:"required,numeric,len=6"`
+	Otp         string `json:"otp" validation:"required,numeric,len=6"`
 	FirstName   string `json:"firstName" validation:"required"`
 	LastName    string `json:"lastName"`
 	Email       string `json:"email" validation:"required,email"`

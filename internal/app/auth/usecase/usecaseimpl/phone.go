@@ -4,6 +4,7 @@ import (
 	"airbnb-user-be/env/appcontext"
 	errpreset "airbnb-user-be/internal/app/auth/preset/error"
 	"airbnb-user-be/internal/app/auth/preset/request"
+	"airbnb-user-be/internal/app/auth/preset/response"
 	transutil "airbnb-user-be/internal/app/translation/util"
 	usermodule "airbnb-user-be/internal/app/user"
 	otpcache "airbnb-user-be/internal/pkg/cache/otp"
@@ -17,7 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhone) (err *stderror.StdError) {
+func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhone) (res response.ContinueWithPhone, err *stderror.StdError) {
 	reqCtx := ctx.Request.Context()
 	clientLocale := appcontext.GetLocale(reqCtx)
 
@@ -83,6 +84,7 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 		return
 	}
 
+	res.IsVerified = user.VerifiedAt != nil
 	return
 }
 
