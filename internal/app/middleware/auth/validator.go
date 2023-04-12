@@ -28,7 +28,7 @@ func GqlValidateAccessToken(ctx context.Context) (err error) {
 	accessToken := appcontext.GetAccessToken(ctx)
 	clientLocale := appcontext.GetLocale(ctx)
 	if accessToken == nil {
-		err = transutil.TranslateError(ctx, errpreset.AUTH_MID_001, clientLocale).Error
+		err = transutil.TranslateError(ctx, errpreset.TokenNotFound, clientLocale).Error
 		return
 	}
 
@@ -48,7 +48,7 @@ func GinValidateAccessToken(ctx *gin.Context) {
 	accessToken := appcontext.GetAccessToken(reqCtx)
 	clientLocale := appcontext.GetLocale(reqCtx)
 	if accessToken == nil {
-		err := transutil.TranslateError(reqCtx, errpreset.AUTH_MID_001, clientLocale)
+		err := transutil.TranslateError(reqCtx, errpreset.TokenNotFound, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
@@ -68,7 +68,7 @@ func GinValidateNoJwtTokenFound(ctx *gin.Context) {
 	accessToken := appcontext.GetAccessToken(ctx.Request.Context())
 	clientLocale := appcontext.GetLocale(ctx.Request.Context())
 	if accessToken != nil {
-		err := transutil.TranslateError(ctx.Request.Context(), errpreset.AUTH_MID_003, clientLocale)
+		err := transutil.TranslateError(ctx.Request.Context(), errpreset.UserAlreadyVerified, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
@@ -80,14 +80,14 @@ func validateJwtToken(ctx context.Context, accessToken string) (userId string, e
 	clientLocale := appcontext.GetLocale(ctx)
 	tokenMetadata := jwt.ExtractTokenMetadata(accessToken)
 	if tokenMetadata == nil {
-		err = transutil.TranslateError(ctx, errpreset.AUTH_MID_002, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TokenNotValid, clientLocale)
 		return
 	}
 
 	claims := *tokenMetadata
 	userId, _ = authcache.Get(claims["jti"].(string))
 	if userId == "" {
-		err = transutil.TranslateError(ctx, errpreset.AUTH_MID_001, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TokenNotFound, clientLocale)
 		return
 	}
 

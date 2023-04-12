@@ -1,7 +1,7 @@
 package error
 
 var (
-	AUTH_MID_001 = "AUTH_MID_001"
-	AUTH_MID_002 = "AUTH_MID_002"
-	AUTH_MID_003 = "AUTH_MID_003"
+	TokenNotFound       = "AUTH_MID_001"
+	TokenNotValid       = "AUTH_MID_002"
+	UserAlreadyVerified = "AUTH_MID_003"
 )
