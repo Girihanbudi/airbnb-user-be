@@ -23,6 +23,7 @@ type Producer struct {
 }
 
 func NewEventProducer(options Options) *Producer {
+	log.Event(Instance, "initializing kafka producer...")
 
 	if options.Client == nil {
 		log.Fatal(Instance, "sarama client not provided", nil)

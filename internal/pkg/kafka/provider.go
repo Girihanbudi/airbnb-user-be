@@ -21,6 +21,7 @@ type Client struct {
 }
 
 func NewSaramaClient(options Options) *Client {
+	log.Event(Instance, "initializing sarama client...")
 
 	sarama.Logger = log.NewLogger(Instance, false)
 	version, err := sarama.ParseKafkaVersion(options.Version)

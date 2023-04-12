@@ -32,6 +32,7 @@ type Listener struct {
 }
 
 func NewEventListener(options Options) *Listener {
+	log.Event(Instance, "initializing kafka listener...")
 
 	if options.Client == nil {
 		log.Fatal(Instance, "sarama client not provided", nil)
