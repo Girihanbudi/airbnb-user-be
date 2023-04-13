@@ -17,6 +17,7 @@ func MigrateUp(db gorm.DB) {
 		&localemodule.Locale{},
 		&countrymodule.Country{},
 		&translationmodule.ErrTranslation{},
+		&translationmodule.MsgTranslation{},
 		&currencymodule.Currency{},
 		&currencymodule.CurrencyTranslation{},
 		&usermodule.User{},
