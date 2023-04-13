@@ -7,7 +7,7 @@ const day = hour * 24
 const (
 	LocaleCode     = "locale" // locale application context code
 	LocaleDuration = 7 * day  // expires in a week
-	LocaleDefault  = "en-US"  // default language using English US
+	LocaleDefault  = "en"     // default language using English US
 )
 
 const (
