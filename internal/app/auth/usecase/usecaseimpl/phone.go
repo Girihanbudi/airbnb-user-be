@@ -66,8 +66,15 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 		return
 	}
 
-	recipients := []string{""}
-	message := fmt.Sprintf("Kode verifikasi Airbnb Anda adalah %s", otp)
+	userPhoneNumber := fmt.Sprintf("+%d%s", cmd.CountryCode, cmd.PhoneNumber)
+	recipients := []string{userPhoneNumber}
+
+	template, err := transutil.TranslateMessage(reqCtx, "otp", clientLocale)
+	if err != nil {
+		return
+	}
+	message := fmt.Sprintf(template, otp)
+
 	payload := msgpreset.SendSmsPayload{
 		Recipients: recipients,
 		Body:       message,
@@ -126,6 +133,34 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 
 	if saveUserErr := u.UserRepo.CreateOrUpdateUser(reqCtx, &user); saveUserErr != nil {
 		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+		return
+	}
+
+	return u.createAndStoreTokensPair(ctx, user.Id)
+}
+
+func (u Usecase) MakePhoneSession(ctx gin.Context, cmd request.MakePhoneSession) (err *stderror.StdError) {
+	reqCtx := ctx.Request.Context()
+	clientLocale := appcontext.GetLocale(reqCtx)
+
+	userId, extractOtpErr := otpcache.Get(cmd.Otp)
+	if extractOtpErr != nil {
+		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		return
+	}
+
+	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId)
+	if getUserErr != nil {
+		ec := errpreset.DbServiceUnavailable
+		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
+			ec = errpreset.DbRecordNotFound
+		}
+		err = transutil.TranslateError(reqCtx, ec, clientLocale)
+		return
+	}
+
+	if user.VerifiedAt == nil {
+		err = transutil.TranslateError(reqCtx, errpreset.UscForbidden, clientLocale)
 		return
 	}
 
