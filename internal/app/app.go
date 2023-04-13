@@ -2,6 +2,7 @@ package app
 
 import (
 	"airbnb-user-be/internal/pkg/cache/auth"
+	"airbnb-user-be/internal/pkg/cache/otp"
 	"airbnb-user-be/internal/pkg/http/server"
 	httprouter "airbnb-user-be/internal/pkg/http/server/router"
 	kafkaconsumer "airbnb-user-be/internal/pkg/kafka/consumer"
@@ -28,7 +29,7 @@ type Options struct {
 	EventListener *kafkaconsumer.Listener
 	EventProducer *kafkaproducer.Producer
 
-	Translation        translation.IErrTranslation
+	Translation        translation.ITranslation
 	CountryHandler     *countrygql.Handler
 	AuthHandler        *authrest.Handler
 	LocaleGqlHandler   *localegql.Handler
@@ -50,6 +51,7 @@ func (a App) runModules(ctx context.Context) {
 
 	// init app cache
 	auth.InitAuthCache()
+	otp.InitOtpCache()
 
 	// recover from panic
 	a.HttpServer.Router.Use(gin.Recovery())
