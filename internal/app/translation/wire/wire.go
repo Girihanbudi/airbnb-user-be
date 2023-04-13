@@ -13,6 +13,6 @@ var ModuleSet = wire.NewSet(
 
 var repoSet = wire.NewSet(
 	wire.Struct(new(repoimpl.Options), "*"),
-	repoimpl.NewErrTranslationRepo,
-	wire.Bind(new(repo.IErrTranslation), new(*repoimpl.Repo)),
+	repoimpl.NewTranslationRepo,
+	wire.Bind(new(repo.ITranslation), new(*repoimpl.Repo)),
 )

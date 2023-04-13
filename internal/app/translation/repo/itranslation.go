@@ -5,6 +5,7 @@ import (
 	"context"
 )
 
-type IErrTranslation interface {
+type ITranslation interface {
 	GetErrTranslation(ctx context.Context, code, localeCode string) (translation *module.ErrTranslation, err error)
+	GetMsgTranslation(ctx context.Context, code, localeCode string) (translation *module.MsgTranslation, err error)
 }

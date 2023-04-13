@@ -12,12 +12,22 @@ var (
 )
 
 func TranslateError(ctx context.Context, code, localeCode string) (err *stderror.StdError) {
-	trans, getTransErr := repoimpl.ErrTranslationRepo.GetErrTranslation(ctx, code, localeCode)
+	trans, getTransErr := repoimpl.TranslationRepo.GetErrTranslation(ctx, code, localeCode)
 	if getTransErr != nil {
 		err = &defaultErr
 		return
 	}
 	newErr := stderror.New(trans.HttpCode, trans.Code, trans.Message)
 	err = &newErr
+	return
+}
+
+func TranslateMessage(ctx context.Context, code, localeCode string) (template string, err *stderror.StdError) {
+	trans, getTransErr := repoimpl.TranslationRepo.GetMsgTranslation(ctx, code, localeCode)
+	if getTransErr != nil {
+		err = &defaultErr
+		return
+	}
+	template = trans.Template
 	return
 }

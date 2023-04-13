@@ -12,9 +12,9 @@ type Repo struct {
 	Options
 }
 
-var ErrTranslationRepo Repo
+var TranslationRepo Repo
 
-func NewErrTranslationRepo(options Options) *Repo {
-	ErrTranslationRepo = Repo{options}
-	return &ErrTranslationRepo
+func NewTranslationRepo(options Options) *Repo {
+	TranslationRepo = Repo{options}
+	return &TranslationRepo
 }
