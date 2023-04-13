@@ -17,7 +17,6 @@ import (
 func SeedErrTranslation(db gorm.DB) error {
 
 	data := []translationmodule.ErrTranslation{
-
 		/*
 			Default
 		*/
@@ -26,9 +25,9 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(stderror.DEF_AUTH_401, "en", http.StatusUnauthorized, "Cannot authorize user"),
 		MakeErrTranslation(stderror.DEF_DATA_400, "en", http.StatusBadRequest, "Requested data is not valid"),
 		// Id translation
-		MakeErrTranslation(stderror.DEF_SERVER_500, "en", http.StatusInternalServerError, "Permintaan dibatalkan karena terjadi kesalahan server"),
-		MakeErrTranslation(stderror.DEF_AUTH_401, "en", http.StatusUnauthorized, "Tidak dapat mengotorisasi user"),
-		MakeErrTranslation(stderror.DEF_DATA_400, "en", http.StatusBadRequest, "Permintaan tidak valid"),
+		MakeErrTranslation(stderror.DEF_SERVER_500, "id", http.StatusInternalServerError, "Permintaan dibatalkan karena terjadi kesalahan server"),
+		MakeErrTranslation(stderror.DEF_AUTH_401, "id", http.StatusUnauthorized, "Tidak dapat mengotorisasi user"),
+		MakeErrTranslation(stderror.DEF_DATA_400, "id", http.StatusBadRequest, "Permintaan tidak valid"),
 
 		/*
 			Middleware
