@@ -30,7 +30,12 @@ func (j Raw) Value() (driver.Value, error) {
 	return json.RawMessage(j).MarshalJSON()
 }
 
-// Value return json value, implement driver.Valuer interface
+// Get interface value and bind to param interface
+func (j *Raw) Get(value interface{}) error {
+	return json.Unmarshal(*j, &value)
+}
+
+// Set param interface as new raw value
 func Set(value interface{}) *Raw {
 	b, err := json.Marshal(value)
 	if err != nil {
