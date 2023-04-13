@@ -79,7 +79,7 @@ func NewApp() (*App, error) {
 	repoimplOptions := repoimpl.Options{
 		Gorm: gormEngine,
 	}
-	repo := repoimpl.NewErrTranslationRepo(repoimplOptions)
+	repo := repoimpl.NewTranslationRepo(repoimplOptions)
 	options2 := repoimpl2.Options{
 		Gorm: gormEngine,
 	}
