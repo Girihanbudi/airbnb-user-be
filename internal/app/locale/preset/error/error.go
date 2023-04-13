@@ -1,9 +1,9 @@
 package error
 
 const (
-	DbServiceUnavailable = "CRTY_DB_001" // db server unavailable
-	DbRecordNotFound     = "CRTY_DB_002" // record not found
-	DbEmptyResult        = "CRTY_DB_003" // empty result
+	DbServiceUnavailable = "LCL_DB_001" // db server unavailable
+	DbRecordNotFound     = "LCL_DB_002" // record not found
+	DbEmptyResult        = "LCL_DB_003" // empty result
 
-	UscBadRequest = "CRTY_USC_001" // validation invalid
+	UscBadRequest = "LCL_USC_001" // validation invalid
 )
