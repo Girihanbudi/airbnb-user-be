@@ -11,6 +11,7 @@ type SendSms struct {
 }
 
 type SendSmsPayload struct {
-	Recipients []string `json:"recipients"`
-	Body       string   `json:"body"`
+	Recipients []string    `json:"recipients"`
+	Body       string      `json:"body"`
+	Params     interface{} `json:"params"`
 }
