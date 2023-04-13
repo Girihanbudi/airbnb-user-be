@@ -11,11 +11,11 @@ func SeedCurrencyTranslation(db gorm.DB) error {
 
 	data := []currencymodule.CurrencyTranslation{
 		// usd translation
-		makeCurrencyTranslation(money.USD, "en-US", "United State Dollar"),
-		makeCurrencyTranslation(money.USD, "id-ID", "Dolar Amerika Serikat"),
+		makeCurrencyTranslation(money.USD, "en", "United State Dollar"),
+		makeCurrencyTranslation(money.USD, "id", "Dolar Amerika Serikat"),
 		// idr translation
-		makeCurrencyTranslation(money.IDR, "en-US", "Indonesian Rupiah"),
-		makeCurrencyTranslation(money.IDR, "id-ID", "Rupiah Indonesia"),
+		makeCurrencyTranslation(money.IDR, "en", "Indonesian Rupiah"),
+		makeCurrencyTranslation(money.IDR, "id", "Rupiah Indonesia"),
 	}
 
 	var currencyTranslationRecords []currencymodule.CurrencyTranslation
