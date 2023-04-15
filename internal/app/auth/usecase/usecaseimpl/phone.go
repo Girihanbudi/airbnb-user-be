@@ -49,7 +49,7 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 		userDefaultSetting.Locale = clientLocale
 		userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
 
-		user.DefaultSetting = userDefaultSetting
+		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
@@ -110,7 +110,7 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId)
+	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId, nil)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
@@ -149,7 +149,7 @@ func (u Usecase) MakePhoneSession(ctx gin.Context, cmd request.MakePhoneSession)
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId)
+	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId, nil)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {

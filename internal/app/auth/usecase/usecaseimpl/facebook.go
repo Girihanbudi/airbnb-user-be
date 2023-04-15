@@ -93,7 +93,7 @@ func (u Usecase) OauthFacebookCallback(ctx gin.Context) (err *stderror.StdError)
 			userDefaultSetting.Locale = clientLocale
 			userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
 		}
-		user.DefaultSetting = userDefaultSetting
+		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
