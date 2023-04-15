@@ -45,11 +45,46 @@ type Currency {
   name: String!
 }
 
+# Default Setting
+type UserDefaultSetting {
+  locale: String!
+  currency: String!
+}
+
+# Account
+type Account {
+  provider: String!
+  accessToken: String!
+  refreshToken: String!
+  expiredAt: Time!
+  tokenType: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+# User
+type User {
+  firstName: String!
+  fullName: String!
+  email: String
+  countryCode: Int
+  phoneNumber: String
+  image: String!
+  role: String!
+  dateOfBirth: Time!
+  createdAt: Time!
+  updatedAt: Time!
+  verifiedAt: Time
+  defaultSetting: UserDefaultSetting
+  accounts: [Account!]
+}
+
 type Query {
   countries(limit: Int, page: Int): Countries
   locales: [Locale!]!
   locale(code: String!): Locale
   currencies: [Currency!]!
+  user: User
 }
 
 input NewLocale {
