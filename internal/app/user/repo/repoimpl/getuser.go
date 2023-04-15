@@ -5,7 +5,15 @@ import (
 	"context"
 )
 
-func (r Repo) GetUser(ctx context.Context, id string) (user module.User, err error) {
-	err = r.Gorm.DB.First(&user, id).Error
+func (r Repo) GetUser(ctx context.Context, id string, preloads *[]string) (user module.User, err error) {
+	query := r.Gorm.DB
+
+	if preloads != nil && len(*preloads) > 0 {
+		for _, preload := range *preloads {
+			query = query.Preload(preload)
+		}
+	}
+
+	err = query.First(&user, id).Error
 	return
 }
