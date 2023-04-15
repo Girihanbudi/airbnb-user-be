@@ -24,8 +24,8 @@ type User struct {
 	VerifiedAt *time.Time     `json:"verified_at"`
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 
-	DefaultSetting UserDefaultSetting `json:"default_setting" gorm:"foreignKey:UserId"`
-	Accounts       []Account          `json:"accounts"`
+	DefaultSetting *UserDefaultSetting `json:"default_setting" gorm:"foreignKey:UserId"`
+	Accounts       *[]Account          `json:"accounts"`
 	// sessions      Session[]
 }
 
