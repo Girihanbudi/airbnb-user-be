@@ -27,3 +27,13 @@ func GetAccessToken(ctx context.Context) *string {
 
 	return &token
 }
+
+func GetUserId(ctx context.Context) *string {
+	value := ctx.Value(UserCode)
+	if value == nil {
+		return nil
+	}
+	userId := value.(string)
+
+	return &userId
+}
