@@ -20,6 +20,7 @@ import (
 	authmid "airbnb-user-be/internal/app/middleware/auth"
 	cookiemid "airbnb-user-be/internal/app/middleware/cookie"
 	translation "airbnb-user-be/internal/app/translation/repo"
+	usergql "airbnb-user-be/internal/app/user/api/gql"
 )
 
 var Instance = "App"
@@ -34,6 +35,7 @@ type Options struct {
 	AuthHandler        *authrest.Handler
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler
+	UserGqlHandler     *usergql.Handler
 }
 
 type App struct {
