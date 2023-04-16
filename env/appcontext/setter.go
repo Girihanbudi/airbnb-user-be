@@ -13,5 +13,5 @@ func SetFromGinRouter(ctx *gin.Context, key any, val any) {
 
 func SetFromDefaultRouter(ctx *context.Context, key any, val any) {
 	newCtx := context.WithValue(*ctx, key, val)
-	ctx = &newCtx
+	*ctx = newCtx
 }
