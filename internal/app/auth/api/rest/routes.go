@@ -23,5 +23,8 @@ func (h Handler) RegisterApi() {
 			oauth.GET("/google", h.OauthGoogleCallback)
 			oauth.GET("/facebook", h.OauthFacebookCallback)
 		}
+
+		sessions.GET("/refresh", authmid.GinValidateNoJwtTokenFound, h.RefreshToken)
+		sessions.GET("/signout", h.SignOut)
 	}
 }

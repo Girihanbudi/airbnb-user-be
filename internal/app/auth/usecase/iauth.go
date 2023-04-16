@@ -16,4 +16,6 @@ type IAuth interface {
 	MakePhoneSession(ctx gin.Context, cmd request.MakePhoneSession) (err *stderror.StdError)
 	OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError)
 	OauthFacebookCallback(ctx gin.Context) (err *stderror.StdError)
+	RefreshToken(ctx gin.Context, cmd request.RefreshToken) (err *stderror.StdError)
+	SignOut(ctx gin.Context, cmd request.SignOut) (err *stderror.StdError)
 }

@@ -90,3 +90,56 @@ func (h Handler) OauthFacebookCallback(ctx *gin.Context) {
 
 	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
 }
+
+func (h Handler) RefreshToken(ctx *gin.Context) {
+	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+
+	// Read refresh token from Cookie
+	rt, readCookieErr := ctx.Cookie(appcontext.RefreshTokenCode)
+	if readCookieErr != nil {
+		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	req := request.RefreshToken{Token: rt}
+	err := h.Auth.RefreshToken(*ctx, req)
+	if err != nil {
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+}
+
+func (h Handler) SignOut(ctx *gin.Context) {
+	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+
+	// Read refresh token from Cookie
+	at, readCookieErr := ctx.Cookie(appcontext.AccessTokenCode)
+	if readCookieErr != nil {
+		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	// Read refresh token from Cookie
+	rt, readCookieErr := ctx.Cookie(appcontext.RefreshTokenCode)
+	if readCookieErr != nil {
+		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	req := request.SignOut{
+		AccessToken:  at,
+		RefreshToken: rt,
+	}
+	err := h.Auth.SignOut(*ctx, req)
+	if err != nil {
+		stdresponse.GinMakeHttpResponseErr(ctx, err)
+		return
+	}
+
+	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+}

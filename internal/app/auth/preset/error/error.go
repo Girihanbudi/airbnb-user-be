@@ -13,6 +13,7 @@ const (
 
 	TknGenerateFailed = "AUTH_TKN_001"
 	TknStoreFailed    = "AUTH_TKN_002"
+	TknInvalid        = "AUTH_TKN_003"
 
 	EvtSendMsgFailed = "AUTH_EVT_001"
 )
