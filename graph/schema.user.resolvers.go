@@ -15,7 +15,7 @@ import (
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context) (*model.User, error) {
-	if err := auth.GqlValidateAccessToken(ctx); err != nil {
+	if err := auth.GqlValidateAccessToken(&ctx); err != nil {
 		return nil, err
 	}
 
