@@ -17,17 +17,14 @@ const (
 )
 
 const (
-	OauthCode     = "oauth"   // oauth application context code
-	OauthDuration = 365 * day // expires in a week
-)
-
-const (
-	IsLoggedInCode       = "logged_in"
+	IsLoggedInCode       = "logged_in"   // user logged in status
 	AccessTokenCode      = "__Secure.at" // access token application context code
 	AccessTokenDuration  = 15 * minute   // expires in 15 minutes
 	RefreshTokenCode     = "__Secure.rt" // refresh token application context code
 	RefreshTokenDuration = 7 * day       // expires in a week
-	OtpDuration          = 1 * minute
+	OauthCode            = "oauth"       // oauth application context code
+	OauthDuration        = 1 * minute    // expires in a minute
+	OtpDuration          = 1 * minute    // expires in a minute
 )
 
 const (
