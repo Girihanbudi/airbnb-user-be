@@ -22,7 +22,7 @@ func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *
 	}
 
 	preloads := []string{"DefaultSetting", "Accounts"}
-	user, getUserErr := u.UserRepo.GetUser(ctx, clientLocale, &preloads)
+	user, getUserErr := u.UserRepo.GetUser(ctx, cmd.UserId, &preloads)
 	if getUserErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
@@ -50,7 +50,7 @@ func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *
 	}
 
 	if user.Accounts != nil {
-		res.Accounts = funk.Map(*user.Accounts, func(acc module.Account) response.Account {
+		accounts := funk.Map(*user.Accounts, func(acc module.Account) response.Account {
 			return response.Account{
 				Provider:     acc.Provider,
 				AccessToken:  acc.AccessToken,
@@ -60,7 +60,8 @@ func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *
 				CreatedAt:    acc.CreatedAt,
 				UpdatedAt:    acc.UpdatedAt,
 			}
-		}).(*[]response.Account)
+		}).([]response.Account)
+		res.Accounts = &accounts
 	}
 
 	return
