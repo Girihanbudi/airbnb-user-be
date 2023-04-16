@@ -19,7 +19,9 @@ import (
 	repoimpl4 "airbnb-user-be/internal/app/locale/repo/repoimpl"
 	usecaseimpl3 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
+	gql4 "airbnb-user-be/internal/app/user/api/gql"
 	repoimpl3 "airbnb-user-be/internal/app/user/repo/repoimpl"
+	usecaseimpl5 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
@@ -144,6 +146,14 @@ func NewApp() (*App, error) {
 		Currency: usecase3,
 	}
 	handler2 := gql3.NewCurrencyHandler(options10)
+	options11 := usecaseimpl5.Options{
+		UserRepo: repo2,
+	}
+	usecase4 := usecaseimpl5.NewUserUsecase(options11)
+	options12 := gql4.Options{
+		User: usecase4,
+	}
+	handler3 := gql4.NewUserHandler(options12)
 	appOptions := Options{
 		HttpServer:         serverServer,
 		EventListener:      listener,
@@ -153,6 +163,7 @@ func NewApp() (*App, error) {
 		AuthHandler:        restHandler,
 		LocaleGqlHandler:   gqlHandler,
 		CurrencyGqlHandler: handler2,
+		UserGqlHandler:     handler3,
 	}
 	app := &App{
 		Options: appOptions,
