@@ -24,22 +24,21 @@ func GinBindAccessToken() gin.HandlerFunc {
 	}
 }
 
-func GqlValidateAccessToken(ctx context.Context) (err error) {
-	accessToken := appcontext.GetAccessToken(ctx)
-	clientLocale := appcontext.GetLocale(ctx)
+func GqlValidateAccessToken(ctx *context.Context) (err error) {
+	accessToken := appcontext.GetAccessToken(*ctx)
+	clientLocale := appcontext.GetLocale(*ctx)
 	if accessToken == nil {
-		err = transutil.TranslateError(ctx, errpreset.TokenNotFound, clientLocale).Error
+		err = transutil.TranslateError(*ctx, errpreset.TokenNotFound, clientLocale).Error
 		return
 	}
 
-	userId, validateErr := validateJwtToken(ctx, *accessToken)
+	userId, validateErr := validateJwtToken(*ctx, *accessToken)
 	if validateErr != nil {
 		err = validateErr.Error
 		return
 	}
 
-	appcontext.SetFromDefaultRouter(&ctx, appcontext.UserCode, userId)
-
+	appcontext.SetFromDefaultRouter(ctx, appcontext.UserCode, userId)
 	return
 }
 
