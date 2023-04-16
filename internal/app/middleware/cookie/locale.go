@@ -33,7 +33,7 @@ func CreateLocale(ctx *gin.Context, val *string) {
 		appcontext.LocaleDuration,
 		"/",
 		env.CONFIG.Domain,
-		env.CONFIG.Stage != string(env.StageLocal),
+		true,
 		false,
 	)
 }

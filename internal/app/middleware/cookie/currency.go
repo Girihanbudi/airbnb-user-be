@@ -33,7 +33,7 @@ func CreateCurrency(ctx *gin.Context, val *string) {
 		appcontext.CurrencyDuration,
 		"/",
 		env.CONFIG.Domain,
-		env.CONFIG.Stage != string(env.StageLocal),
+		true,
 		false,
 	)
 }
