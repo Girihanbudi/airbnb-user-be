@@ -48,7 +48,7 @@ func (u Usecase) createAndStoreTokensPair(ctx gin.Context, userId string) (err *
 		appcontext.AccessTokenDuration,
 		"/",
 		env.CONFIG.Domain,
-		env.CONFIG.Stage != string(env.StageLocal),
+		true,
 		true,
 	)
 
@@ -56,19 +56,19 @@ func (u Usecase) createAndStoreTokensPair(ctx gin.Context, userId string) (err *
 		appcontext.RefreshTokenCode,
 		rt,
 		appcontext.RefreshTokenDuration,
-		"/sessions/refresh",
+		"/sessions",
 		env.CONFIG.Domain,
-		env.CONFIG.Stage != string(env.StageLocal),
+		true,
 		true,
 	)
 
 	ctx.SetCookie(
 		appcontext.IsLoggedInCode,
 		"true",
-		appcontext.RefreshTokenDuration,
+		appcontext.AccessTokenDuration,
 		"/",
 		env.CONFIG.Domain,
-		false,
+		true,
 		false,
 	)
 
@@ -87,4 +87,35 @@ func (u Usecase) createAndStoreOtp(ctx gin.Context, userId string) (otp string, 
 	}
 
 	return
+}
+
+func (u Usecase) extractToken(ctx gin.Context, token string) (jti string, err *stderror.StdError) {
+	reqCtx := ctx.Request.Context()
+	clientLocale := appcontext.GetLocale(reqCtx)
+	tokenMetadata := jwt.ExtractTokenMetadata(token)
+	if tokenMetadata == nil {
+		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		return
+	}
+
+	claims := *tokenMetadata
+	jti = claims["jti"].(string)
+
+	return
+}
+
+func (u Usecase) deleteOldToken(ctx gin.Context, name string) {
+	token, readCookieErr := ctx.Cookie(name)
+	if readCookieErr != nil {
+		return
+	}
+
+	key, extractTokenErr := u.extractToken(ctx, token)
+	if extractTokenErr != nil {
+		return
+	}
+
+	if delOldTokenErr := authcache.Del(key); delOldTokenErr != nil {
+		return
+	}
 }
