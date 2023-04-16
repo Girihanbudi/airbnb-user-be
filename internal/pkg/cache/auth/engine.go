@@ -11,3 +11,8 @@ func Set(key string, value interface{}, expiration time.Duration) error {
 func Get(key string) (string, error) {
 	return Cache.Get(key).Result()
 }
+
+func Del(keys ...string) error {
+	_, err := Cache.Del(keys...).Result()
+	return err
+}
