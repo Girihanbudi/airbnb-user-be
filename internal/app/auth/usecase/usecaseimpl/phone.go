@@ -11,6 +11,7 @@ import (
 	"airbnb-user-be/internal/pkg/json"
 	msgpreset "airbnb-user-be/internal/pkg/messaging/preset"
 	"airbnb-user-be/internal/pkg/stderror"
+	"airbnb-user-be/internal/pkg/util"
 	"errors"
 	"fmt"
 
@@ -125,8 +126,8 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 		return
 	}
 
-	user.FirstName = cmd.FirstName
-	user.FullName = cmd.FirstName + " " + cmd.LastName
+	user.FirstName = util.Case(cmd.FirstName, util.CaseLower, util.CaseTitle)
+	user.FullName = util.Case(cmd.FirstName+" "+cmd.LastName, util.CaseLower, util.CaseTitle)
 	user.Email = &cmd.Email
 	user.DateOfBirth = cmd.ConvertedDateOfBirth()
 	user.Role = usermodule.UserRole.String()
@@ -135,6 +136,10 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
+
+	// delete old token
+	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
+	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
 	return u.createAndStoreTokensPair(ctx, user.Id)
 }
@@ -163,6 +168,10 @@ func (u Usecase) MakePhoneSession(ctx gin.Context, cmd request.MakePhoneSession)
 		err = transutil.TranslateError(reqCtx, errpreset.UscForbidden, clientLocale)
 		return
 	}
+
+	// delete old token
+	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
+	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
 	return u.createAndStoreTokensPair(ctx, user.Id)
 }

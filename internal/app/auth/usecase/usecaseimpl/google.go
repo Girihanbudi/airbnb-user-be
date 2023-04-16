@@ -9,6 +9,7 @@ import (
 	"airbnb-user-be/internal/pkg/codegenerator"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/stderror"
+	"airbnb-user-be/internal/pkg/util"
 	"context"
 	"encoding/json"
 	"errors"
@@ -60,8 +61,8 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 	var user usermodule.User
 	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(reqCtx, data.Email); getUserErr != nil {
 		currentTime := time.Now()
-		user.FirstName = data.GivenName
-		user.FullName = data.Name
+		user.FirstName = util.Case(data.GivenName, util.CaseLower, util.CaseTitle)
+		user.FullName = util.Case(data.Name, util.CaseLower, util.CaseTitle)
 		user.Email = &data.Email
 		user.Image = data.Picture
 		user.Role = usermodule.UserRole.String()
@@ -112,6 +113,10 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
+
+	// delete old token
+	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
+	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
 	return u.createAndStoreTokensPair(ctx, user.Id)
 }
