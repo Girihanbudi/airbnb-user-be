@@ -109,7 +109,7 @@ func (h Handler) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	stdresponse.GinMakeHttpResponse(ctx, http.StatusCreated, nil, nil)
 }
 
 func (h Handler) SignOut(ctx *gin.Context) {
@@ -141,5 +141,5 @@ func (h Handler) SignOut(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(http.StatusPermanentRedirect, env.CONFIG.Oauth.RedirectUrl)
+	stdresponse.GinMakeHttpResponse(ctx, http.StatusOK, nil, nil)
 }
