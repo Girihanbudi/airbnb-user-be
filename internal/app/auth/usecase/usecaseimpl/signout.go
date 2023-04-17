@@ -12,23 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u Usecase) SignOut(ctx gin.Context, cmd request.SignOut) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) SignOut(ctx *gin.Context, cmd request.SignOut) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 
 	// Remove access token
 	atKey, err := u.extractToken(ctx, cmd.AccessToken)
 	if err != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 	if delAtKeyErr := authcache.Del(atKey); delAtKeyErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 	ctx.SetCookie(
@@ -44,11 +43,11 @@ func (u Usecase) SignOut(ctx gin.Context, cmd request.SignOut) (err *stderror.St
 	// Remove refresh token
 	rtKey, err := u.extractToken(ctx, cmd.AccessToken)
 	if err != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 	if delRtKeyErr := authcache.Del(rtKey); delRtKeyErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 	ctx.SetCookie(

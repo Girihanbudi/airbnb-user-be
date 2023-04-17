@@ -19,27 +19,26 @@ import (
 	"gorm.io/gorm"
 )
 
-func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhone) (res response.ContinueWithPhone, err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) ContinueWithPhone(ctx *gin.Context, cmd request.ContinueWithPhone) (res response.ContinueWithPhone, err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
-	if _, getCountryErr := u.CountryRepo.GetCountryByPhoneCode(reqCtx, cmd.CountryCode); getCountryErr != nil {
+	if _, getCountryErr := u.CountryRepo.GetCountryByPhoneCode(ctx, cmd.CountryCode); getCountryErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getCountryErr, gorm.ErrRecordNotFound) {
 			ec = errpreset.DbRecordNotFound
 		}
-		err = transutil.TranslateError(reqCtx, ec, clientLocale)
+		err = transutil.TranslateError(ctx, ec, clientLocale)
 		return
 	}
 
 	// update or create user if not exist
 	var user usermodule.User
-	if recordUser, getUserErr := u.UserRepo.GetUserByPhone(reqCtx, cmd.CountryCode, cmd.PhoneNumber); getUserErr != nil {
+	if recordUser, getUserErr := u.UserRepo.GetUserByPhone(ctx, cmd.CountryCode, cmd.PhoneNumber); getUserErr != nil {
 		user.CountryCode = &cmd.CountryCode
 		user.PhoneNumber = &cmd.PhoneNumber
 		user.Role = usermodule.UserRole.String()
@@ -48,14 +47,14 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 		var userDefaultSetting usermodule.UserDefaultSetting
 		userDefaultSetting.UserId = user.Id
 		userDefaultSetting.Locale = clientLocale
-		userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
+		userDefaultSetting.Currency = appcontext.GetCurrency(ctx)
 
 		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
 		if createUserErr != nil {
-			err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 	} else {
@@ -70,7 +69,7 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 	userPhoneNumber := fmt.Sprintf("+%d%s", cmd.CountryCode, cmd.PhoneNumber)
 	recipients := []string{userPhoneNumber}
 
-	template, err := transutil.TranslateMessage(reqCtx, "otp", clientLocale)
+	template, err := transutil.TranslateMessage(ctx, "otp", clientLocale)
 	if err != nil {
 		return
 	}
@@ -88,7 +87,7 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 	}
 
 	if _, _, produceEventErr := u.EventProducer.ProduceMessage("sms.send.init", msg); produceEventErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.EvtSendMsgFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.EvtSendMsgFailed, clientLocale)
 		return
 	}
 
@@ -96,33 +95,32 @@ func (u Usecase) ContinueWithPhone(ctx gin.Context, cmd request.ContinueWithPhon
 	return
 }
 
-func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.CompletePhoneRegistration) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) CompletePhoneRegistration(ctx *gin.Context, cmd request.CompletePhoneRegistration) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
 	userId, extractOtpErr := otpcache.Get(cmd.Otp)
 	if extractOtpErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId, nil)
+	user, getUserErr := u.UserRepo.GetUser(ctx, userId, nil)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
 			ec = errpreset.DbRecordNotFound
 		}
-		err = transutil.TranslateError(reqCtx, ec, clientLocale)
+		err = transutil.TranslateError(ctx, ec, clientLocale)
 		return
 	}
 
 	if user.VerifiedAt != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscForbidden, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscForbidden, clientLocale)
 		return
 	}
 
@@ -132,8 +130,8 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 	user.DateOfBirth = cmd.ConvertedDateOfBirth()
 	user.Role = usermodule.UserRole.String()
 
-	if saveUserErr := u.UserRepo.CreateOrUpdateUser(reqCtx, &user); saveUserErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+	if saveUserErr := u.UserRepo.CreateOrUpdateUser(ctx, &user); saveUserErr != nil {
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 
@@ -144,28 +142,27 @@ func (u Usecase) CompletePhoneRegistration(ctx gin.Context, cmd request.Complete
 	return u.createAndStoreTokensPair(ctx, user.Id)
 }
 
-func (u Usecase) MakePhoneSession(ctx gin.Context, cmd request.MakePhoneSession) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) MakePhoneSession(ctx *gin.Context, cmd request.MakePhoneSession) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	userId, extractOtpErr := otpcache.Get(cmd.Otp)
 	if extractOtpErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(reqCtx, userId, nil)
+	user, getUserErr := u.UserRepo.GetUser(ctx, userId, nil)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
 			ec = errpreset.DbRecordNotFound
 		}
-		err = transutil.TranslateError(reqCtx, ec, clientLocale)
+		err = transutil.TranslateError(ctx, ec, clientLocale)
 		return
 	}
 
 	if user.VerifiedAt == nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscForbidden, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscForbidden, clientLocale)
 		return
 	}
 

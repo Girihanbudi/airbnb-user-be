@@ -11,12 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u Usecase) RefreshToken(ctx gin.Context, cmd request.RefreshToken) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) RefreshToken(ctx *gin.Context, cmd request.RefreshToken) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	if valid, _ := cmd.Validate(); !valid {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 
@@ -27,7 +26,7 @@ func (u Usecase) RefreshToken(ctx gin.Context, cmd request.RefreshToken) (err *s
 
 	userId, _ := authcache.Get(key)
 	if userId == "" {
-		err = transutil.TranslateError(reqCtx, errpreset.TknInvalid, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 

@@ -43,16 +43,15 @@ func GqlValidateAccessToken(ctx *context.Context) (err error) {
 }
 
 func GinValidateAccessToken(ctx *gin.Context) {
-	reqCtx := ctx.Request.Context()
-	accessToken := appcontext.GetAccessToken(reqCtx)
-	clientLocale := appcontext.GetLocale(reqCtx)
+	accessToken := appcontext.GetAccessToken(ctx)
+	clientLocale := appcontext.GetLocale(ctx)
 	if accessToken == nil {
-		err := transutil.TranslateError(reqCtx, errpreset.TokenNotFound, clientLocale)
+		err := transutil.TranslateError(ctx, errpreset.TokenNotFound, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
 
-	userId, err := validateJwtToken(reqCtx, *accessToken)
+	userId, err := validateJwtToken(ctx, *accessToken)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return

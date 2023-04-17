@@ -14,30 +14,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u Usecase) createAndStoreTokensPair(ctx gin.Context, userId string) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) createAndStoreTokensPair(ctx *gin.Context, userId string) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 	at, claims, createAtErr := jwt.GenerateToken(appcontext.AccessTokenDuration, nil)
 	if createAtErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknGenerateFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknGenerateFailed, clientLocale)
 		return
 	}
 
 	storeAtErr := authcache.Set(claims["jti"].(string), userId, appcontext.AccessTokenDuration)
 	if storeAtErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknStoreFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknStoreFailed, clientLocale)
 		return
 	}
 
 	rt, claims, createRtErr := jwt.GenerateToken(appcontext.RefreshTokenDuration, nil)
 	if createRtErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknGenerateFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknGenerateFailed, clientLocale)
 		return
 	}
 
 	storeRtErr := authcache.Set(claims["jti"].(string), userId, appcontext.RefreshTokenDuration)
 	if storeRtErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknStoreFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknStoreFailed, clientLocale)
 		return
 	}
 
@@ -75,26 +74,24 @@ func (u Usecase) createAndStoreTokensPair(ctx gin.Context, userId string) (err *
 	return
 }
 
-func (u Usecase) createAndStoreOtp(ctx gin.Context, userId string) (otp string, err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) createAndStoreOtp(ctx *gin.Context, userId string) (otp string, err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	otp = codegenerator.RandomEncodedNumbers(6)
 	storeOtpErr := otpcache.Set(otp, userId, appcontext.OtpDuration)
 	if storeOtpErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.TknStoreFailed, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.TknStoreFailed, clientLocale)
 		return
 	}
 
 	return
 }
 
-func (u Usecase) extractToken(ctx gin.Context, token string) (jti string, err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) extractToken(ctx *gin.Context, token string) (jti string, err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 	tokenMetadata := jwt.ExtractTokenMetadata(token)
 	if tokenMetadata == nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscBadRequest, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscBadRequest, clientLocale)
 		return
 	}
 
@@ -104,7 +101,7 @@ func (u Usecase) extractToken(ctx gin.Context, token string) (jti string, err *s
 	return
 }
 
-func (u Usecase) deleteOldToken(ctx gin.Context, name string) {
+func (u Usecase) deleteOldToken(ctx *gin.Context, name string) {
 	token, readCookieErr := ctx.Cookie(name)
 	if readCookieErr != nil {
 		return

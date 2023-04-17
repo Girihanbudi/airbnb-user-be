@@ -13,11 +13,11 @@ import (
 )
 
 func (h Handler) ContinueWithGoogle(ctx *gin.Context) {
-	h.Auth.ContinueWithGoogle(*ctx)
+	h.Auth.ContinueWithGoogle(ctx)
 }
 
 func (h Handler) ContinueWithFacebook(ctx *gin.Context) {
-	h.Auth.ContinueWithFacebook(*ctx)
+	h.Auth.ContinueWithFacebook(ctx)
 }
 
 func (h Handler) ContinueWithPhone(ctx *gin.Context) {
@@ -28,7 +28,7 @@ func (h Handler) ContinueWithPhone(ctx *gin.Context) {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
-	res, err := h.Auth.ContinueWithPhone(*ctx, req)
+	res, err := h.Auth.ContinueWithPhone(ctx, req)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -45,7 +45,7 @@ func (h Handler) CompletePhoneRegistration(ctx *gin.Context) {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
-	err := h.Auth.CompletePhoneRegistration(*ctx, req)
+	err := h.Auth.CompletePhoneRegistration(ctx, req)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -62,7 +62,7 @@ func (h Handler) MakePhoneSession(ctx *gin.Context) {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
-	err := h.Auth.MakePhoneSession(*ctx, req)
+	err := h.Auth.MakePhoneSession(ctx, req)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -72,7 +72,7 @@ func (h Handler) MakePhoneSession(ctx *gin.Context) {
 }
 
 func (h Handler) OauthGoogleCallback(ctx *gin.Context) {
-	err := h.Auth.OauthGoogleCallback(*ctx)
+	err := h.Auth.OauthGoogleCallback(ctx)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -82,7 +82,7 @@ func (h Handler) OauthGoogleCallback(ctx *gin.Context) {
 }
 
 func (h Handler) OauthFacebookCallback(ctx *gin.Context) {
-	err := h.Auth.OauthFacebookCallback(*ctx)
+	err := h.Auth.OauthFacebookCallback(ctx)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -103,7 +103,7 @@ func (h Handler) RefreshToken(ctx *gin.Context) {
 	}
 
 	req := request.RefreshToken{Token: rt}
-	err := h.Auth.RefreshToken(*ctx, req)
+	err := h.Auth.RefreshToken(ctx, req)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -135,7 +135,7 @@ func (h Handler) SignOut(ctx *gin.Context) {
 		AccessToken:  at,
 		RefreshToken: rt,
 	}
-	err := h.Auth.SignOut(*ctx, req)
+	err := h.Auth.SignOut(ctx, req)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return

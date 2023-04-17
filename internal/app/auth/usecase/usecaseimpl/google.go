@@ -21,7 +21,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u Usecase) ContinueWithGoogle(ctx gin.Context) {
+func (u Usecase) ContinueWithGoogle(ctx *gin.Context) {
 	// Create CSRF token cookie
 	oauthState := codegenerator.RandomEncodedBytes(16)
 
@@ -39,27 +39,26 @@ func (u Usecase) ContinueWithGoogle(ctx gin.Context) {
 	ctx.Redirect(http.StatusTemporaryRedirect, link)
 }
 
-func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
-	reqCtx := ctx.Request.Context()
-	clientLocale := appcontext.GetLocale(reqCtx)
+func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) {
+	clientLocale := appcontext.GetLocale(ctx)
 
 	// Read CSRF token from Cookie
 	oauthState, _ := ctx.Cookie(appcontext.OauthCode)
 
 	if ctx.Request.FormValue("state") != oauthState {
-		err = transutil.TranslateError(reqCtx, errpreset.UscInvalidOauth, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscInvalidOauth, clientLocale)
 		return
 	}
 
 	data, account, extractDataErr := u.extractGoogleUserData(ctx.Request.FormValue("code"))
 	if extractDataErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.UscFailedExtractGoogleInfo, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.UscFailedExtractGoogleInfo, clientLocale)
 		return
 	}
 
 	// update or create user if not exist
 	var user usermodule.User
-	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(reqCtx, data.Email); getUserErr != nil {
+	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(ctx, data.Email); getUserErr != nil {
 		currentTime := time.Now()
 		user.FirstName = util.Case(data.GivenName, util.CaseLower, util.CaseTitle)
 		user.FullName = util.Case(data.Name, util.CaseLower, util.CaseTitle)
@@ -69,9 +68,9 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 		user.VerifiedAt = &currentTime
 
 		// get locale list for references
-		locales, getLocalesErr := u.LocaleRepo.GetLocales(reqCtx)
+		locales, getLocalesErr := u.LocaleRepo.GetLocales(ctx)
 		if getLocalesErr != nil {
-			err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 
@@ -92,14 +91,14 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 		// otherwise using current locale
 		if !isLocaleFound {
 			userDefaultSetting.Locale = clientLocale
-			userDefaultSetting.Currency = appcontext.GetCurrency(reqCtx)
+			userDefaultSetting.Currency = appcontext.GetCurrency(ctx)
 		}
 		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
 		if createUserErr != nil {
-			err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 	} else {
@@ -108,9 +107,9 @@ func (u Usecase) OauthGoogleCallback(ctx gin.Context) (err *stderror.StdError) {
 
 	// update or create user account if not exist
 	account.UserId = user.Id
-	createAcountErr := u.UserRepo.CreateOrUpdateUserAccount(reqCtx, &account)
+	createAcountErr := u.UserRepo.CreateOrUpdateUserAccount(ctx, &account)
 	if createAcountErr != nil {
-		err = transutil.TranslateError(reqCtx, errpreset.DbServiceUnavailable, clientLocale)
+		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
 
