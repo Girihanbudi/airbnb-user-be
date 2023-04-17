@@ -24,7 +24,7 @@ func (h Handler) RegisterApi() {
 			oauth.GET("/facebook", h.OauthFacebookCallback)
 		}
 
-		sessions.GET("/refresh", authmid.GinValidateNoJwtTokenFound, h.RefreshToken)
-		sessions.GET("/signout", h.SignOut)
+		sessions.PUT("/refresh", authmid.GinValidateNoJwtTokenFound, h.RefreshToken)
+		sessions.DELETE("/signout", h.SignOut)
 	}
 }
