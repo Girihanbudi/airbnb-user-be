@@ -40,13 +40,3 @@ func (m *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 	return
 }
-
-// model Session {
-//   id           String   @id @default(cuid())
-//   createdAt    DateTime @default(now()) @map("created_at")
-//   sessionToken String   @unique @map("session_token")
-//   userId       String   @map("user_id")
-//   expires      DateTime
-//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   @@map("sessions")
-// }
