@@ -12,11 +12,8 @@ func (h Handler) RegisterApi() {
 		{
 			phone.POST("/initial", authmid.GinValidateNoJwtTokenFound, h.ContinueWithPhone)
 			phone.POST("/complete", authmid.GinValidateNoJwtTokenFound, h.CompletePhoneRegistration)
-			phone.POST("/generate", authmid.GinValidateNoJwtTokenFound, h.ContinueWithPhone)
+			phone.POST("/generate", authmid.GinValidateNoJwtTokenFound, h.MakePhoneSession)
 		}
-		sessions.GET("/phone/initial", authmid.GinValidateNoJwtTokenFound, h.ContinueWithPhone)
-		sessions.GET("/phone/complete", authmid.GinValidateNoJwtTokenFound, h.CompletePhoneRegistration)
-		sessions.GET("/phone/make", authmid.GinValidateNoJwtTokenFound, h.MakePhoneSession)
 
 		oauth := sessions.Group("/oauth")
 		{
