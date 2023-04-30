@@ -1,6 +1,9 @@
 package appcontext
 
-import "context"
+import (
+	"airbnb-user-be/internal/pkg/cache/auth"
+	"context"
+)
 
 func GetLocale(ctx context.Context) string {
 	value := ctx.Value(LocaleCode)
@@ -28,12 +31,12 @@ func GetAccessToken(ctx context.Context) *string {
 	return &token
 }
 
-func GetUserId(ctx context.Context) *string {
-	value := ctx.Value(UserCode)
+func GetUserClaims(ctx context.Context) *auth.DefaultClaims {
+	value := ctx.Value(UserClaims)
 	if value == nil {
 		return nil
 	}
-	userId := value.(string)
+	userClaims := value.(*auth.DefaultClaims)
 
-	return &userId
+	return userClaims
 }

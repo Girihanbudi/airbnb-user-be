@@ -28,5 +28,5 @@ const (
 )
 
 const (
-	UserCode = "userid" // user id application context code
+	UserClaims = "user_claims" // user id application context code
 )
