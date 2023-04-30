@@ -21,8 +21,7 @@ func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *
 		return
 	}
 
-	preloads := []string{"DefaultSetting", "Accounts"}
-	user, getUserErr := u.UserRepo.GetUser(ctx, cmd.UserId, &preloads)
+	user, getUserErr := u.UserRepo.GetUser(ctx, cmd.UserId, "DefaultSetting", "Accounts")
 	if getUserErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
