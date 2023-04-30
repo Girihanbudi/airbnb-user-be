@@ -1,15 +1,26 @@
 package auth
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 func Set(key string, value interface{}, expiration time.Duration) error {
 	exp := expiration / 60 * time.Minute
-	_, err := Cache.Set(key, value, exp).Result()
+	p, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	err = Cache.Set(key, p, exp).Err()
 	return err
 }
 
-func Get(key string) (string, error) {
-	return Cache.Get(key).Result()
+func Get(key string, destination interface{}) error {
+	p, err := Cache.Get(key).Bytes()
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(p, destination)
 }
 
 func Del(keys ...string) error {
