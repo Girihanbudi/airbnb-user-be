@@ -34,12 +34,53 @@ paths:
       - auth
   /sessions/phone/complete:
     post:
+      consumes:
+      - application/json
+      parameters:
+      - description: OTP
+        in: body
+        name: otp
+        required: true
+        schema:
+          type: string
+      - description: First Name
+        in: body
+        name: firstName
+        required: true
+        schema:
+          type: string
+      - description: Last Name
+        in: body
+        name: lastName
+        schema:
+          type: string
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: Date of Birth
+        in: body
+        name: dateOfBirth
+        required: true
+        schema:
+          type: string
       responses: {}
       summary: Complete registration using phone number if not verified yet.
       tags:
       - auth
   /sessions/phone/generate:
     post:
+      consumes:
+      - application/json
+      parameters:
+      - description: OTP
+        in: body
+        name: otp
+        required: true
+        schema:
+          type: string
       responses: {}
       summary: Make a session usign phone number if user already verified.
       tags:
@@ -48,6 +89,19 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Country Code
+        in: body
+        name: countryCode
+        required: true
+        schema:
+          type: integer
+      - description: Phone Number
+        in: body
+        name: phoneNumber
+        required: true
+        schema:
+          type: string
       produces:
       - application/json
       responses:

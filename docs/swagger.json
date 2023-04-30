@@ -34,19 +34,82 @@
         },
         "/sessions/phone/complete": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "tags": [
                     "auth"
                 ],
                 "summary": "Complete registration using phone number if not verified yet.",
+                "parameters": [
+                    {
+                        "description": "OTP",
+                        "name": "otp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "First Name",
+                        "name": "firstName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Last Name",
+                        "name": "lastName",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Date of Birth",
+                        "name": "dateOfBirth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
         "/sessions/phone/generate": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "tags": [
                     "auth"
                 ],
                 "summary": "Make a session usign phone number if user already verified.",
+                "parameters": [
+                    {
+                        "description": "OTP",
+                        "name": "otp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {}
             }
         },
@@ -62,6 +125,26 @@
                     "auth"
                 ],
                 "summary": "Get session by using user phone number. An OTP code will be sent to user phone.",
+                "parameters": [
+                    {
+                        "description": "Country Code",
+                        "name": "countryCode",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Phone Number",
+                        "name": "phoneNumber",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",

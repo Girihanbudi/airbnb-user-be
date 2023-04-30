@@ -33,12 +33,14 @@ func (h Handler) ContinueWithFacebook(ctx *gin.Context) {
 
 // ContinueWithPhone
 //
-//	@Summary			Get session by using user phone number. An OTP code will be sent to user phone.
-//	@Tags					auth
-//	@Accept				json
-//	@Produce			json
-//	@Success			201	{object}	response.ContinueWithPhone
-//	@Router				/sessions/phone/initial [post]
+//		@Summary			Get session by using user phone number. An OTP code will be sent to user phone.
+//		@Tags					auth
+//		@Accept				json
+//		@Produce			json
+//	 	@Param				countryCode			body		int			true		"Country Code"
+//	 	@Param				phoneNumber			body		string	true		"Phone Number"
+//		@Success			201	{object}	response.ContinueWithPhone
+//		@Router				/sessions/phone/initial [post]
 func (h Handler) ContinueWithPhone(ctx *gin.Context) {
 	clientLocale := appcontext.GetLocale(ctx)
 	var req request.ContinueWithPhone
@@ -58,9 +60,15 @@ func (h Handler) ContinueWithPhone(ctx *gin.Context) {
 
 // CompletePhoneRegistration
 //
-//	@Summary			Complete registration using phone number if not verified yet.
-//	@Tags					auth
-//	@Router				/sessions/phone/complete [post]
+//	@Summary		Complete registration using phone number if not verified yet.
+//	@Tags				auth
+//	@Accept			json
+//	@Param			otp						body		string	true		"OTP"
+//	@Param			firstName			body		string	true		"First Name"
+//	@Param			lastName			body		string	false		"Last Name"
+//	@Param			email					body		string	true		"Email"
+//	@Param			dateOfBirth		body		string	true		"Date of Birth"
+//	@Router			/sessions/phone/complete [post]
 func (h Handler) CompletePhoneRegistration(ctx *gin.Context) {
 	clientLocale := appcontext.GetLocale(ctx)
 	var req request.CompletePhoneRegistration
@@ -82,6 +90,8 @@ func (h Handler) CompletePhoneRegistration(ctx *gin.Context) {
 //
 //	@Summary			Make a session usign phone number if user already verified.
 //	@Tags					auth
+//	@Accept				json
+//	@Param				otp						body		string	true		"OTP"
 //	@Router				/sessions/phone/generate [post]
 func (h Handler) MakePhoneSession(ctx *gin.Context) {
 	clientLocale := appcontext.GetLocale(ctx)
