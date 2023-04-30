@@ -21,10 +21,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// test
 func (u Usecase) ContinueWithGoogle(ctx *gin.Context) {
 	// Create CSRF token cookie
 	oauthState := codegenerator.RandomEncodedBytes(16)
 
+	// Set oauth CSRF code
 	ctx.SetCookie(
 		appcontext.OauthCode,
 		oauthState,
@@ -35,28 +37,30 @@ func (u Usecase) ContinueWithGoogle(ctx *gin.Context) {
 		true,
 	)
 
+	// Redirect to google oauth page
 	link := u.GoogleOauth.AuthCodeURL(oauthState)
 	ctx.Redirect(http.StatusTemporaryRedirect, link)
 }
 
 func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) {
+	// Get user locale code
 	clientLocale := appcontext.GetLocale(ctx)
 
 	// Read CSRF token from Cookie
 	oauthState, _ := ctx.Cookie(appcontext.OauthCode)
-
 	if ctx.Request.FormValue("state") != oauthState {
 		err = transutil.TranslateError(ctx, errpreset.UscInvalidOauth, clientLocale)
 		return
 	}
 
+	// Extract user data from google apis
 	data, account, extractDataErr := u.extractGoogleUserData(ctx.Request.FormValue("code"))
 	if extractDataErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.UscFailedExtractGoogleInfo, clientLocale)
 		return
 	}
 
-	// update or create user if not exist
+	// Update or create user if not exist
 	var user usermodule.User
 	if recordUser, getUserErr := u.UserRepo.GetUserByEmail(ctx, data.Email); getUserErr != nil {
 		currentTime := time.Now()
@@ -67,17 +71,17 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 		user.Role = usermodule.UserRole.String()
 		user.VerifiedAt = &currentTime
 
-		// get locale list for references
+		// Get locale list for references
 		locales, getLocalesErr := u.LocaleRepo.GetLocales(ctx)
 		if getLocalesErr != nil {
 			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
 		}
 
-		// create user default setting
+		// Create user default setting
 		var userDefaultSetting usermodule.UserDefaultSetting
 		userDefaultSetting.UserId = user.Id
-		// set user locale using google locale
+		// Set user locale using google locale
 		isLocaleFound := false
 		if locales != nil {
 			for _, locale := range *locales {
@@ -88,14 +92,14 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 				}
 			}
 		}
-		// otherwise using current locale
+		// Otherwise using current locale
 		if !isLocaleFound {
 			userDefaultSetting.Locale = clientLocale
 			userDefaultSetting.Currency = appcontext.GetCurrency(ctx)
 		}
 		user.DefaultSetting = &userDefaultSetting
 
-		// insert new user to database
+		// Insert new user to database
 		createUserErr := u.UserRepo.CreateUser(ctx, &user)
 		if createUserErr != nil {
 			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
@@ -105,7 +109,7 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 		user = recordUser
 	}
 
-	// update or create user account if not exist
+	// Update or create user account if not exist
 	account.UserId = user.Id
 	createAcountErr := u.UserRepo.CreateOrUpdateUserAccount(ctx, &account)
 	if createAcountErr != nil {
@@ -113,52 +117,53 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 		return
 	}
 
-	// delete old token
+	// Delete old tokens
 	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
 	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
+	// Create and store user access and refresh tokens in cache
 	return u.createAndStoreTokensPair(ctx, user)
 }
 
 func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserInfo, account usermodule.Account, err error) {
+	// Convert authorization code into a token
 	token, err := u.GoogleOauth.Exchange(context.Background(), code)
 	if err != nil {
 		err = fmt.Errorf("code exchange wrong: %s", err.Error())
 		return
 	}
 
-	fmt.Printf("%+v\n", token)
-
-	// bind token info
+	// Bind token info
 	account.Provider = module.ProviderGoogle.String()
 	account.AccessToken = token.AccessToken
 	account.RefreshToken = token.RefreshToken
 	account.ExpiredAt = token.Expiry
 	account.TokenType = token.TokenType
 
-	// get user info from google apis
+	// Get user info from google apis
 	response, err := http.Get(u.GoogleOauth.UserInfoApi + token.AccessToken)
 	if err != nil {
 		err = fmt.Errorf("failed getting user info: %s", err.Error())
 		return
 	}
 
-	// run to the closest return
+	// Close response body to the closest return
 	defer response.Body.Close()
 
-	// read message
+	// Read message
 	contents, err := io.ReadAll(response.Body)
 	if err != nil {
 		err = fmt.Errorf("failed read response: %s", err.Error())
 		return
 	}
 
-	// bind to user info struct
+	// Bind to user info struct
 	err = json.Unmarshal(contents, &userInfo)
 	if err != nil {
 		return
 	}
 
+	// Check if email exist
 	if userInfo.Email == "" {
 		err = errors.New("email not found")
 		return

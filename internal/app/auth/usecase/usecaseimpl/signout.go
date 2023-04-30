@@ -13,14 +13,16 @@ import (
 )
 
 func (u Usecase) SignOut(ctx *gin.Context, cmd request.SignOut) (err *stderror.StdError) {
+	// Get user locale code
 	clientLocale := appcontext.GetLocale(ctx)
 
+	// Validate command request
 	if valid, _ := cmd.Validate(); !valid {
 		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
 
-	// Remove access token
+	// Remove access token and it cookie
 	atKey, err := u.extractToken(ctx, cmd.AccessToken)
 	if err != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
@@ -40,7 +42,7 @@ func (u Usecase) SignOut(ctx *gin.Context, cmd request.SignOut) (err *stderror.S
 		true,
 	)
 
-	// Remove refresh token
+	// Remove refresh token and it cookie
 	rtKey, err := u.extractToken(ctx, cmd.AccessToken)
 	if err != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
@@ -60,6 +62,7 @@ func (u Usecase) SignOut(ctx *gin.Context, cmd request.SignOut) (err *stderror.S
 		true,
 	)
 
+	// Remove login indicator cookie
 	ctx.SetCookie(
 		appcontext.IsLoggedInCode,
 		"false",

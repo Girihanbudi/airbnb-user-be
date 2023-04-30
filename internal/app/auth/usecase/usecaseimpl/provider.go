@@ -22,6 +22,7 @@ type Usecase struct {
 	Options
 }
 
+// Auth Usecase provide a module for authentication
 func NewAuthUsecase(options Options) *Usecase {
 	return &Usecase{options}
 }

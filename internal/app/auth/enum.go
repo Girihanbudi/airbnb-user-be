@@ -1,5 +1,6 @@
 package auth
 
+// Provider is a unique name of which provider that supplies the OAuth service
 type Provider int
 
 const (

@@ -1,5 +1,6 @@
 package auth
 
+// User information provided by google apis
 type GoogleUserInfo struct {
 	Id            string `json:"id"`
 	GivenName     string `json:"given_name"`

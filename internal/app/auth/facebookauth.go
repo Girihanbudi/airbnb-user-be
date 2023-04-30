@@ -1,5 +1,6 @@
 package auth
 
+// User information provided by facebook apis
 type FacebookUserInfo struct {
 	Id        string                            `json:"id"`
 	FirstName string                            `json:"first_name"`
