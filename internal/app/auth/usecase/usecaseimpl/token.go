@@ -4,6 +4,7 @@ import (
 	"airbnb-user-be/env/appcontext"
 	errpreset "airbnb-user-be/internal/app/auth/preset/error"
 	transutil "airbnb-user-be/internal/app/translation/util"
+	usermodule "airbnb-user-be/internal/app/user"
 	authcache "airbnb-user-be/internal/pkg/cache/auth"
 	otpcache "airbnb-user-be/internal/pkg/cache/otp"
 	"airbnb-user-be/internal/pkg/codegenerator"
@@ -14,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (u Usecase) createAndStoreTokensPair(ctx *gin.Context, userId string) (err *stderror.StdError) {
+func (u Usecase) createAndStoreTokensPair(ctx *gin.Context, user usermodule.User) (err *stderror.StdError) {
 	clientLocale := appcontext.GetLocale(ctx)
 	at, claims, createAtErr := jwt.GenerateToken(appcontext.AccessTokenDuration, nil)
 	if createAtErr != nil {
@@ -22,19 +23,29 @@ func (u Usecase) createAndStoreTokensPair(ctx *gin.Context, userId string) (err 
 		return
 	}
 
-	storeAtErr := authcache.Set(claims["jti"].(string), userId, appcontext.AccessTokenDuration)
+	AtClaims := authcache.DefaultClaims{
+		UserID:     user.Id,
+		FirstName:  user.FirstName,
+		FullName:   user.FullName,
+		Role:       user.Role,
+		VerifiedAt: user.VerifiedAt,
+	}
+
+	storeAtErr := authcache.Set(claims["jti"].(string), AtClaims, appcontext.AccessTokenDuration)
 	if storeAtErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknStoreFailed, clientLocale)
 		return
 	}
-
 	rt, claims, createRtErr := jwt.GenerateToken(appcontext.RefreshTokenDuration, nil)
 	if createRtErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknGenerateFailed, clientLocale)
 		return
 	}
 
-	storeRtErr := authcache.Set(claims["jti"].(string), userId, appcontext.RefreshTokenDuration)
+	RtClaims := authcache.DefaultClaims{
+		UserID: user.Id,
+	}
+	storeRtErr := authcache.Set(claims["jti"].(string), RtClaims, appcontext.RefreshTokenDuration)
 	if storeRtErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknStoreFailed, clientLocale)
 		return

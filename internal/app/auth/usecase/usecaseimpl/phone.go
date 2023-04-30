@@ -52,7 +52,7 @@ func (u Usecase) ContinueWithPhone(ctx *gin.Context, cmd request.ContinueWithPho
 		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
-		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
+		createUserErr := u.UserRepo.CreateUser(ctx, &user)
 		if createUserErr != nil {
 			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
@@ -109,7 +109,7 @@ func (u Usecase) CompletePhoneRegistration(ctx *gin.Context, cmd request.Complet
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(ctx, userId, nil)
+	user, getUserErr := u.UserRepo.GetUser(ctx, userId)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
@@ -139,7 +139,7 @@ func (u Usecase) CompletePhoneRegistration(ctx *gin.Context, cmd request.Complet
 	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
 	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
-	return u.createAndStoreTokensPair(ctx, user.Id)
+	return u.createAndStoreTokensPair(ctx, user)
 }
 
 func (u Usecase) MakePhoneSession(ctx *gin.Context, cmd request.MakePhoneSession) (err *stderror.StdError) {
@@ -151,7 +151,7 @@ func (u Usecase) MakePhoneSession(ctx *gin.Context, cmd request.MakePhoneSession
 		return
 	}
 
-	user, getUserErr := u.UserRepo.GetUser(ctx, userId, nil)
+	user, getUserErr := u.UserRepo.GetUser(ctx, userId)
 	if getUserErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getUserErr, gorm.ErrRecordNotFound) {
@@ -170,5 +170,5 @@ func (u Usecase) MakePhoneSession(ctx *gin.Context, cmd request.MakePhoneSession
 	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
 	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
-	return u.createAndStoreTokensPair(ctx, user.Id)
+	return u.createAndStoreTokensPair(ctx, user)
 }

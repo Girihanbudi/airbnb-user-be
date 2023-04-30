@@ -21,9 +21,9 @@ func (h Handler) ContinueWithFacebook(ctx *gin.Context) {
 }
 
 func (h Handler) ContinueWithPhone(ctx *gin.Context) {
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx)
 	var req request.ContinueWithPhone
-	if bindErr := ctx.BindJSON(&req); bindErr != nil {
+	if bindErr := ctx.ShouldBindJSON(&req); bindErr != nil {
 		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -38,9 +38,9 @@ func (h Handler) ContinueWithPhone(ctx *gin.Context) {
 }
 
 func (h Handler) CompletePhoneRegistration(ctx *gin.Context) {
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx)
 	var req request.CompletePhoneRegistration
-	if bindErr := ctx.BindJSON(&req); bindErr != nil {
+	if bindErr := ctx.ShouldBindJSON(&req); bindErr != nil {
 		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -55,9 +55,9 @@ func (h Handler) CompletePhoneRegistration(ctx *gin.Context) {
 }
 
 func (h Handler) MakePhoneSession(ctx *gin.Context) {
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx)
 	var req request.MakePhoneSession
-	if bindErr := ctx.BindJSON(&req); bindErr != nil {
+	if bindErr := ctx.ShouldBindJSON(&req); bindErr != nil {
 		err := transutil.TranslateError(ctx, stderror.DEF_AUTH_401, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
@@ -92,7 +92,7 @@ func (h Handler) OauthFacebookCallback(ctx *gin.Context) {
 }
 
 func (h Handler) RefreshToken(ctx *gin.Context) {
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx)
 
 	// Read refresh token from Cookie
 	rt, readCookieErr := ctx.Cookie(appcontext.RefreshTokenCode)
@@ -113,7 +113,7 @@ func (h Handler) RefreshToken(ctx *gin.Context) {
 }
 
 func (h Handler) SignOut(ctx *gin.Context) {
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	clientLocale := appcontext.GetLocale(ctx)
 
 	// Read refresh token from Cookie
 	at, readCookieErr := ctx.Cookie(appcontext.AccessTokenCode)

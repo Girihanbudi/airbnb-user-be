@@ -32,13 +32,13 @@ func GqlValidateAccessToken(ctx *context.Context) (err error) {
 		return
 	}
 
-	userId, validateErr := validateJwtToken(*ctx, *accessToken)
+	userClaims, validateErr := validateJwtToken(*ctx, *accessToken)
 	if validateErr != nil {
 		err = validateErr.Error
 		return
 	}
 
-	appcontext.SetFromDefaultRouter(ctx, appcontext.UserCode, userId)
+	appcontext.SetFromDefaultRouter(ctx, appcontext.UserClaims, userClaims)
 	return
 }
 
@@ -51,22 +51,22 @@ func GinValidateAccessToken(ctx *gin.Context) {
 		return
 	}
 
-	userId, err := validateJwtToken(ctx, *accessToken)
+	userClaims, err := validateJwtToken(ctx, *accessToken)
 	if err != nil {
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
 
-	appcontext.SetFromGinRouter(ctx, appcontext.UserCode, userId)
+	appcontext.SetFromGinRouter(ctx, appcontext.UserClaims, userClaims)
 
 	ctx.Next()
 }
 
 func GinValidateNoJwtTokenFound(ctx *gin.Context) {
-	accessToken := appcontext.GetAccessToken(ctx.Request.Context())
-	clientLocale := appcontext.GetLocale(ctx.Request.Context())
+	accessToken := appcontext.GetAccessToken(ctx)
+	clientLocale := appcontext.GetLocale(ctx)
 	if accessToken != nil {
-		err := transutil.TranslateError(ctx.Request.Context(), errpreset.UserAlreadyVerified, clientLocale)
+		err := transutil.TranslateError(ctx, errpreset.UserAlreadyVerified, clientLocale)
 		stdresponse.GinMakeHttpResponseErr(ctx, err)
 		return
 	}
@@ -74,7 +74,7 @@ func GinValidateNoJwtTokenFound(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func validateJwtToken(ctx context.Context, accessToken string) (userId string, err *stderror.StdError) {
+func validateJwtToken(ctx context.Context, accessToken string) (tokenClaims *authcache.DefaultClaims, err *stderror.StdError) {
 	clientLocale := appcontext.GetLocale(ctx)
 	tokenMetadata := jwt.ExtractTokenMetadata(accessToken)
 	if tokenMetadata == nil {
@@ -83,11 +83,14 @@ func validateJwtToken(ctx context.Context, accessToken string) (userId string, e
 	}
 
 	claims := *tokenMetadata
-	userId, _ = authcache.Get(claims["jti"].(string))
-	if userId == "" {
+	var cacheData authcache.DefaultClaims
+	readCacheErr := authcache.Get(claims["jti"].(string), &cacheData)
+	if readCacheErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.TokenNotFound, clientLocale)
 		return
 	}
+
+	tokenClaims = &cacheData
 
 	return
 }

@@ -96,7 +96,7 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 		user.DefaultSetting = &userDefaultSetting
 
 		// insert new user to database
-		createUserErr := u.UserRepo.CreateUser(ctx.Request.Context(), &user)
+		createUserErr := u.UserRepo.CreateUser(ctx, &user)
 		if createUserErr != nil {
 			err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 			return
@@ -117,7 +117,7 @@ func (u Usecase) OauthGoogleCallback(ctx *gin.Context) (err *stderror.StdError) 
 	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
 	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
-	return u.createAndStoreTokensPair(ctx, user.Id)
+	return u.createAndStoreTokensPair(ctx, user)
 }
 
 func (u Usecase) extractGoogleUserData(code string) (userInfo module.GoogleUserInfo, account usermodule.Account, err error) {

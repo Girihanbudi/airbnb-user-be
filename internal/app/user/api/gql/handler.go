@@ -8,9 +8,9 @@ import (
 )
 
 func (h Handler) Me(ctx context.Context) (*response.Me, error) {
-	userId := appcontext.GetUserId(ctx)
+	userClaims := appcontext.GetUserClaims(ctx)
 	req := request.Me{
-		UserId: *userId,
+		UserId: userClaims.UserID,
 	}
 	res, err := h.User.Me(ctx, req)
 	if err != nil {

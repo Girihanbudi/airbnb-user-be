@@ -24,8 +24,15 @@ func (u Usecase) RefreshToken(ctx *gin.Context, cmd request.RefreshToken) (err *
 		return
 	}
 
-	userId, _ := authcache.Get(key)
-	if userId == "" {
+	var claims authcache.DefaultClaims
+	claimErr := authcache.Get(key, &claims)
+	if claimErr != nil {
+		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
+		return
+	}
+
+	user, getUserErr := u.UserRepo.GetUser(ctx, claims.UserID)
+	if getUserErr != nil {
 		err = transutil.TranslateError(ctx, errpreset.TknInvalid, clientLocale)
 		return
 	}
@@ -34,7 +41,7 @@ func (u Usecase) RefreshToken(ctx *gin.Context, cmd request.RefreshToken) (err *
 	u.deleteOldToken(ctx, appcontext.AccessTokenCode)
 	u.deleteOldToken(ctx, appcontext.RefreshTokenCode)
 
-	if err = u.createAndStoreTokensPair(ctx, userId); err != nil {
+	if err = u.createAndStoreTokensPair(ctx, user); err != nil {
 		return
 	}
 
