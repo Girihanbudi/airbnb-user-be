@@ -9,22 +9,119 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "https://airbnb.co.id",
+        "contact": {
+            "name": "API Support",
+            "url": "https://airbnb.co.id/support",
+            "email": "support@airbnb.co.id"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/sessions/facebook": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get session by using facebook oauth. User will be redirected to facebook sign in page to get credential and redirected back to service if user sign in correctly.",
+                "responses": {}
+            }
+        },
+        "/sessions/google": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get session by using google oauth. User will be redirected to google sign in page to get credential and redirected back to service if user sign in correctly.",
+                "responses": {}
+            }
+        },
+        "/sessions/phone/complete": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Complete registration using phone number if not verified yet.",
+                "responses": {}
+            }
+        },
+        "/sessions/phone/generate": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Make a session usign phone number if user already verified.",
+                "responses": {}
+            }
+        },
+        "/sessions/phone/initial": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get session by using user phone number. An OTP code will be sent to user phone.",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.ContinueWithPhone"
+                        }
+                    }
+                }
+            }
+        },
+        "/sessions/refresh": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Rotate access and refresh tokens with a new one after access token expired.",
+                "responses": {}
+            }
+        },
+        "/sessions/signout": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Delete user session by removing user access and refresh tokens.",
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "response.ContinueWithPhone": {
+            "type": "object",
+            "properties": {
+                "isVerified": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost/api",
+	BasePath:         "/auth",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Airbnb User Backend API",
+	Description:      "Airbnb User Backend Service API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

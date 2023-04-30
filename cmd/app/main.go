@@ -19,8 +19,8 @@ import (
 // @contact.url    https://airbnb.co.id/support
 // @contact.email  support@airbnb.co.id
 
-// @host      localhost:8080
-// @BasePath  /v1
+// @host      localhost/api
+// @BasePath  /auth
 
 // @securityDefinitions.basic BasicAuth
 func main() {
