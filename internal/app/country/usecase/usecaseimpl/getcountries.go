@@ -22,7 +22,7 @@ func (u Usecase) GetCountries(ctx context.Context, cmd request.GetCountries) (re
 		return
 	}
 
-	res.Countries = funk.Map(countries, func(data module.Country) response.Country {
+	data := funk.Map(*countries, func(data module.Country) response.Country {
 		var country response.Country
 
 		country.Iso = data.Iso
@@ -32,7 +32,9 @@ func (u Usecase) GetCountries(ctx context.Context, cmd request.GetCountries) (re
 		country.PhoneCode = data.PhoneCode
 
 		return country
-	}).(*[]response.Country)
+	}).([]response.Country)
+
+	res.Countries = &data
 	res.Pagination = &cmd.Pagination
 
 	return

@@ -2,7 +2,7 @@ package graph
 
 import (
 	"airbnb-user-be/graph/model"
-	module "airbnb-user-be/internal/app/country"
+	"airbnb-user-be/internal/app/country/preset/response"
 	"context"
 
 	"github.com/thoas/go-funk"
@@ -16,7 +16,7 @@ func (r *queryResolver) Countries(ctx context.Context, limit *int, page *int) (*
 		return nil, err
 	}
 
-	countries := funk.Map(*data.Countries, func(data module.Country) *model.Country {
+	countries := funk.Map(*data.Countries, func(data response.Country) *model.Country {
 		var country model.Country
 
 		country.Iso = data.Iso
