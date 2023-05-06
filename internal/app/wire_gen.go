@@ -7,21 +7,19 @@
 package app
 
 import (
-	"airbnb-user-be/internal/app/auth/api/rest"
-	usecaseimpl2 "airbnb-user-be/internal/app/auth/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/country/api/gql"
 	repoimpl2 "airbnb-user-be/internal/app/country/repo/repoimpl"
 	"airbnb-user-be/internal/app/country/usecase/usecaseimpl"
 	gql3 "airbnb-user-be/internal/app/currency/api/gql"
-	repoimpl5 "airbnb-user-be/internal/app/currency/repo/repoimpl"
-	usecaseimpl4 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
+	repoimpl4 "airbnb-user-be/internal/app/currency/repo/repoimpl"
+	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	gql2 "airbnb-user-be/internal/app/locale/api/gql"
-	repoimpl4 "airbnb-user-be/internal/app/locale/repo/repoimpl"
-	usecaseimpl3 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
+	repoimpl3 "airbnb-user-be/internal/app/locale/repo/repoimpl"
+	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	gql4 "airbnb-user-be/internal/app/user/api/gql"
-	repoimpl3 "airbnb-user-be/internal/app/user/repo/repoimpl"
-	usecaseimpl5 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
+	repoimpl5 "airbnb-user-be/internal/app/user/repo/repoimpl"
+	usecaseimpl4 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
@@ -31,8 +29,6 @@ import (
 	"airbnb-user-be/internal/pkg/kafka/consumer"
 	"airbnb-user-be/internal/pkg/kafka/producer"
 	router2 "airbnb-user-be/internal/pkg/kafka/router"
-	"airbnb-user-be/internal/pkg/oauth/facebook"
-	"airbnb-user-be/internal/pkg/oauth/google"
 	"github.com/google/wire"
 )
 
@@ -94,73 +90,48 @@ func NewApp() (*App, error) {
 		Country: usecase,
 	}
 	handler := gql.NewCountryHandler(gqlOptions)
-	config6 := tool.ExtractOauthGoogleConfig(config)
-	googleOptions := google.Options{
-		Config: config6,
-	}
-	oauth := google.NewGoogleOauth(googleOptions)
-	config7 := tool.ExtractOauthFacebookConfig(config)
-	facebookOptions := facebook.Options{
-		Config: config7,
-	}
-	facebookOauth := facebook.NewFacebookOauth(facebookOptions)
 	options3 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
-	repo2 := repoimpl3.NewUserRepo(options3)
-	options4 := repoimpl4.Options{
+	repo2 := repoimpl3.NewLocaleRepo(options3)
+	options4 := usecaseimpl2.Options{
+		LocaleRepo: repo2,
+	}
+	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options4)
+	options5 := gql2.Options{
+		Locale: usecaseimplUsecase,
+	}
+	gqlHandler := gql2.NewLocaleHandler(options5)
+	options6 := repoimpl4.Options{
 		Gorm: gormEngine,
 	}
-	repo3 := repoimpl4.NewLocaleRepo(options4)
-	options5 := usecaseimpl2.Options{
-		GoogleOauth:   oauth,
-		FacebookOauth: facebookOauth,
-		UserRepo:      repo2,
-		LocaleRepo:    repo3,
-		CountryRepo:   repoimplRepo,
-		EventProducer: producerProducer,
+	repo3 := repoimpl4.NewCurrencyRepo(options6)
+	options7 := usecaseimpl3.Options{
+		CurrencyRepo: repo3,
 	}
-	usecaseimplUsecase := usecaseimpl2.NewAuthUsecase(options5)
-	restOptions := rest.Options{
-		Router: engine,
-		Auth:   usecaseimplUsecase,
+	usecase2 := usecaseimpl3.NewCurrencyUsecase(options7)
+	options8 := gql3.Options{
+		Currency: usecase2,
 	}
-	restHandler := rest.NewAuthHandler(restOptions)
-	options6 := usecaseimpl3.Options{
-		LocaleRepo: repo3,
-	}
-	usecase2 := usecaseimpl3.NewLocaleUsecase(options6)
-	options7 := gql2.Options{
-		Locale: usecase2,
-	}
-	gqlHandler := gql2.NewLocaleHandler(options7)
-	options8 := repoimpl5.Options{
+	handler2 := gql3.NewCurrencyHandler(options8)
+	options9 := repoimpl5.Options{
 		Gorm: gormEngine,
 	}
-	repo4 := repoimpl5.NewCurrencyRepo(options8)
-	options9 := usecaseimpl4.Options{
-		CurrencyRepo: repo4,
+	repo4 := repoimpl5.NewUserRepo(options9)
+	options10 := usecaseimpl4.Options{
+		UserRepo: repo4,
 	}
-	usecase3 := usecaseimpl4.NewCurrencyUsecase(options9)
-	options10 := gql3.Options{
-		Currency: usecase3,
+	usecase3 := usecaseimpl4.NewUserUsecase(options10)
+	options11 := gql4.Options{
+		User: usecase3,
 	}
-	handler2 := gql3.NewCurrencyHandler(options10)
-	options11 := usecaseimpl5.Options{
-		UserRepo: repo2,
-	}
-	usecase4 := usecaseimpl5.NewUserUsecase(options11)
-	options12 := gql4.Options{
-		User: usecase4,
-	}
-	handler3 := gql4.NewUserHandler(options12)
+	handler3 := gql4.NewUserHandler(options11)
 	appOptions := Options{
 		HttpServer:         serverServer,
 		EventListener:      listener,
 		EventProducer:      producerProducer,
 		Translation:        repo,
 		CountryHandler:     handler,
-		AuthHandler:        restHandler,
 		LocaleGqlHandler:   gqlHandler,
 		CurrencyGqlHandler: handler2,
 		UserGqlHandler:     handler3,

@@ -32,8 +32,6 @@ func graphqlHandler(countryHandler gqlcountry.Handler, localeHandler gqllocale.H
 }
 
 func (a App) registerHttpHandler() {
-	// register auth handler
-	a.AuthHandler.RegisterApi()
 
 	// register modules to graph solver handler
 	a.HttpServer.Router.GET("/graph", graphqlHandler(

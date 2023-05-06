@@ -13,7 +13,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	authrest "airbnb-user-be/internal/app/auth/api/rest"
 	countrygql "airbnb-user-be/internal/app/country/api/gql"
 	currencygql "airbnb-user-be/internal/app/currency/api/gql"
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
@@ -32,7 +31,6 @@ type Options struct {
 
 	Translation        translation.ITranslation
 	CountryHandler     *countrygql.Handler
-	AuthHandler        *authrest.Handler
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler
 	UserGqlHandler     *usergql.Handler

@@ -8,9 +8,7 @@ import (
 	gorm "airbnb-user-be/internal/pkg/gorm/wire"
 	http "airbnb-user-be/internal/pkg/http/server/wire"
 	kafka "airbnb-user-be/internal/pkg/kafka/wire"
-	oauth "airbnb-user-be/internal/pkg/oauth/wire"
 
-	auth "airbnb-user-be/internal/app/auth/wire"
 	country "airbnb-user-be/internal/app/country/wire"
 	currency "airbnb-user-be/internal/app/currency/wire"
 	locale "airbnb-user-be/internal/app/locale/wire"
@@ -32,13 +30,11 @@ func NewApp() (*App, error) {
 			gorm.PackageSet,
 			http.PackageSet,
 			kafka.PackageSet,
-			oauth.PackageSet,
 
 			AppSet,
 
 			user.ModuleSet,
 			country.ModuleSet,
-			auth.ModuleSet,
 			translation.ModuleSet,
 			locale.ModuleSet,
 			currency.ModuleSet,

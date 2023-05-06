@@ -3,8 +3,8 @@ package user
 type Role int
 
 const (
-	UserRole Role = iota
-	AdminRole
+	RoleUser Role = iota
+	RoleAdmin
 )
 
 func (e Role) String() string {
