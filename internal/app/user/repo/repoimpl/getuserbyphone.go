@@ -5,8 +5,15 @@ import (
 	"context"
 )
 
-func (r Repo) GetUserByPhone(ctx context.Context, countryCode int, phoneNumber string) (user module.User, err error) {
-	err = r.Gorm.DB.
+func (r Repo) GetUserByPhone(ctx context.Context, countryCode int, phoneNumber string, preloads ...string) (user module.User, err error) {
+	query := r.Gorm.DB
+	if len(preloads) > 0 {
+		for _, preload := range preloads {
+			query = query.Preload(preload)
+		}
+	}
+
+	err = query.
 		Where("country_code = ?", countryCode).
 		Where("phone_number = ?", phoneNumber).
 		First(&user).Error

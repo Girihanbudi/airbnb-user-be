@@ -7,7 +7,7 @@ import (
 
 func (r Repo) GetUser(ctx context.Context, id string, preloads ...string) (user module.User, err error) {
 	query := r.Gorm.DB
-	if preloads != nil && len(preloads) > 0 {
+	if len(preloads) > 0 {
 		for _, preload := range preloads {
 			query = query.Preload(preload)
 		}

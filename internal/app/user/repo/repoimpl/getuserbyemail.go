@@ -5,7 +5,13 @@ import (
 	"context"
 )
 
-func (r Repo) GetUserByEmail(ctx context.Context, email string) (user module.User, err error) {
-	err = r.Gorm.DB.Where("email = ?", email).First(&user).Error
+func (r Repo) GetUserByEmail(ctx context.Context, email string, preloads ...string) (user module.User, err error) {
+	query := r.Gorm.DB
+	if len(preloads) > 0 {
+		for _, preload := range preloads {
+			query = query.Preload(preload)
+		}
+	}
+	err = query.Where("email = ?", email).First(&user).Error
 	return
 }
