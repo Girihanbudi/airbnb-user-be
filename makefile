@@ -24,6 +24,10 @@ gqlgenerate:
 gqlrun:
 	go run cmd/gql/main.go
 
+.PHONY: setrpc
+setrpc:
+	protoc --go-grpc_out=require_unimplemented_servers=false:internal/app/user/api --go_out=internal/app/user/api internal/app/user/api/rpc/user.proto
+
 .PHONY: migrateup
 migrateup:
 	go run db/migration/main.go -migration=up
@@ -31,3 +35,12 @@ migrateup:
 .PHONY: migratedown
 migratedown:
 	go run db/migration/main.go -migration=down
+
+.PHONY: serverprivatekey
+serverprivatekey:
+	openssl genrsa -out server.key 2048
+	openssl ecparam -genkey -name secp384r1 -out server.key
+
+.PHONY: serverpublickey
+serverpublickey:
+	openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
