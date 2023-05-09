@@ -9,4 +9,8 @@ import (
 
 type IUser interface {
 	Me(ctx context.Context, cmd request.Me) (res response.Me, err *stderror.StdError)
+	GetUser(ctx context.Context, cmd request.GetUser) (res response.GetUser, err *stderror.StdError)
+	CreateUser(ctx context.Context, cmd request.CreateUser) (res response.CreateUser, err *stderror.StdError)
+	UpdateUser(ctx context.Context, cmd request.UpdateUser) (err *stderror.StdError)
+	VerifiedUser(ctx context.Context, cmd request.Identifier) (err *stderror.StdError)
 }
