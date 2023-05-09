@@ -3,6 +3,7 @@ package app
 import (
 	"airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/cache/otp"
+	"airbnb-user-be/internal/pkg/grpc"
 	"airbnb-user-be/internal/pkg/http/server"
 	httprouter "airbnb-user-be/internal/pkg/http/server/router"
 	kafkaconsumer "airbnb-user-be/internal/pkg/kafka/consumer"
@@ -20,12 +21,14 @@ import (
 	cookiemid "airbnb-user-be/internal/app/middleware/cookie"
 	translation "airbnb-user-be/internal/app/translation/repo"
 	usergql "airbnb-user-be/internal/app/user/api/gql"
+	userrpc "airbnb-user-be/internal/app/user/api/rpc"
 )
 
 var Instance = "App"
 
 type Options struct {
 	HttpServer    *server.Server
+	RpcServer     *grpc.Server
 	EventListener *kafkaconsumer.Listener
 	EventProducer *kafkaproducer.Producer
 
@@ -34,6 +37,8 @@ type Options struct {
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler
 	UserGqlHandler     *usergql.Handler
+
+	UserRpcHandler *userrpc.Handler
 }
 
 type App struct {
@@ -67,6 +72,7 @@ func (a App) runModules(ctx context.Context) {
 	a.HttpServer.Router.Use(authmid.GinBindAccessToken())
 
 	// Register all routes
+	a.registerRpcHandler()
 	a.registerHttpHandler()
 
 	go func() {
