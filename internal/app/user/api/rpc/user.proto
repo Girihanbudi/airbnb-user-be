@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package user;
+
+option go_package = "./rpc";
+
+enum Role {
+  user = 0;
+  admin = 1;
+}
+
+message User {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string fullName = 4;
+  string email = 5;
+  int32 countryCode = 6;
+  string phoneNumber = 7;
+  string image = 8;
+  string role = 9;
+  google.protobuf.Timestamp dateOfBirth = 10;
+  google.protobuf.Timestamp createdAt = 11;
+  google.protobuf.Timestamp updatedAt = 12;
+  google.protobuf.Timestamp verifiedAt = 13;
+  google.protobuf.Timestamp deletedAt = 14;
+  UserDefaultSetting defaultSetting = 15;
+}
+
+message UserDefaultSetting {
+  int64 id = 1;
+  google.protobuf.Timestamp createdAt = 2;
+  google.protobuf.Timestamp updatedAt = 3;
+  google.protobuf.Timestamp deletedAt = 4;
+  string userId = 5;
+  string locale = 6;
+  string currency = 7;
+}
+
+message GetUserCmd {
+  string id = 1;
+}
+
+message GetUserByEmailCmd {
+  string email = 1;
+}
+
+message GetUserByPhoneCmd {
+  int32 countryCode = 1;
+  string phoneNumber = 2;
+}
+
+message CreateUserRes {
+  string id = 1;
+}
+
+message Empty {}
+
+service UserService {
+  rpc GetUser(GetUserCmd) returns (User) {}
+  rpc GetUserByEmail(GetUserByEmailCmd) returns (User) {}
+  rpc GetUserByPhone(GetUserByPhoneCmd) returns (User) {}
+  rpc CreateUser(User) returns (CreateUserRes) {}
+  rpc UpdateUser(User) returns (Empty) {}
+}
+
