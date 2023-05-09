@@ -8,16 +8,16 @@ import (
 )
 
 type User struct {
-	Id          string    `json:"id" gorm:"primaryKey"`
-	FirstName   string    `json:"first_name" gorm:"not null"`
-	FullName    string    `json:"full_name" gorm:"not null"`
-	Email       *string   `json:"email" gorm:"unique"`
-	CountryCode *int      `json:"country_code"`
-	PhoneNumber *string   `json:"phone_number" gorm:"unique"`
-	Image       string    `json:"image"`
-	Password    *string   `json:"password"`
-	Role        string    `json:"role"`
-	DateOfBirth time.Time `json:"date_of_birth"`
+	Id          string     `json:"id" gorm:"primaryKey"`
+	FirstName   string     `json:"first_name"`
+	FullName    string     `json:"full_name"`
+	Email       *string    `json:"email" gorm:"unique"`
+	CountryCode *int       `json:"country_code"`
+	PhoneNumber *string    `json:"phone_number" gorm:"unique"`
+	Image       *string    `json:"image"`
+	Password    *string    `json:"password"`
+	Role        string     `json:"role" gorm:"not null"`
+	DateOfBirth *time.Time `json:"date_of_birth"`
 
 	CreatedAt  time.Time      `json:"created_at" gorm:"not null"`
 	UpdatedAt  time.Time      `json:"updated_at" gorm:"not null"`
@@ -25,8 +25,6 @@ type User struct {
 	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index"`
 
 	DefaultSetting *UserDefaultSetting `json:"default_setting" gorm:"foreignKey:UserId"`
-	Accounts       *[]Account          `json:"accounts"`
-	// sessions      Session[]
 }
 
 func (m *User) BeforeCreate(tx *gorm.DB) (err error) {
