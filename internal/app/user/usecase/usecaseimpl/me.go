@@ -3,14 +3,11 @@ package usecaseimpl
 import (
 	"airbnb-user-be/env/appcontext"
 	transutil "airbnb-user-be/internal/app/translation/util"
-	module "airbnb-user-be/internal/app/user"
 	errpreset "airbnb-user-be/internal/app/user/preset/error"
 	"airbnb-user-be/internal/app/user/preset/request"
 	"airbnb-user-be/internal/app/user/preset/response"
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
-
-	"github.com/thoas/go-funk"
 )
 
 func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *stderror.StdError) {
@@ -46,21 +43,6 @@ func (u Usecase) Me(ctx context.Context, cmd request.Me) (res response.Me, err *
 			Currency: userDefaultSetting.Currency,
 		}
 		res.DefaultSetting = &resDefaultSetting
-	}
-
-	if user.Accounts != nil {
-		accounts := funk.Map(*user.Accounts, func(acc module.Account) response.Account {
-			return response.Account{
-				Provider:     acc.Provider,
-				AccessToken:  acc.AccessToken,
-				RefreshToken: acc.RefreshToken,
-				ExpiredAt:    acc.ExpiredAt,
-				TokenType:    acc.TokenType,
-				CreatedAt:    acc.CreatedAt,
-				UpdatedAt:    acc.UpdatedAt,
-			}
-		}).([]response.Account)
-		res.Accounts = &accounts
 	}
 
 	return
