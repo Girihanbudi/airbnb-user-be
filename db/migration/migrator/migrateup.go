@@ -22,7 +22,6 @@ func MigrateUp(db gorm.DB) {
 		&currencymodule.CurrencyTranslation{},
 		&usermodule.User{},
 		&usermodule.UserDefaultSetting{},
-		&usermodule.Account{},
 	}
 
 	if err := db.AutoMigrate(models...); err != nil {
