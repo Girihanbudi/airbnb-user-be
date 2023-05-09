@@ -51,17 +51,6 @@ type UserDefaultSetting {
   currency: String!
 }
 
-# Account
-type Account {
-  provider: String!
-  accessToken: String!
-  refreshToken: String!
-  expiredAt: Time!
-  tokenType: String!
-  createdAt: Time!
-  updatedAt: Time!
-}
-
 # User
 type User {
   firstName: String!
@@ -69,14 +58,13 @@ type User {
   email: String
   countryCode: Int
   phoneNumber: String
-  image: String!
+  image: String
   role: String!
-  dateOfBirth: Time!
+  dateOfBirth: Time
   createdAt: Time!
   updatedAt: Time!
   verifiedAt: Time
   defaultSetting: UserDefaultSetting
-  accounts: [Account!]
 }
 
 type Query {

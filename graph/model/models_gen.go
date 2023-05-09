@@ -6,16 +6,6 @@ import (
 	"time"
 )
 
-type Account struct {
-	Provider     string    `json:"provider"`
-	AccessToken  string    `json:"accessToken"`
-	RefreshToken string    `json:"refreshToken"`
-	ExpiredAt    time.Time `json:"expiredAt"`
-	TokenType    string    `json:"tokenType"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
-}
-
 type Countries struct {
 	Data []*Country  `json:"data"`
 	Meta *Pagination `json:"meta"`
@@ -73,14 +63,13 @@ type User struct {
 	Email          *string             `json:"email"`
 	CountryCode    *int                `json:"countryCode"`
 	PhoneNumber    *string             `json:"phoneNumber"`
-	Image          string              `json:"image"`
+	Image          *string             `json:"image"`
 	Role           string              `json:"role"`
-	DateOfBirth    time.Time           `json:"dateOfBirth"`
+	DateOfBirth    *time.Time          `json:"dateOfBirth"`
 	CreatedAt      time.Time           `json:"createdAt"`
 	UpdatedAt      time.Time           `json:"updatedAt"`
 	VerifiedAt     *time.Time          `json:"verifiedAt"`
 	DefaultSetting *UserDefaultSetting `json:"defaultSetting"`
-	Accounts       []*Account          `json:"accounts"`
 }
 
 type UserDefaultSetting struct {

@@ -7,10 +7,7 @@ package graph
 import (
 	"airbnb-user-be/graph/model"
 	"airbnb-user-be/internal/app/middleware/auth"
-	module "airbnb-user-be/internal/app/user"
 	"context"
-
-	"github.com/thoas/go-funk"
 )
 
 // User is the resolver for the user field.
@@ -44,20 +41,6 @@ func (r *queryResolver) User(ctx context.Context) (*model.User, error) {
 			Currency: userDefaultSetting.Currency,
 		}
 		user.DefaultSetting = &resDefaultSetting
-	}
-
-	if user.Accounts != nil {
-		user.Accounts = funk.Map(*data.Accounts, func(acc module.Account) model.Account {
-			return model.Account{
-				Provider:     acc.Provider,
-				AccessToken:  acc.AccessToken,
-				RefreshToken: acc.RefreshToken,
-				ExpiredAt:    acc.ExpiredAt,
-				TokenType:    acc.TokenType,
-				CreatedAt:    acc.CreatedAt,
-				UpdatedAt:    acc.UpdatedAt,
-			}
-		}).([]*model.Account)
 	}
 
 	return &user, nil
