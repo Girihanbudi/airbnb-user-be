@@ -11,8 +11,6 @@ var PackageSet = wire.NewSet(
 	env.ProvideEnv,
 	tool.ExtractServerConfig,
 	tool.ExtractDBConfig,
-	tool.ExtractOauthGoogleConfig,
-	tool.ExtractOauthFacebookConfig,
 	tool.ExtractKafkaConfig,
 	tool.ExtractKafkaConsumerConfig,
 	tool.ExtractKafkaRouterConfig,
