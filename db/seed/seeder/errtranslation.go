@@ -1,7 +1,6 @@
 package seeder
 
 import (
-	autherr "airbnb-user-be/internal/app/auth/preset/error"
 	countryerr "airbnb-user-be/internal/app/country/preset/error"
 	currencyerr "airbnb-user-be/internal/app/currency/preset/error"
 	localeerr "airbnb-user-be/internal/app/locale/preset/error"
@@ -40,34 +39,6 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(middlewareerr.TokenNotFound, "id", http.StatusUnauthorized, "Otorisasi tidak ditemukan"),
 		MakeErrTranslation(middlewareerr.TokenNotValid, "id", http.StatusUnauthorized, "Token tidak valid"),
 		MakeErrTranslation(middlewareerr.UserAlreadyVerified, "id", http.StatusForbidden, "User telah terverifikasi"),
-
-		/*
-			Auth
-		*/
-		// En translation
-		MakeErrTranslation(autherr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
-		MakeErrTranslation(autherr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
-		MakeErrTranslation(autherr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
-		MakeErrTranslation(autherr.UscBadRequest, "en", http.StatusBadRequest, "Requested data is not valid"),
-		MakeErrTranslation(autherr.UscInvalidOauth, "en", http.StatusBadRequest, "Failed to validate oauth state"),
-		MakeErrTranslation(autherr.UscForbidden, "en", http.StatusForbidden, "This request is forbidden for related user"),
-		MakeErrTranslation(autherr.UscFailedExtractGoogleInfo, "en", http.StatusBadRequest, "Failed to extract user info from oauth provider"),
-		MakeErrTranslation(autherr.UscFailedExtractFacebookInfo, "en", http.StatusBadRequest, "Failed to extract user info from oauth provider"),
-		MakeErrTranslation(autherr.TknGenerateFailed, "en", http.StatusInternalServerError, "Failed to generate token"),
-		MakeErrTranslation(autherr.TknStoreFailed, "en", http.StatusServiceUnavailable, "Failed to communicate with cache server"),
-		MakeErrTranslation(autherr.EvtSendMsgFailed, "en", http.StatusServiceUnavailable, "Failed to communicate with broker"),
-		// Id translation
-		MakeErrTranslation(autherr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
-		MakeErrTranslation(autherr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
-		MakeErrTranslation(autherr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
-		MakeErrTranslation(autherr.UscBadRequest, "id", http.StatusBadRequest, "Permintaan tidak valid"),
-		MakeErrTranslation(autherr.UscInvalidOauth, "id", http.StatusBadRequest, "Gagal melakukan validasi oauth state"),
-		MakeErrTranslation(autherr.UscForbidden, "id", http.StatusForbidden, "Permintaan tidak diijinkan untuk user terkait"),
-		MakeErrTranslation(autherr.UscFailedExtractGoogleInfo, "id", http.StatusBadRequest, "Gagal mendapatkan info user dari penyedia oauth"),
-		MakeErrTranslation(autherr.UscFailedExtractFacebookInfo, "id", http.StatusBadRequest, "Gagal mendapatkan info user dari penyedia oauth"),
-		MakeErrTranslation(autherr.TknGenerateFailed, "id", http.StatusInternalServerError, "Gagal membuat token"),
-		MakeErrTranslation(autherr.TknStoreFailed, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan cache server"),
-		MakeErrTranslation(autherr.EvtSendMsgFailed, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan broker"),
 
 		/*
 			Locale
