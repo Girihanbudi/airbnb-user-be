@@ -7,6 +7,7 @@ import (
 	gqlcurrency "airbnb-user-be/internal/app/currency/api/gql"
 	gqllocale "airbnb-user-be/internal/app/locale/api/gql"
 	gqluser "airbnb-user-be/internal/app/user/api/gql"
+	rpcuser "airbnb-user-be/internal/app/user/api/rpc"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,10 @@ func graphqlHandler(countryHandler gqlcountry.Handler, localeHandler gqllocale.H
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
+}
+
+func (a App) registerRpcHandler() {
+	rpcuser.RegisterUserServiceServer(a.RpcServer.Server, a.UserRpcHandler)
 }
 
 func (a App) registerHttpHandler() {
