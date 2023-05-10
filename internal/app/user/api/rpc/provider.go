@@ -13,8 +13,7 @@ type Handler struct {
 }
 
 func NewUserHandler(options Options) UserServiceServer {
-	return &Handler{
+	return Handler{
 		Options: options,
 	}
-
 }

@@ -38,7 +38,7 @@ type Options struct {
 	CurrencyGqlHandler *currencygql.Handler
 	UserGqlHandler     *usergql.Handler
 
-	UserRpcHandler *userrpc.Handler
+	UserRpcHandler userrpc.UserServiceServer
 }
 
 type App struct {
