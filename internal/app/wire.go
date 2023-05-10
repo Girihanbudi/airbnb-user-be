@@ -6,6 +6,7 @@ package app
 import (
 	env "airbnb-user-be/internal/pkg/env/wire"
 	gorm "airbnb-user-be/internal/pkg/gorm/wire"
+	grpc "airbnb-user-be/internal/pkg/grpc/wire"
 	http "airbnb-user-be/internal/pkg/http/server/wire"
 	kafka "airbnb-user-be/internal/pkg/kafka/wire"
 
@@ -30,6 +31,7 @@ func NewApp() (*App, error) {
 			gorm.PackageSet,
 			http.PackageSet,
 			kafka.PackageSet,
+			grpc.PackageSet,
 
 			AppSet,
 

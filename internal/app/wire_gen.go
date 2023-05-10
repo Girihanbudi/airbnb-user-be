@@ -18,11 +18,13 @@ import (
 	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	gql4 "airbnb-user-be/internal/app/user/api/gql"
+	"airbnb-user-be/internal/app/user/api/rpc"
 	repoimpl5 "airbnb-user-be/internal/app/user/repo/repoimpl"
 	usecaseimpl4 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
+	"airbnb-user-be/internal/pkg/grpc"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
 	"airbnb-user-be/internal/pkg/kafka"
@@ -47,20 +49,25 @@ func NewApp() (*App, error) {
 		Router: engine,
 	}
 	serverServer := server.NewServer(options)
-	config2 := tool.ExtractKafkaConsumerConfig(config)
-	config3 := tool.ExtractKafkaConfig(config)
-	config4 := tool.ExtractKafkaRouterConfig(config)
+	config2 := tool.ExtractGrpcConfig(config)
+	grpcOptions := grpc.Options{
+		Config: config2,
+	}
+	grpcServer := grpc.NewRpcServer(grpcOptions)
+	config3 := tool.ExtractKafkaConsumerConfig(config)
+	config4 := tool.ExtractKafkaConfig(config)
+	config5 := tool.ExtractKafkaRouterConfig(config)
 	routerOptions := router2.Options{
-		Config: config4,
+		Config: config5,
 	}
 	routerRouter := router2.NewRouter(routerOptions)
 	kafkaOptions := kafka.Options{
-		Config: config3,
+		Config: config4,
 		Router: routerRouter,
 	}
 	client := kafka.NewSaramaClient(kafkaOptions)
 	consumerOptions := consumer.Options{
-		Config: config2,
+		Config: config3,
 		Client: client,
 		Router: routerRouter,
 	}
@@ -69,9 +76,9 @@ func NewApp() (*App, error) {
 		Client: client,
 	}
 	producerProducer := producer.NewEventProducer(producerOptions)
-	config5 := tool.ExtractDBConfig(config)
+	config6 := tool.ExtractDBConfig(config)
 	gormOptions := gorm.Options{
-		Config: config5,
+		Config: config6,
 	}
 	gormEngine := gorm.NewORM(gormOptions)
 	repoimplOptions := repoimpl.Options{
@@ -126,8 +133,13 @@ func NewApp() (*App, error) {
 		User: usecase3,
 	}
 	handler3 := gql4.NewUserHandler(options11)
+	rpcOptions := rpc.Options{
+		User: usecase3,
+	}
+	userServiceServer := rpc.NewUserHandler(rpcOptions)
 	appOptions := Options{
 		HttpServer:         serverServer,
+		RpcServer:          grpcServer,
 		EventListener:      listener,
 		EventProducer:      producerProducer,
 		Translation:        repo,
@@ -135,6 +147,7 @@ func NewApp() (*App, error) {
 		LocaleGqlHandler:   gqlHandler,
 		CurrencyGqlHandler: handler2,
 		UserGqlHandler:     handler3,
+		UserRpcHandler:     userServiceServer,
 	}
 	app := &App{
 		Options: appOptions,
