@@ -21,6 +21,7 @@ import (
 	"airbnb-user-be/internal/app/user/api/rpc"
 	repoimpl5 "airbnb-user-be/internal/app/user/repo/repoimpl"
 	usecaseimpl4 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
+	"airbnb-user-be/internal/pkg/credential"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
@@ -44,14 +45,19 @@ func NewApp() (*App, error) {
 	config := env.ProvideEnv()
 	configConfig := tool.ExtractServerConfig(config)
 	engine := router.NewRouter()
-	options := server.Options{
+	config2 := tool.ExtractCredsConfig(config)
+	options := credential.Options{
+		Config: config2,
+	}
+	tlsCredentials := credential.NewTLSCredentials(options)
+	serverOptions := server.Options{
 		Config: configConfig,
 		Router: engine,
+		Creds:  tlsCredentials,
 	}
-	serverServer := server.NewServer(options)
-	config2 := tool.ExtractGrpcConfig(config)
+	serverServer := server.NewServer(serverOptions)
 	grpcOptions := grpc.Options{
-		Config: config2,
+		Creds: tlsCredentials,
 	}
 	grpcServer := grpc.NewRpcServer(grpcOptions)
 	config3 := tool.ExtractKafkaConsumerConfig(config)

@@ -1,14 +1,18 @@
 package tool
 
 import (
+	credential "airbnb-user-be/internal/pkg/credential/config"
 	"airbnb-user-be/internal/pkg/env/config"
 	gorm "airbnb-user-be/internal/pkg/gorm/config"
-	grpc "airbnb-user-be/internal/pkg/grpc/config"
 	httpServer "airbnb-user-be/internal/pkg/http/server/config"
 	kafka "airbnb-user-be/internal/pkg/kafka/config"
 	kafkaconsumer "airbnb-user-be/internal/pkg/kafka/consumer/config"
 	kafkarouter "airbnb-user-be/internal/pkg/kafka/router/config"
 )
+
+func ExtractCredsConfig(config config.Config) credential.Config {
+	return config.Creds
+}
 
 func ExtractServerConfig(config config.Config) httpServer.Config {
 	return config.HttpServer
@@ -28,8 +32,4 @@ func ExtractKafkaConsumerConfig(config config.Config) kafkaconsumer.Config {
 
 func ExtractKafkaRouterConfig(config config.Config) kafkarouter.Config {
 	return config.Kafka.Consumer.Router
-}
-
-func ExtractGrpcConfig(config config.Config) grpc.Config {
-	return config.Rpc
 }
