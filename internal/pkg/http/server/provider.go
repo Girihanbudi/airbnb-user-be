@@ -1,6 +1,7 @@
 package server
 
 import (
+	"airbnb-user-be/internal/pkg/credential"
 	"airbnb-user-be/internal/pkg/http/server/config"
 	"net/http"
 
@@ -12,6 +13,7 @@ const Instance = "HTTP Server"
 type Options struct {
 	config.Config
 	Router *gin.Engine
+	Creds  credential.TlsCredentials
 }
 
 type Server struct {
