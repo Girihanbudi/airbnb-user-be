@@ -16,8 +16,6 @@ func (s *Server) Start() error {
 		Handler: s.Options.Router,
 	}
 
-	fmt.Println("creds when start ======", s.Creds)
-
 	if s.Creds.Tls == nil {
 		log.Event(Instance, fmt.Sprintf("listening on %s://%s", "http", s.address))
 		if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {

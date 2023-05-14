@@ -3,7 +3,6 @@ package credential
 import (
 	"airbnb-user-be/internal/pkg/credential/config"
 	"crypto/tls"
-	"fmt"
 
 	"google.golang.org/grpc/credentials"
 )
@@ -20,8 +19,6 @@ type TlsCredentials struct {
 func NewTLSCredentials(options Options) (creds TlsCredentials) {
 	creds.Options = options
 
-	fmt.Println("option is ===", options)
-
 	// Load server's certificate and private key
 	serverCert, err := tls.LoadX509KeyPair(options.PublicCert, options.PrivateKey)
 	if err != nil {
@@ -35,8 +32,6 @@ func NewTLSCredentials(options Options) (creds TlsCredentials) {
 	}
 	tls := credentials.NewTLS(config)
 	creds.Tls = &tls
-	fmt.Println("tls is ===", tls)
-	fmt.Println("tls creds is ===", creds.Tls)
 
 	return creds
 }
