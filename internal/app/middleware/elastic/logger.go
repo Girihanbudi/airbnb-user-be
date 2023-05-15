@@ -1,4 +1,4 @@
-package log
+package elastic
 
 import (
 	elastic "airbnb-user-be/internal/pkg/elasticsearch"
