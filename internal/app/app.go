@@ -3,6 +3,7 @@ package app
 import (
 	"airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/cache/otp"
+	elastic "airbnb-user-be/internal/pkg/elasticsearch"
 	"airbnb-user-be/internal/pkg/grpc"
 	"airbnb-user-be/internal/pkg/http/server"
 	httprouter "airbnb-user-be/internal/pkg/http/server/router"
@@ -19,14 +20,18 @@ import (
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
 	authmid "airbnb-user-be/internal/app/middleware/auth"
 	cookiemid "airbnb-user-be/internal/app/middleware/cookie"
+	elasticmid "airbnb-user-be/internal/app/middleware/elastic"
 	translation "airbnb-user-be/internal/app/translation/repo"
 	usergql "airbnb-user-be/internal/app/user/api/gql"
 	userrpc "airbnb-user-be/internal/app/user/api/rpc"
+
+	"airbnb-user-be/internal/pkg/credential"
 )
 
 var Instance = "App"
 
 type Options struct {
+	TlsCreds      credential.TlsCredentials
 	HttpServer    *server.Server
 	RpcServer     *grpc.Server
 	EventListener *kafkaconsumer.Listener
@@ -58,11 +63,17 @@ func (a App) runModules(ctx context.Context) {
 	auth.InitAuthCache()
 	otp.InitOtpCache()
 
+	// init elasticsearch client
+	elastic.InitElasticSearch()
+
 	// recover from panic
 	a.HttpServer.Router.Use(gin.Recovery())
 
 	// GIN apply CORS setting
 	a.HttpServer.Router.Use(httprouter.DefaultCORSSetting())
+
+	// GIN log request and response to elastic
+	a.HttpServer.Router.Use(elasticmid.LogRequestToElastic())
 
 	// GIN bind all cookie
 	a.HttpServer.Router.Use(cookiemid.BindAll())

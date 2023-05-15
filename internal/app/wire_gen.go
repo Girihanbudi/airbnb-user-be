@@ -43,15 +43,15 @@ import (
 
 func NewApp() (*App, error) {
 	config := env.ProvideEnv()
-	configConfig := tool.ExtractServerConfig(config)
-	engine := router.NewRouter()
-	config2 := tool.ExtractCredsConfig(config)
+	configConfig := tool.ExtractCredsConfig(config)
 	options := credential.Options{
-		Config: config2,
+		Config: configConfig,
 	}
 	tlsCredentials := credential.NewTLSCredentials(options)
+	config2 := tool.ExtractServerConfig(config)
+	engine := router.NewRouter()
 	serverOptions := server.Options{
-		Config: configConfig,
+		Config: config2,
 		Router: engine,
 		Creds:  tlsCredentials,
 	}
@@ -144,6 +144,7 @@ func NewApp() (*App, error) {
 	}
 	userServiceServer := rpc.NewUserHandler(rpcOptions)
 	appOptions := Options{
+		TlsCreds:           tlsCredentials,
 		HttpServer:         serverServer,
 		RpcServer:          grpcServer,
 		EventListener:      listener,
