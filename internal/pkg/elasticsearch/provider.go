@@ -27,5 +27,5 @@ func InitElasticSearch() {
 	}
 
 	log.Event(Instance, fmt.Sprintf("connected to %v", env.CONFIG.Elastic.Addresses))
-	client = client
+	Client = client
 }
