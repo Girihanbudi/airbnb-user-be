@@ -59,14 +59,17 @@ func (a App) Run(ctx context.Context) {
 func (a App) runModules(ctx context.Context) {
 	log.Event(Instance, "Starting...")
 
-	// init app cache
+	// Init app cache
 	auth.InitAuthCache()
 	otp.InitOtpCache()
 
-	// init elasticsearch client
+	// Init elasticsearch client
 	elastic.InitElasticSearch()
 
-	// recover from panic
+	// Create required index in elastic
+	elasticmid.CreateIndex()
+
+	// Recover from panic
 	a.HttpServer.Router.Use(gin.Recovery())
 
 	// GIN apply CORS setting
