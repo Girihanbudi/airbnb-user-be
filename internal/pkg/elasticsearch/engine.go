@@ -2,17 +2,24 @@ package elasticsearch
 
 import (
 	"airbnb-user-be/internal/pkg/log"
-	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 
 	"airbnb-user-be/internal/pkg/env"
 
 	"github.com/elastic/go-elasticsearch/v8/esapi"
+	"github.com/elastic/go-elasticsearch/v8/esutil"
+
 	gonanoid "github.com/matoous/go-nanoid/v2"
 )
+
+func CreateIndex(mapping interface{}, indexNames ...string) (*esapi.Response, error) {
+	indexNames = append([]string{env.CONFIG.Elastic.MainIndex}, indexNames...)
+	index := createIndex(indexNames...)
+
+	return Client.Indices.Create(index, Client.Indices.Create.WithBody(esutil.NewJSONReader(mapping)))
+}
 
 func Send(body interface{}, indexNames ...string) {
 	b, err := json.Marshal(body)
@@ -28,24 +35,11 @@ func Send(body interface{}, indexNames ...string) {
 
 	indexNames = append([]string{env.CONFIG.Elastic.MainIndex}, indexNames...)
 	index := createIndex(indexNames...)
-	req := esapi.IndexRequest{
-		Index:      index,
-		DocumentID: id,
-		Body:       strings.NewReader(payload),
-		Refresh:    "true",
-	}
 
-	// Return an API response object from request
-	res, err := req.Do(context.Background(), Client)
+	res, err := Client.Create(index, id, strings.NewReader(payload))
 	if err != nil {
-		log.Error(Instance, "indexing request error", err)
-		return
-	}
-	defer res.Body.Close()
-
-	if res.IsError() {
 		msg := fmt.Sprintf("%s error indexing for document id=%s", res.Status(), id)
-		log.Error(Instance, "indexing with response error", errors.New(msg))
+		log.Error(Instance, msg, err)
 		return
 	}
 }
