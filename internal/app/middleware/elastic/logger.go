@@ -2,12 +2,15 @@ package elastic
 
 import (
 	elastic "airbnb-user-be/internal/pkg/elasticsearch"
+	"airbnb-user-be/internal/pkg/log"
 	"bytes"
 	"io/ioutil"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+const Instance = "Elastic Middleware"
 
 func LogRequestToElastic() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -48,6 +51,13 @@ func LogRequestToElastic() gin.HandlerFunc {
 			Response:    response,
 		}
 
-		go elastic.Send(body, "api")
+		go elastic.Send(body, "request", "api")
+	}
+}
+
+func CreateIndex() {
+	_, err := elastic.CreateIndex(&Log{}, "request", "api")
+	if err != nil {
+		log.Fatal(Instance, "failed to create index", err)
 	}
 }
