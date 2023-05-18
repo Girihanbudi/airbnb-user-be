@@ -34,3 +34,11 @@ type GinLogWriter struct {
 	gin.ResponseWriter
 	body *bytes.Buffer
 }
+
+const esMapping = `
+	{
+		"settings":{
+			"number_of_shards": 1,
+			"number_of_replicas": 1
+		}
+	}`

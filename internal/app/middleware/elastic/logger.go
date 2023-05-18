@@ -4,13 +4,17 @@ import (
 	elastic "airbnb-user-be/internal/pkg/elasticsearch"
 	"airbnb-user-be/internal/pkg/log"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 const Instance = "Elastic Middleware"
+
+var indexName = []string{"request", "api"}
 
 func LogRequestToElastic() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -51,13 +55,31 @@ func LogRequestToElastic() gin.HandlerFunc {
 			Response:    response,
 		}
 
-		go elastic.Send(body, "request", "api")
+		go func() {
+			id, err := gonanoid.New()
+			if err != nil {
+				return
+			}
+
+			res, err := elastic.CreateDocument(id, body, indexName...)
+			if err != nil {
+				msg := fmt.Sprintf("error indexing for document id=%s", id)
+				log.Error(Instance, msg, fmt.Errorf("%v", res))
+				return
+			}
+			fmt.Println("res", res)
+		}()
 	}
 }
 
 func CreateIndex() {
-	_, err := elastic.CreateIndex(&Log{}, "request", "api")
+	res, err := elastic.IsIndexExist(indexName...)
 	if err != nil {
-		log.Fatal(Instance, "failed to create index", err)
+		log.Fatal(Instance, "failed to check index", fmt.Errorf("%v", res))
+	} else if res.StatusCode == 404 {
+		res, err = elastic.CreateIndex(esMapping, indexName...)
+		if err != nil || res.IsError() {
+			log.Fatal(Instance, "failed to create index", fmt.Errorf("%v", res))
+		}
 	}
 }
