@@ -5,10 +5,10 @@ import (
 	"airbnb-user-be/internal/pkg/log"
 	"fmt"
 
-	"github.com/elastic/go-elasticsearch/v8"
+	"github.com/elastic/go-elasticsearch/v7"
 )
 
-const Instance string = "Elastic Search"
+const Instance string = "Elasticsearch Client"
 
 // global elastic search client declaration
 var Client *elasticsearch.Client
@@ -26,6 +26,12 @@ func InitElasticSearch() {
 		log.Fatal(Instance, "connection error", err)
 	}
 
+	_, err = client.Info()
+	if err != nil {
+		log.Fatal(Instance, "failed to get client info", err)
+	}
+
+	// log.Event(Instance, fmt.Sprintf("connected to %v, client info: %v", env.CONFIG.Elastic.Addresses, res))
 	log.Event(Instance, fmt.Sprintf("connected to %v", env.CONFIG.Elastic.Addresses))
 	Client = client
 }
