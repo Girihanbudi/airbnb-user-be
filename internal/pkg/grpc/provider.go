@@ -4,6 +4,7 @@ import (
 	"airbnb-user-be/internal/pkg/credential"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 const Instance string = "GRPC"
@@ -20,13 +21,13 @@ type Server struct {
 func NewRpcServer(options Options) *Server {
 
 	var server *grpc.Server
-	if options.Creds.Tls == nil {
+	if options.Creds.TlsCerts == nil {
 		server = grpc.NewServer()
 	} else {
 		// interceptor := service.NewAuthInterceptor(jwtManager, accessibleRoles())
-
+		tls := credentials.NewTLS(options.Creds.TlsConfig)
 		server = grpc.NewServer(
-			grpc.Creds(*options.Creds.Tls),
+			grpc.Creds(tls),
 			// grpc.UnaryInterceptor(interceptor.Unary()),
 			// grpc.StreamInterceptor(interceptor.Stream()),
 		)
