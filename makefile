@@ -30,11 +30,11 @@ setrpc:
 
 .PHONY: migrateup
 migrateup:
-	go run db/migration/main.go -migration=up
+	go run cmd/migration/main.go -migration=up
 
 .PHONY: migratedown
 migratedown:
-	go run db/migration/main.go -migration=down
+	go run cmd/migration/main.go -migration=down
 
 .PHONY: serverprivatekey
 serverprivatekey:
