@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.25
 	github.com/Rhymond/go-money v1.0.9
 	github.com/Shopify/sarama v1.38.1
+	github.com/elastic/go-elasticsearch/v7 v7.17.10
 	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1
 	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d
@@ -25,7 +26,6 @@ require (
 	github.com/eapache/go-resiliency v1.3.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
-	github.com/elastic/elastic-transport-go/v8 v8.2.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.4 // indirect
@@ -58,7 +58,6 @@ require (
 require (
 	github.com/bytedance/sonic v1.8.3 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
-	github.com/elastic/go-elasticsearch/v8 v8.7.1
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/sse v0.1.0 // indirect
