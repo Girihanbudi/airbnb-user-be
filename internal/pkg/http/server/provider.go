@@ -3,6 +3,7 @@ package server
 import (
 	"airbnb-user-be/internal/pkg/credential"
 	"airbnb-user-be/internal/pkg/http/server/config"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -23,5 +24,8 @@ type Server struct {
 }
 
 func NewServer(options Options) *Server {
-	return &Server{Options: options}
+	return &Server{
+		Options: options,
+		address: fmt.Sprintf("%s:%s", options.Host, options.Port),
+	}
 }
