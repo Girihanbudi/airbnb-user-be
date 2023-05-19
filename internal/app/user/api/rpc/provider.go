@@ -10,6 +10,7 @@ type Options struct {
 
 type Handler struct {
 	Options
+	UnimplementedUserServiceServer
 }
 
 func NewUserHandler(options Options) UserServiceServer {

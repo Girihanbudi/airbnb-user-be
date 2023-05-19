@@ -83,7 +83,7 @@ func (c *userServiceClient) UpdateUser(ctx context.Context, in *User, opts ...gr
 }
 
 // UserServiceServer is the server API for UserService service.
-// All implementations should embed UnimplementedUserServiceServer
+// All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
 	GetUser(context.Context, *GetUserCmd) (*User, error)
@@ -91,9 +91,10 @@ type UserServiceServer interface {
 	GetUserByPhone(context.Context, *GetUserByPhoneCmd) (*User, error)
 	CreateUser(context.Context, *User) (*CreateUserRes, error)
 	UpdateUser(context.Context, *User) (*Empty, error)
+	mustEmbedUnimplementedUserServiceServer()
 }
 
-// UnimplementedUserServiceServer should be embedded to have forward compatible implementations.
+// UnimplementedUserServiceServer must be embedded to have forward compatible implementations.
 type UnimplementedUserServiceServer struct {
 }
 
@@ -112,6 +113,7 @@ func (UnimplementedUserServiceServer) CreateUser(context.Context, *User) (*Creat
 func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
+func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
 // UnsafeUserServiceServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to UserServiceServer will
