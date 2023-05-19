@@ -26,7 +26,7 @@ gqlrun:
 
 .PHONY: setrpc
 setrpc:
-	protoc --go-grpc_out=require_unimplemented_servers=false:internal/app/user/api --go_out=internal/app/user/api internal/app/user/api/rpc/user.proto
+	protoc --go-grpc_out=internal/app/user/api --go_out=internal/app/user/api internal/app/user/api/rpc/user.proto
 
 .PHONY: migrateup
 migrateup:
