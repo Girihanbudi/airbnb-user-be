@@ -7,6 +7,8 @@ creds:
 httpserver:
   host:
   port:
+grpcserver:
+  port:
 db:
   user:
   password:

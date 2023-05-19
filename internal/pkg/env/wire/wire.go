@@ -10,7 +10,8 @@ import (
 var PackageSet = wire.NewSet(
 	env.ProvideEnv,
 	tool.ExtractCredsConfig,
-	tool.ExtractServerConfig,
+	tool.ExtractHttpServerConfig,
+	tool.ExtractGrpcServerConfig,
 	tool.ExtractDBConfig,
 	tool.ExtractKafkaConfig,
 	tool.ExtractKafkaConsumerConfig,

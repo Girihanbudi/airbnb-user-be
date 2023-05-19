@@ -5,6 +5,7 @@ import (
 	credential "airbnb-user-be/internal/pkg/credential/config"
 	elastic "airbnb-user-be/internal/pkg/elasticsearch/config"
 	gorm "airbnb-user-be/internal/pkg/gorm/config"
+	grpcserver "airbnb-user-be/internal/pkg/grpcserver/config"
 	httpserver "airbnb-user-be/internal/pkg/http/server/config"
 	jwt "airbnb-user-be/internal/pkg/jwt/config"
 	kafka "airbnb-user-be/internal/pkg/kafka/config"
@@ -16,6 +17,7 @@ type Config struct {
 	Domain     string            `mapstructure:"domain"`
 	Creds      credential.Config `mapstructure:"creds"`
 	HttpServer httpserver.Config `mapstructure:"httpserver"`
+	GrpcServer grpcserver.Config `mapstructure:"grpcserver"`
 	DB         gorm.Config       `mapstructure:"db"`
 	Jwt        jwt.Config        `mapstructure:"jwt"`
 	Cache      cache.Config      `mapstructure:"cache"`
