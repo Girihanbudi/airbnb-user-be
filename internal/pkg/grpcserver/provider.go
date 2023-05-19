@@ -1,7 +1,10 @@
-package grpc
+package grpcserver
 
 import (
 	"airbnb-user-be/internal/pkg/credential"
+	"airbnb-user-be/internal/pkg/grpcserver/config"
+	"fmt"
+	"net"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -10,12 +13,15 @@ import (
 const Instance string = "GRPC"
 
 type Options struct {
+	config.Config
 	Creds credential.TlsCredentials
 }
 
 type Server struct {
 	Options
-	Server *grpc.Server
+	address  string
+	Server   *grpc.Server
+	Listener net.Listener
 }
 
 func NewRpcServer(options Options) *Server {
@@ -34,6 +40,8 @@ func NewRpcServer(options Options) *Server {
 	}
 
 	return &Server{
-		Server: server,
+		Options: options,
+		address: fmt.Sprintf("%s:%s", options.Host, options.Port),
+		Server:  server,
 	}
 }
