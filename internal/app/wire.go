@@ -7,8 +7,8 @@ import (
 	creds "airbnb-user-be/internal/pkg/credential/wire"
 	env "airbnb-user-be/internal/pkg/env/wire"
 	gorm "airbnb-user-be/internal/pkg/gorm/wire"
-	grpc "airbnb-user-be/internal/pkg/grpc/wire"
-	http "airbnb-user-be/internal/pkg/http/server/wire"
+	grpcserver "airbnb-user-be/internal/pkg/grpcserver/wire"
+	httpserver "airbnb-user-be/internal/pkg/http/server/wire"
 	kafka "airbnb-user-be/internal/pkg/kafka/wire"
 
 	country "airbnb-user-be/internal/app/country/wire"
@@ -31,9 +31,9 @@ func NewApp() (*App, error) {
 			env.PackageSet,
 			creds.PackageSet,
 			gorm.PackageSet,
-			http.PackageSet,
+			httpserver.PackageSet,
+			grpcserver.PackageSet,
 			kafka.PackageSet,
-			grpc.PackageSet,
 
 			AppSet,
 

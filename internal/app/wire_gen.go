@@ -25,7 +25,7 @@ import (
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
 	"airbnb-user-be/internal/pkg/gorm"
-	"airbnb-user-be/internal/pkg/grpc"
+	"airbnb-user-be/internal/pkg/grpcserver"
 	"airbnb-user-be/internal/pkg/http/server"
 	"airbnb-user-be/internal/pkg/http/server/router"
 	"airbnb-user-be/internal/pkg/kafka"
@@ -48,7 +48,7 @@ func NewApp() (*App, error) {
 		Config: configConfig,
 	}
 	tlsCredentials := credential.NewTLSCredentials(options)
-	config2 := tool.ExtractServerConfig(config)
+	config2 := tool.ExtractHttpServerConfig(config)
 	engine := router.NewRouter()
 	serverOptions := server.Options{
 		Config: config2,
@@ -56,24 +56,26 @@ func NewApp() (*App, error) {
 		Creds:  tlsCredentials,
 	}
 	serverServer := server.NewServer(serverOptions)
-	grpcOptions := grpc.Options{
-		Creds: tlsCredentials,
+	config3 := tool.ExtractGrpcServerConfig(config)
+	grpcserverOptions := grpcserver.Options{
+		Config: config3,
+		Creds:  tlsCredentials,
 	}
-	grpcServer := grpc.NewRpcServer(grpcOptions)
-	config3 := tool.ExtractKafkaConsumerConfig(config)
-	config4 := tool.ExtractKafkaConfig(config)
-	config5 := tool.ExtractKafkaRouterConfig(config)
+	grpcserverServer := grpcserver.NewRpcServer(grpcserverOptions)
+	config4 := tool.ExtractKafkaConsumerConfig(config)
+	config5 := tool.ExtractKafkaConfig(config)
+	config6 := tool.ExtractKafkaRouterConfig(config)
 	routerOptions := router2.Options{
-		Config: config5,
+		Config: config6,
 	}
 	routerRouter := router2.NewRouter(routerOptions)
 	kafkaOptions := kafka.Options{
-		Config: config4,
+		Config: config5,
 		Router: routerRouter,
 	}
 	client := kafka.NewSaramaClient(kafkaOptions)
 	consumerOptions := consumer.Options{
-		Config: config3,
+		Config: config4,
 		Client: client,
 		Router: routerRouter,
 	}
@@ -82,9 +84,9 @@ func NewApp() (*App, error) {
 		Client: client,
 	}
 	producerProducer := producer.NewEventProducer(producerOptions)
-	config6 := tool.ExtractDBConfig(config)
+	config7 := tool.ExtractDBConfig(config)
 	gormOptions := gorm.Options{
-		Config: config6,
+		Config: config7,
 	}
 	gormEngine := gorm.NewORM(gormOptions)
 	repoimplOptions := repoimpl.Options{
@@ -146,7 +148,7 @@ func NewApp() (*App, error) {
 	appOptions := Options{
 		TlsCreds:           tlsCredentials,
 		HttpServer:         serverServer,
-		RpcServer:          grpcServer,
+		RpcServer:          grpcserverServer,
 		EventListener:      listener,
 		EventProducer:      producerProducer,
 		Translation:        repo,
