@@ -4,7 +4,7 @@ import (
 	"airbnb-user-be/internal/pkg/cache/auth"
 	"airbnb-user-be/internal/pkg/cache/otp"
 	elastic "airbnb-user-be/internal/pkg/elasticsearch"
-	"airbnb-user-be/internal/pkg/grpc"
+	grpcserver "airbnb-user-be/internal/pkg/grpcserver"
 	"airbnb-user-be/internal/pkg/http/server"
 	httprouter "airbnb-user-be/internal/pkg/http/server/router"
 	kafkaconsumer "airbnb-user-be/internal/pkg/kafka/consumer"
@@ -33,7 +33,7 @@ var Instance = "App"
 type Options struct {
 	TlsCreds      credential.TlsCredentials
 	HttpServer    *server.Server
-	RpcServer     *grpc.Server
+	RpcServer     *grpcserver.Server
 	EventListener *kafkaconsumer.Listener
 	EventProducer *kafkaproducer.Producer
 
@@ -96,6 +96,13 @@ func (a App) runModules(ctx context.Context) {
 		}
 	}()
 
+	go func() {
+		err := a.RpcServer.Start()
+		if err != nil {
+			log.Fatal(Instance, "failed to start rpc server", err)
+		}
+	}()
+
 	<-ctx.Done()
 }
 
@@ -104,12 +111,20 @@ func (a App) stopModules() {
 
 	var wg sync.WaitGroup
 
-	wg.Add(2)
+	wg.Add(3)
 	go func() {
 		defer wg.Done()
 		err := a.EventProducer.Stop()
 		if err != nil {
 			log.Fatal(Instance, "failed to stop event producer", err)
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		err := a.RpcServer.Stop()
+		if err != nil {
+			log.Fatal(Instance, "failed to stop rpc server", err)
 		}
 	}()
 
