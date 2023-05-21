@@ -21,7 +21,7 @@ func (u Usecase) GetLocale(ctx context.Context, cmd request.GetLocale) (res resp
 		return
 	}
 
-	Locale, getLocaleErr := u.LocaleRepo.GetLocale(ctx, cmd.Code)
+	locale, getLocaleErr := u.LocaleRepo.GetLocale(ctx, cmd.Code)
 	if getLocaleErr != nil {
 		ec := errpreset.DbServiceUnavailable
 		if errors.Is(getLocaleErr, gorm.ErrRecordNotFound) {
@@ -31,7 +31,7 @@ func (u Usecase) GetLocale(ctx context.Context, cmd request.GetLocale) (res resp
 		return
 	}
 
-	res.Locale = Locale
+	res.Locale = (*response.Locale)(locale)
 
 	return
 }

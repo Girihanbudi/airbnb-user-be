@@ -2,11 +2,14 @@ package usecaseimpl
 
 import (
 	"airbnb-user-be/env/appcontext"
+	module "airbnb-user-be/internal/app/locale"
 	errpreset "airbnb-user-be/internal/app/locale/preset/error"
 	"airbnb-user-be/internal/app/locale/preset/response"
 	transutil "airbnb-user-be/internal/app/translation/util"
 	"airbnb-user-be/internal/pkg/stderror"
 	"context"
+
+	"github.com/thoas/go-funk"
 )
 
 func (u Usecase) GetLocales(ctx context.Context) (res response.GetLocales, err *stderror.StdError) {
@@ -18,7 +21,11 @@ func (u Usecase) GetLocales(ctx context.Context) (res response.GetLocales, err *
 		return
 	}
 
-	res.Locales = locales
+	data := funk.Map(locales, func(data module.Locale) response.Locale {
+		return response.Locale(data)
+	}).([]response.Locale)
+
+	res.Locales = &data
 
 	return
 }
