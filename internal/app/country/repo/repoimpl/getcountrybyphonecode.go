@@ -9,7 +9,7 @@ func (r Repo) GetCountryByPhoneCode(ctx context.Context, phoneCode int) (country
 
 	err = r.Gorm.DB.
 		Where("phone_code = ?", phoneCode).
-		Find(&country).Error
+		First(&country).Error
 
 	return
 }
