@@ -2,7 +2,7 @@ package graph
 
 import (
 	"airbnb-user-be/graph/model"
-	module "airbnb-user-be/internal/app/locale"
+	"airbnb-user-be/internal/app/locale/preset/response"
 	"context"
 	"fmt"
 
@@ -26,7 +26,7 @@ func (r *queryResolver) Locales(ctx context.Context) ([]*model.Locale, error) {
 		return nil, err
 	}
 
-	locales := funk.Map(*data.Locales, func(data module.Locale) *model.Locale {
+	locales := funk.Map(*data.Locales, func(data response.Locale) *model.Locale {
 		var locale model.Locale
 
 		locale.Code = data.Code

@@ -21,8 +21,20 @@ func (u Usecase) GetLocales(ctx context.Context) (res response.GetLocales, err *
 		return
 	}
 
-	data := funk.Map(locales, func(data module.Locale) response.Locale {
-		return response.Locale(data)
+	data := funk.Map(*locales, func(data module.Locale) response.Locale {
+		var locale response.Locale
+
+		locale.Code = data.Code
+		locale.Name = data.Name
+		locale.Local = data.Local
+		locale.Location = data.Location
+		locale.Lcid = data.Lcid
+		locale.ISO639_1 = data.ISO639_1
+		locale.ISO639_2 = data.ISO639_2
+		locale.CreatedAt = data.CreatedAt
+		locale.UpdatedAt = data.UpdatedAt
+
+		return locale
 	}).([]response.Locale)
 
 	res.Locales = &data
