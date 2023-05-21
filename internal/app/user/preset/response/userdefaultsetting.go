@@ -2,11 +2,6 @@ package response
 
 import "time"
 
-type UserDefaultSetting struct {
-	Locale   string `json:"locale"`
-	Currency string `json:"currency"`
-}
-
 type User struct {
 	Id          string     `json:"id"`
 	FirstName   string     `json:"firstName"`
