@@ -27,6 +27,8 @@ gqlrun:
 .PHONY: setrpc
 setrpc:
 	protoc --go-grpc_out=internal/app/user/api --go_out=internal/app/user/api internal/app/user/api/rpc/user.proto
+	protoc --go-grpc_out=internal/app/locale/api --go_out=internal/app/locale/api internal/app/locale/api/rpc/locale.proto
+	protoc --go-grpc_out=internal/app/country/api --go_out=internal/app/country/api internal/app/country/api/rpc/country.proto
 
 .PHONY: migrateup
 migrateup:
