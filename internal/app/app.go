@@ -16,8 +16,10 @@ import (
 	"github.com/gin-gonic/gin"
 
 	countrygql "airbnb-user-be/internal/app/country/api/gql"
+	countryrpc "airbnb-user-be/internal/app/country/api/rpc"
 	currencygql "airbnb-user-be/internal/app/currency/api/gql"
 	localegql "airbnb-user-be/internal/app/locale/api/gql"
+	localerpc "airbnb-user-be/internal/app/locale/api/rpc"
 	authmid "airbnb-user-be/internal/app/middleware/auth"
 	cookiemid "airbnb-user-be/internal/app/middleware/cookie"
 	elasticmid "airbnb-user-be/internal/app/middleware/elastic"
@@ -38,12 +40,14 @@ type Options struct {
 	EventProducer *kafkaproducer.Producer
 
 	Translation        translation.ITranslation
-	CountryHandler     *countrygql.Handler
+	CountryGqlHandler  *countrygql.Handler
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler
 	UserGqlHandler     *usergql.Handler
 
-	UserRpcHandler userrpc.UserServiceServer
+	UserRpcHandler    userrpc.UserServiceServer
+	LocaleRpcHandler  localerpc.LocaleServiceServer
+	CountryRpcHandler countryrpc.CountryServiceServer
 }
 
 type App struct {
@@ -57,7 +61,7 @@ func (a App) Run(ctx context.Context) {
 }
 
 func (a App) runModules(ctx context.Context) {
-	log.Event(Instance, "Starting...")
+	log.Event(Instance, "Starting service and connections...")
 
 	// Init app cache
 	auth.InitAuthCache()
@@ -90,51 +94,37 @@ func (a App) runModules(ctx context.Context) {
 	a.registerHttpHandler()
 
 	go func() {
-		err := a.HttpServer.Start()
-		if err != nil {
-			log.Fatal(Instance, "failed to start http server", err)
-		}
+		a.HttpServer.Start()
 	}()
 
 	go func() {
-		err := a.RpcServer.Start()
-		if err != nil {
-			log.Fatal(Instance, "failed to start rpc server", err)
-		}
+		a.RpcServer.Start()
 	}()
 
 	<-ctx.Done()
 }
 
 func (a App) stopModules() {
-	log.Event(Instance, "Stoping...")
+	log.Event(Instance, "Stoping service and connections...")
 
 	var wg sync.WaitGroup
 
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
-		err := a.EventProducer.Stop()
-		if err != nil {
-			log.Fatal(Instance, "failed to stop event producer", err)
-		}
+		a.EventProducer.Stop()
 	}()
 
 	go func() {
 		defer wg.Done()
-		err := a.RpcServer.Stop()
-		if err != nil {
-			log.Fatal(Instance, "failed to stop rpc server", err)
-		}
+		a.RpcServer.Stop()
 	}()
 
 	go func() {
 		defer wg.Done()
-		err := a.HttpServer.Stop()
-		if err != nil {
-			log.Fatal(Instance, "failed to stop http server", err)
-		}
+		a.HttpServer.Stop()
 	}()
 
 	wg.Wait()
+	log.Event(Instance, "successfully stopped service and connections")
 }
