@@ -2,6 +2,7 @@ package wire
 
 import (
 	"airbnb-user-be/internal/app/locale/api/gql"
+	"airbnb-user-be/internal/app/locale/api/rpc"
 	"airbnb-user-be/internal/app/locale/repo"
 	"airbnb-user-be/internal/app/locale/repo/repoimpl"
 	"airbnb-user-be/internal/app/locale/usecase"
@@ -31,4 +32,6 @@ var usecaseSet = wire.NewSet(
 var apiSet = wire.NewSet(
 	wire.Struct(new(gql.Options), "*"),
 	gql.NewLocaleHandler,
+	wire.Struct(new(rpc.Options), "*"),
+	rpc.NewLocaleHandler,
 )
