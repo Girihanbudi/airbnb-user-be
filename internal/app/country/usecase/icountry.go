@@ -9,4 +9,5 @@ import (
 
 type ICountry interface {
 	GetCountries(ctx context.Context, cmd request.GetCountries) (res response.GetCountries, err *stderror.StdError)
+	GetCountryByPhoneCode(ctx context.Context, cmd request.GetCountryByPhoneCode) (res response.GetCountryByPhoneCode, err *stderror.StdError)
 }
