@@ -4,8 +4,10 @@ import (
 	_ "airbnb-user-be/docs"
 	"airbnb-user-be/graph"
 	gqlcountry "airbnb-user-be/internal/app/country/api/gql"
+	rpccountry "airbnb-user-be/internal/app/country/api/rpc"
 	gqlcurrency "airbnb-user-be/internal/app/currency/api/gql"
 	gqllocale "airbnb-user-be/internal/app/locale/api/gql"
+	rpclocale "airbnb-user-be/internal/app/locale/api/rpc"
 	gqluser "airbnb-user-be/internal/app/user/api/gql"
 	rpcuser "airbnb-user-be/internal/app/user/api/rpc"
 
@@ -34,13 +36,15 @@ func graphqlHandler(countryHandler gqlcountry.Handler, localeHandler gqllocale.H
 
 func (a App) registerRpcHandler() {
 	rpcuser.RegisterUserServiceServer(a.RpcServer.Server, a.UserRpcHandler)
+	rpclocale.RegisterLocaleServiceServer(a.RpcServer.Server, a.LocaleRpcHandler)
+	rpccountry.RegisterCountryServiceServer(a.RpcServer.Server, a.CountryRpcHandler)
 }
 
 func (a App) registerHttpHandler() {
 
 	// register modules to graph solver handler
 	a.HttpServer.Router.GET("/graph", graphqlHandler(
-		*a.CountryHandler,
+		*a.CountryGqlHandler,
 		*a.LocaleGqlHandler,
 		*a.CurrencyGqlHandler,
 		*a.UserGqlHandler,
