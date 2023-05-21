@@ -16,11 +16,10 @@ func (s *Server) Start() {
 
 	s.Listener = listener
 
+	log.Event(Instance, fmt.Sprintf("listening on %s", s.address))
 	if err := s.Server.Serve(listener); err != nil {
 		log.Fatal(Instance, "failed to start rpc listener", err)
 	}
-
-	log.Event(Instance, fmt.Sprintf("listening on %s", s.address))
 }
 
 func (s *Server) Stop() {
