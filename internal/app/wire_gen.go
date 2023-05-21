@@ -8,12 +8,14 @@ package app
 
 import (
 	"airbnb-user-be/internal/app/country/api/gql"
+	rpc3 "airbnb-user-be/internal/app/country/api/rpc"
 	repoimpl2 "airbnb-user-be/internal/app/country/repo/repoimpl"
 	"airbnb-user-be/internal/app/country/usecase/usecaseimpl"
 	gql3 "airbnb-user-be/internal/app/currency/api/gql"
 	repoimpl4 "airbnb-user-be/internal/app/currency/repo/repoimpl"
 	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	gql2 "airbnb-user-be/internal/app/locale/api/gql"
+	rpc2 "airbnb-user-be/internal/app/locale/api/rpc"
 	repoimpl3 "airbnb-user-be/internal/app/locale/repo/repoimpl"
 	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
@@ -145,6 +147,14 @@ func NewApp() (*App, error) {
 		User: usecase3,
 	}
 	userServiceServer := rpc.NewUserHandler(rpcOptions)
+	options12 := rpc2.Options{
+		Locale: usecaseimplUsecase,
+	}
+	localeServiceServer := rpc2.NewLocaleHandler(options12)
+	options13 := rpc3.Options{
+		Country: usecase,
+	}
+	countryServiceServer := rpc3.NewCountryHandler(options13)
 	appOptions := Options{
 		TlsCreds:           tlsCredentials,
 		HttpServer:         serverServer,
@@ -152,11 +162,13 @@ func NewApp() (*App, error) {
 		EventListener:      listener,
 		EventProducer:      producerProducer,
 		Translation:        repo,
-		CountryHandler:     handler,
+		CountryGqlHandler:  handler,
 		LocaleGqlHandler:   gqlHandler,
 		CurrencyGqlHandler: handler2,
 		UserGqlHandler:     handler3,
 		UserRpcHandler:     userServiceServer,
+		LocaleRpcHandler:   localeServiceServer,
+		CountryRpcHandler:  countryServiceServer,
 	}
 	app := &App{
 		Options: appOptions,
