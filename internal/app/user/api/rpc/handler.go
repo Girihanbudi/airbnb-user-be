@@ -58,16 +58,30 @@ func (h Handler) CreateUser(ctx context.Context, user *User) (*CreateUserRes, er
 	req := request.CreateUser{}
 	req.FirstName = user.FirstName
 	req.LastName = user.LastName
-	req.Email = &user.Email
-	countryCode := int(user.CountryCode)
-	req.CountryCode = &countryCode
-	req.PhoneNumber = &user.PhoneNumber
-	req.Image = &user.Image
+	if user.Email != "" {
+		req.Email = &user.Email
+	}
+	if user.CountryCode != 0 {
+		countryCode := int(user.CountryCode)
+		req.CountryCode = &countryCode
+	}
+	if user.PhoneNumber != "" {
+		req.PhoneNumber = &user.PhoneNumber
+	}
+	if user.Image != "" {
+		req.Image = &user.Image
+	}
 	req.Role = user.Role
-	dob := user.DateOfBirth.AsTime()
-	req.DateOfBirth = &dob
-	req.DefaultSetting.Locale = user.DefaultSetting.Locale
-	req.DefaultSetting.Currency = user.DefaultSetting.Currency
+	if user.DateOfBirth != nil {
+		dob := user.DateOfBirth.AsTime()
+		req.DateOfBirth = &dob
+	}
+	if user.DefaultSetting != nil {
+		req.DefaultSetting = &request.UserDefaultSetting{
+			Locale:   user.DefaultSetting.Locale,
+			Currency: user.DefaultSetting.Currency,
+		}
+	}
 
 	data, err := h.User.CreateUser(ctx, req)
 	if err != nil {
