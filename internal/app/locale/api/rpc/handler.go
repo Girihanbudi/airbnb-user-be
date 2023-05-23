@@ -14,10 +14,12 @@ func (h Handler) GetLocales(ctx context.Context, cmd *GetLocalesCmd) (locales *L
 		return nil, getUserErr.Error
 	}
 
-	data := funk.Map(res, func(data response.Locale) *Locale {
+	data := funk.Map(*res.Locales, func(data response.Locale) *Locale {
 		return h.mapLocale(data)
 	}).([]*Locale)
-	locales.Data = data
+	locales = &Locales{
+		Data: data,
+	}
 
 	return
 }
