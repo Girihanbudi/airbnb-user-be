@@ -5,6 +5,7 @@ import (
 	currencyerr "airbnb-user-be/internal/app/currency/preset/error"
 	localeerr "airbnb-user-be/internal/app/locale/preset/error"
 	middlewareerr "airbnb-user-be/internal/app/middleware/preset/error"
+	usererr "airbnb-user-be/internal/app/user/preset/error"
 	"airbnb-user-be/internal/pkg/stderror"
 	"net/http"
 
@@ -77,6 +78,20 @@ func SeedErrTranslation(db gorm.DB) error {
 		MakeErrTranslation(countryerr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
 		MakeErrTranslation(countryerr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
 		MakeErrTranslation(countryerr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
+
+		/*
+			User
+		*/
+		// En translation
+		MakeErrTranslation(usererr.DbServiceUnavailable, "en", http.StatusServiceUnavailable, "Failed to communicate with store server"),
+		MakeErrTranslation(usererr.DbRecordNotFound, "en", http.StatusNotFound, "Requested data not found"),
+		MakeErrTranslation(usererr.DbEmptyResult, "en", http.StatusNotFound, "Requested result nothing"),
+		MakeErrTranslation(usererr.UscBadRequest, "en", http.StatusBadRequest, "Requested data is not valid"),
+		// Id translation
+		MakeErrTranslation(usererr.DbServiceUnavailable, "id", http.StatusServiceUnavailable, "Gagal berkomunikasi dengan server penyimpanan"),
+		MakeErrTranslation(usererr.DbRecordNotFound, "id", http.StatusNotFound, "Data tidak ditemukan"),
+		MakeErrTranslation(usererr.DbEmptyResult, "id", http.StatusNotFound, "Tidak ada hasil apapun"),
+		MakeErrTranslation(usererr.UscBadRequest, "id", http.StatusBadRequest, "Permintaan tidak valid"),
 	}
 
 	var errTranslationRecords []translationmodule.ErrTranslation
