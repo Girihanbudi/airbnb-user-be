@@ -41,6 +41,7 @@ func (u Usecase) CreateUser(ctx context.Context, cmd request.CreateUser) (res re
 		err = transutil.TranslateError(ctx, errpreset.DbServiceUnavailable, clientLocale)
 		return
 	}
+	res.Id = user.Id
 
 	return
 }
