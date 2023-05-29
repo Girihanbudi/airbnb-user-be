@@ -62,6 +62,21 @@ func GinValidateAccessToken(ctx *gin.Context) {
 	ctx.Next()
 }
 
+func GinBindUserClaimsIfAny(ctx *gin.Context) {
+	accessToken := appcontext.GetAccessToken(ctx)
+	if accessToken != nil {
+		userClaims, err := validateJwtToken(ctx, *accessToken)
+		if err != nil {
+			stdresponse.GinMakeHttpResponseErr(ctx, err)
+			return
+		}
+
+		appcontext.SetFromGinRouter(ctx, appcontext.UserClaims, userClaims)
+	}
+
+	ctx.Next()
+}
+
 func GinValidateNoJwtTokenFound(ctx *gin.Context) {
 	accessToken := appcontext.GetAccessToken(ctx)
 	clientLocale := appcontext.GetLocale(ctx)
