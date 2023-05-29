@@ -13,4 +13,6 @@ type IUser interface {
 	CreateUser(ctx context.Context, cmd request.CreateUser) (res response.CreateUser, err *stderror.StdError)
 	UpdateUser(ctx context.Context, cmd request.UpdateUser) (err *stderror.StdError)
 	VerifiedUser(ctx context.Context, cmd request.Identifier) (err *stderror.StdError)
+	ChangeLocaleSetting(ctx context.Context, cmd request.ChangeLocaleSetting) (err *stderror.StdError)
+	ChangeCurrencySetting(ctx context.Context, cmd request.ChangeCurrencySetting) (err *stderror.StdError)
 }

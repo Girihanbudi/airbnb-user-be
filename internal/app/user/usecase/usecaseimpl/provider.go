@@ -1,11 +1,15 @@
 package usecaseimpl
 
 import (
-	"airbnb-user-be/internal/app/user/repo"
+	currency "airbnb-user-be/internal/app/currency/repo"
+	locale "airbnb-user-be/internal/app/locale/repo"
+	user "airbnb-user-be/internal/app/user/repo"
 )
 
 type Options struct {
-	UserRepo repo.IUser
+	UserRepo     user.IUser
+	LocaleRepo   locale.ILocale
+	CurrencyRepo currency.ICurrency
 }
 
 type Usecase struct {
