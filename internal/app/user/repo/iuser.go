@@ -11,4 +11,6 @@ type IUser interface {
 	GetUserByPhone(ctx context.Context, countryCode int, phoneNumber string, preloads ...string) (user module.User, err error)
 	CreateUser(ctx context.Context, user *module.User) (err error)
 	CreateOrUpdateUser(ctx context.Context, user *module.User) (err error)
+	GetDefaultSettingByUser(ctx context.Context, userId string) (setting module.UserDefaultSetting, err error)
+	CreateOrUpdateDefaultSetting(ctx context.Context, setting *module.UserDefaultSetting) (err error)
 }
