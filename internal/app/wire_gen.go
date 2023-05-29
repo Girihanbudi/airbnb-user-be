@@ -9,20 +9,21 @@ package app
 import (
 	"airbnb-user-be/internal/app/country/api/gql"
 	rpc3 "airbnb-user-be/internal/app/country/api/rpc"
-	repoimpl2 "airbnb-user-be/internal/app/country/repo/repoimpl"
-	"airbnb-user-be/internal/app/country/usecase/usecaseimpl"
+	repoimpl5 "airbnb-user-be/internal/app/country/repo/repoimpl"
+	usecaseimpl2 "airbnb-user-be/internal/app/country/usecase/usecaseimpl"
 	gql3 "airbnb-user-be/internal/app/currency/api/gql"
 	repoimpl4 "airbnb-user-be/internal/app/currency/repo/repoimpl"
-	usecaseimpl3 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
+	usecaseimpl4 "airbnb-user-be/internal/app/currency/usecase/usecaseimpl"
 	gql2 "airbnb-user-be/internal/app/locale/api/gql"
 	rpc2 "airbnb-user-be/internal/app/locale/api/rpc"
 	repoimpl3 "airbnb-user-be/internal/app/locale/repo/repoimpl"
-	usecaseimpl2 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
+	usecaseimpl3 "airbnb-user-be/internal/app/locale/usecase/usecaseimpl"
 	"airbnb-user-be/internal/app/translation/repo/repoimpl"
 	gql4 "airbnb-user-be/internal/app/user/api/gql"
+	"airbnb-user-be/internal/app/user/api/rest"
 	"airbnb-user-be/internal/app/user/api/rpc"
-	repoimpl5 "airbnb-user-be/internal/app/user/repo/repoimpl"
-	usecaseimpl4 "airbnb-user-be/internal/app/user/usecase/usecaseimpl"
+	repoimpl2 "airbnb-user-be/internal/app/user/repo/repoimpl"
+	"airbnb-user-be/internal/app/user/usecase/usecaseimpl"
 	"airbnb-user-be/internal/pkg/credential"
 	"airbnb-user-be/internal/pkg/env"
 	"airbnb-user-be/internal/pkg/env/tool"
@@ -98,61 +99,68 @@ func NewApp() (*App, error) {
 	options2 := repoimpl2.Options{
 		Gorm: gormEngine,
 	}
-	repoimplRepo := repoimpl2.NewCountryRepo(options2)
-	usecaseimplOptions := usecaseimpl.Options{
-		CountryRepo: repoimplRepo,
-	}
-	usecase := usecaseimpl.NewCountryUsecase(usecaseimplOptions)
-	gqlOptions := gql.Options{
-		Country: usecase,
-	}
-	handler := gql.NewCountryHandler(gqlOptions)
+	repoimplRepo := repoimpl2.NewUserRepo(options2)
 	options3 := repoimpl3.Options{
 		Gorm: gormEngine,
 	}
 	repo2 := repoimpl3.NewLocaleRepo(options3)
-	options4 := usecaseimpl2.Options{
-		LocaleRepo: repo2,
-	}
-	usecaseimplUsecase := usecaseimpl2.NewLocaleUsecase(options4)
-	options5 := gql2.Options{
-		Locale: usecaseimplUsecase,
-	}
-	gqlHandler := gql2.NewLocaleHandler(options5)
-	options6 := repoimpl4.Options{
+	options4 := repoimpl4.Options{
 		Gorm: gormEngine,
 	}
-	repo3 := repoimpl4.NewCurrencyRepo(options6)
-	options7 := usecaseimpl3.Options{
+	repo3 := repoimpl4.NewCurrencyRepo(options4)
+	usecaseimplOptions := usecaseimpl.Options{
+		UserRepo:     repoimplRepo,
+		LocaleRepo:   repo2,
 		CurrencyRepo: repo3,
 	}
-	usecase2 := usecaseimpl3.NewCurrencyUsecase(options7)
-	options8 := gql3.Options{
-		Currency: usecase2,
+	usecase := usecaseimpl.NewUserUsecase(usecaseimplOptions)
+	restOptions := rest.Options{
+		Router: engine,
+		User:   usecase,
 	}
-	handler2 := gql3.NewCurrencyHandler(options8)
-	options9 := repoimpl5.Options{
+	handler := rest.NewUserHandler(restOptions)
+	options5 := repoimpl5.Options{
 		Gorm: gormEngine,
 	}
-	repo4 := repoimpl5.NewUserRepo(options9)
-	options10 := usecaseimpl4.Options{
-		UserRepo: repo4,
+	repo4 := repoimpl5.NewCountryRepo(options5)
+	options6 := usecaseimpl2.Options{
+		CountryRepo: repo4,
 	}
-	usecase3 := usecaseimpl4.NewUserUsecase(options10)
+	usecaseimplUsecase := usecaseimpl2.NewCountryUsecase(options6)
+	gqlOptions := gql.Options{
+		Country: usecaseimplUsecase,
+	}
+	gqlHandler := gql.NewCountryHandler(gqlOptions)
+	options7 := usecaseimpl3.Options{
+		LocaleRepo: repo2,
+	}
+	usecase2 := usecaseimpl3.NewLocaleUsecase(options7)
+	options8 := gql2.Options{
+		Locale: usecase2,
+	}
+	handler2 := gql2.NewLocaleHandler(options8)
+	options9 := usecaseimpl4.Options{
+		CurrencyRepo: repo3,
+	}
+	usecase3 := usecaseimpl4.NewCurrencyUsecase(options9)
+	options10 := gql3.Options{
+		Currency: usecase3,
+	}
+	handler3 := gql3.NewCurrencyHandler(options10)
 	options11 := gql4.Options{
-		User: usecase3,
+		User: usecase,
 	}
-	handler3 := gql4.NewUserHandler(options11)
+	handler4 := gql4.NewUserHandler(options11)
 	rpcOptions := rpc.Options{
-		User: usecase3,
+		User: usecase,
 	}
 	userServiceServer := rpc.NewUserHandler(rpcOptions)
 	options12 := rpc2.Options{
-		Locale: usecaseimplUsecase,
+		Locale: usecase2,
 	}
 	localeServiceServer := rpc2.NewLocaleHandler(options12)
 	options13 := rpc3.Options{
-		Country: usecase,
+		Country: usecaseimplUsecase,
 	}
 	countryServiceServer := rpc3.NewCountryHandler(options13)
 	appOptions := Options{
@@ -162,10 +170,11 @@ func NewApp() (*App, error) {
 		EventListener:      listener,
 		EventProducer:      producerProducer,
 		Translation:        repo,
-		CountryGqlHandler:  handler,
-		LocaleGqlHandler:   gqlHandler,
-		CurrencyGqlHandler: handler2,
-		UserGqlHandler:     handler3,
+		UserRestHandler:    handler,
+		CountryGqlHandler:  gqlHandler,
+		LocaleGqlHandler:   handler2,
+		CurrencyGqlHandler: handler3,
+		UserGqlHandler:     handler4,
 		UserRpcHandler:     userServiceServer,
 		LocaleRpcHandler:   localeServiceServer,
 		CountryRpcHandler:  countryServiceServer,
