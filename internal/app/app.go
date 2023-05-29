@@ -25,6 +25,7 @@ import (
 	elasticmid "airbnb-user-be/internal/app/middleware/elastic"
 	translation "airbnb-user-be/internal/app/translation/repo"
 	usergql "airbnb-user-be/internal/app/user/api/gql"
+	userrest "airbnb-user-be/internal/app/user/api/rest"
 	userrpc "airbnb-user-be/internal/app/user/api/rpc"
 
 	"airbnb-user-be/internal/pkg/credential"
@@ -38,8 +39,10 @@ type Options struct {
 	RpcServer     *grpcserver.Server
 	EventListener *kafkaconsumer.Listener
 	EventProducer *kafkaproducer.Producer
+	Translation   translation.ITranslation
 
-	Translation        translation.ITranslation
+	UserRestHandler *userrest.Handler
+
 	CountryGqlHandler  *countrygql.Handler
 	LocaleGqlHandler   *localegql.Handler
 	CurrencyGqlHandler *currencygql.Handler

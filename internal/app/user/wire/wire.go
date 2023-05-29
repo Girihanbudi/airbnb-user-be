@@ -2,6 +2,7 @@ package wire
 
 import (
 	"airbnb-user-be/internal/app/user/api/gql"
+	"airbnb-user-be/internal/app/user/api/rest"
 	"airbnb-user-be/internal/app/user/api/rpc"
 	"airbnb-user-be/internal/app/user/repo"
 	"airbnb-user-be/internal/app/user/repo/repoimpl"
@@ -34,4 +35,6 @@ var apiSet = wire.NewSet(
 	gql.NewUserHandler,
 	wire.Struct(new(rpc.Options), "*"),
 	rpc.NewUserHandler,
+	wire.Struct(new(rest.Options), "*"),
+	rest.NewUserHandler,
 )

@@ -41,8 +41,10 @@ func (a App) registerRpcHandler() {
 }
 
 func (a App) registerHttpHandler() {
+	// Register rest handler
+	a.UserRestHandler.RegisterApi()
 
-	// register modules to graph solver handler
+	// Register modules to graph solver handler
 	a.HttpServer.Router.GET("/graph", graphqlHandler(
 		*a.CountryGqlHandler,
 		*a.LocaleGqlHandler,
@@ -50,5 +52,6 @@ func (a App) registerHttpHandler() {
 		*a.UserGqlHandler,
 	))
 
+	// Register swagger documentation
 	a.HttpServer.Router.GET("/docs/*any", ginswagger.WrapHandler(swaggerfiles.Handler))
 }
