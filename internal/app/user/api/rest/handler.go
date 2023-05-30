@@ -42,7 +42,7 @@ func (h Handler) ChangeLocaleSetting(ctx *gin.Context) {
 		"/",
 		env.CONFIG.Domain,
 		true,
-		true,
+		false,
 	)
 
 	stdresponse.GinMakeHttpResponse(ctx, http.StatusCreated, nil, nil)
@@ -77,7 +77,7 @@ func (h Handler) ChangeCurrencySetting(ctx *gin.Context) {
 		"/",
 		env.CONFIG.Domain,
 		true,
-		true,
+		false,
 	)
 
 	stdresponse.GinMakeHttpResponse(ctx, http.StatusCreated, nil, nil)
