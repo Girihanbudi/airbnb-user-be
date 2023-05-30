@@ -3,9 +3,9 @@ package rest
 import authmid "airbnb-user-be/internal/app/middleware/auth"
 
 func (h Handler) RegisterApi() {
-	user := h.Router.Group("/user")
+	me := h.Router.Group("/me")
 	{
-		user.PUT("/locale", authmid.GinBindUserClaimsIfAny, h.ChangeLocaleSetting)
-		user.GET("/currency", authmid.GinBindUserClaimsIfAny, h.ChangeCurrencySetting)
+		me.PUT("/locale", authmid.GinBindUserClaimsIfAny, h.ChangeLocaleSetting)
+		me.PUT("/currency", authmid.GinBindUserClaimsIfAny, h.ChangeCurrencySetting)
 	}
 }
